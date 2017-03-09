@@ -1,16 +1,14 @@
 [
   {
     "id": 0,
-    "address": "www.youtube.com",
     "order": "1",
-    "type": "1",
+    "owner": "1",
     "name": "Sonic"
   },
   {
     "id": 1,
-    "address": "spotify",
     "order": "2",
-    "type": "2",
+    "owner": "2",
     "name": "Sonic 2"
   }
 ]

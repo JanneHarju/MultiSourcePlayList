@@ -12,7 +12,7 @@ namespace PlayList.Controllers
     public class TrackController : Controller
     {
         List<Track> infos = new List<Track>();
-        private string filePath = @"./info.json";
+        private string filePath = @"./tracks.json";
         public TrackController()
          : base()
         {
