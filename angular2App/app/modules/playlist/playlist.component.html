@@ -1,5 +1,5 @@
-<ul >
-    <li ng-repeat="playlist in playlists">
+<ul *ngIf="playlists.length > 0">
+    <li *ngFor="let playlist of playlists">
         {{playlist.name}}
     </li>
 </ul>

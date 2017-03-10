@@ -38,10 +38,14 @@ module.exports = {
         outputPath: path.join(__dirname, 'wwwroot/'),
         hot: true,
         proxy: {
-            '/api/infos/*': {
+            '/api/playlists/*': {
             target: 'http://localhost:5000',
             secure: false
-            }
+        },
+            '/api/tracks/*': {
+            target: 'http://localhost:5000',
+            secure: false
+        }
         }
     },
 
