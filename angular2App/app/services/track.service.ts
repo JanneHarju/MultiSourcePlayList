@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { Track } from '../models/track';
@@ -13,6 +13,18 @@ export class TrackService {
 
     getTracks(): Promise<Track[]> {
         return this.http.get(this.tracksUrl)
+                .toPromise()
+                .then(response => response.json() as Track[])
+                .catch(this.handleError);
+    }
+    getPlaylistTracks(id: number): Promise<Track[]> {
+        const playlist = "true";
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('playlist', playlist);
+        let requestOptions = new RequestOptions();
+        requestOptions.search = params;
+        const url = `${this.tracksUrl}/${id}/${playlist}`;
+        return this.http.get(url)
                 .toPromise()
                 .then(response => response.json() as Track[])
                 .catch(this.handleError);

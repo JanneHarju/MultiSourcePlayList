@@ -1,5 +1,27 @@
-<ul *ngIf="playlists.length > 0">
-    <li *ngFor="let playlist of playlists">
-        {{playlist.name}}
-    </li>
-</ul>
+ <div class="innerbox">
+     <div class="box-style"> 
+         <div>
+            <label>Playlist name:</label>
+            <input ng-focus="true" #playlistName (keyup.enter)="add(playlistName.value); playlistName.value=''"/>
+            <button  (click)="add(playlistName.value); playlistName.value=''">
+                Add
+            </button>
+        </div>
+        <div *ngIf="playlists.length > 0" class="grid grid-pad" >
+            <a *ngFor="let playlist of playlists"  [routerLink]="['/tracklist', playlist.id]"  >
+                <div class="module track">
+                    <h4 >{{playlist.name}}</h4>
+                    <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
+                </div>
+            </a>
+        </div>
+        <!--<ul class="playlists">
+            <li *ngFor="let playlist of playlists" (click)="onSelect(playlist)"
+                [class.selected]="playlist === selectedPlaylist">
+                <span>{{playlist.name}}</span>
+                <button class="delete"
+                (click)="delete(playlist); $event.stopPropagation()">x</button>
+            </li>
+        </ul>-->
+     </div>
+ </div>

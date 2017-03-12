@@ -11,12 +11,12 @@ namespace PlayList.Controllers
     [Route("api/tracks")]
     public class TrackController : Controller
     {
-        List<Track> infos = new List<Track>();
+        List<Track> tracks = new List<Track>();
         private string filePath = @"./tracks.json";
         public TrackController()
          : base()
         {
-            infos = GetInfosFromFile();
+            tracks = GetInfosFromFile();
         }
 
 
@@ -26,35 +26,40 @@ namespace PlayList.Controllers
         [HttpGet]
         public List<Track> Get()
         {
-            return infos;
+            return tracks;
         }
         // GET api/values/5
         [HttpGet("{id}")]
         public Track Get(int id)
         {
-            return infos.Find(x=>x.id == id);
+            return tracks.Find(x=>x.id == id);
+        }
+        [HttpGet("{id}/{playlist}")]
+        public List<Track> GetById(int id, string playlist)
+        {
+            return tracks.FindAll(x=>x.playlist == id);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]Track value)
         {
-            Track updateInfo = infos.Find(item => item.id == id);
+            Track updateInfo = tracks.Find(item => item.id == id);
             //updateInfo = value;
             updateInfo.address = value.address;
             updateInfo.name = value.name;
             updateInfo.order = value.order;
             updateInfo.type = value.type;
-            SaveToFIle(infos);
+            SaveToFIle(tracks);
         }
         // POST api/values
         [HttpPost]
         public void Post([FromBody]Track value)
         {
-            Track lastInfo = infos.OrderByDescending(x => x.id).First();
+            Track lastInfo = tracks.OrderByDescending(x => x.id).First();
             value.id = lastInfo.id + 1;
-            infos.Add(value);
-            SaveToFIle(infos);
+            tracks.Add(value);
+            SaveToFIle(tracks);
         }
         private void SaveToFIle(List<Track> info)
         {

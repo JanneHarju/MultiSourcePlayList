@@ -38,6 +38,7 @@ export class PlaylistService {
     }
     create(name: string): Promise<Playlist> {
         const tmpPlaylist = new Playlist();
+        tmpPlaylist.name = name;
         //tmpHero.name = name;
         return this.http
             .post(this.PlaylistsUrl, tmpPlaylist, {headers: this.headers})

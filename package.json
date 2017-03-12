@@ -68,7 +68,12 @@
     "typescript": "2.0.3",
     "url-loader": "^0.5.7",
     "webpack": "^2.2.0-rc.4",
-    "webpack-dev-server": "^1.9.0"
+    "webpack-dev-server": "^1.9.0",
+    "youtube": "^0.1.0",
+    "youtube-iframe": "^1.0.2",
+    "youtube-player": "^3.0.4",
+    "youtube-thin-wrapper": "^1.0.1",
+    "@types/youtube": "^0.0.28"
   },
   "-vs-binding": {
     "ProjectOpened": [

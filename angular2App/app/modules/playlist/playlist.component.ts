@@ -22,4 +22,14 @@ export class PlaylistComponent implements OnInit {
         this.playlistService.getPlaylists()
             .then(playlists => this.playlists = playlists);
     }
+    add(name: string): void {
+        name = name.trim();
+        if (!name) { return; }
+        this.playlistService.create(name)
+            .then(playlist => {
+            this.playlists.push(playlist);
+            //this.selectedHero = null;
+            this.getPlaylists();
+            });
+    }
 }

@@ -1,16 +1,50 @@
 [
   {
     "id": 0,
-    "address": "www.youtube.com",
+    "playlist": 0,
+    "address": "https://www.youtube.com/embed/yz8i6A6BTiA?controls=1",
     "order": "1",
     "type": "1",
-    "name": "Sonic"
+    "name": "Youtube"
   },
   {
     "id": 1,
+    "playlist": 0,
+    "address": "https://embed.spotify.com/?uri=spotify%3Atrack%3A6VpUZlL6wGaVm98gGUs8Qq",
+    "order": "2",
+    "type": "2",
+    "name": "Spotify"
+  },
+  {
+    "id": 4,
+    "playlist": 0,
+    "address": "http://66.90.93.122/ost/super-mario-bros.-3/hwwdacwmsv/02-level-theme-1.mp3",
+    "order": "3",
+    "type": "3",
+    "name": "MP3"
+  },
+  {
+    "id": 5,
+    "playlist": 0,
+    "address": "https://www.youtube.com/embed/CRC-B8ZZBZA?controls=1",
+    "order": "1",
+    "type": "1",
+    "name": "Nigthwish"
+  },
+  {
+    "id": 2,
+    "playlist": 1,
+    "address": "www.youtube.com",
+    "order": "1",
+    "type": "1",
+    "name": "Casino"
+  },
+  {
+    "id": 3,
+    "playlist": 1,
     "address": "spotify",
     "order": "2",
     "type": "2",
-    "name": "Sonic 2"
+    "name": "Forest"
   }
 ]

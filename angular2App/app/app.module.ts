@@ -6,8 +6,11 @@ import { HttpModule }    from '@angular/http';
 import { Configuration } from './app.constants';
 import { AppRoutingModule } from './app-routing.module';
 
-import { TrackComponent }     from './modules/track/track.component';
+import { PlayerComponent }     from './modules/player/player.component';
 import { PlaylistComponent } from './modules/playlist/playlist.component';
+import { TracklistComponent } from './modules/tracklist/tracklist.component';
+import { SafePipe} from './modules/shared/safepipe';
+
 import { TrackService }         from './services/track.service';
 import { PlaylistService } from './services/playlist.service';
 import { AppComponent }  from './app.component';
@@ -24,9 +27,11 @@ import './rxjs-extensions';
   ],
   declarations: [
     AppComponent,
-    TrackComponent,
+    PlayerComponent,
     PlaylistComponent,
+    TracklistComponent,
     PopupComponent,
+    SafePipe
   ],
   providers: [
     TrackService,

@@ -48,12 +48,13 @@ namespace PlayList.Controllers
         }
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]Playlist value)
+        public Playlist Post([FromBody]Playlist value)
         {
             Playlist lastPlaylist = playlists.OrderByDescending(x => x.id).First();
             value.id = lastPlaylist.id + 1;
             playlists.Add(value);
             SaveToFIle(playlists);
+            return value;
         }
         private void SaveToFIle(List<Playlist> playlist)
         {
