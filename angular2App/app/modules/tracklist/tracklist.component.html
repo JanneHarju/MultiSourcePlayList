@@ -9,18 +9,25 @@
                     <button id="pause" (click)="pause()" class="btn-warning">Pause</button>
 
                 </div>
-                <div class="row" *ngIf="selectedTrack.type == 1" style="visibility: hidden">
-                    <iframe id="youtube" (ended)="onYoutubeEnded()" width="560" height="80" [src]="selectedTrack.address | safe" allowfullscreen>
-                    </iframe>
+                <div class="row" style="visibility: hidden"><!--style="visibility: hidden"-->
+                    <!--<iframe id="youtube" (loaded)="onYoutubeLoaded()" (ended)="onYoutubeEnded()" width="560" height="80" [src]="selectedTrack.address | safe" allowfullscreen>
+                    </iframe>-->
+                    <youtube-player
+                    [videoId]="selectedTrack.address"
+                    (ready)="savePlayer($event)"
+                    (change)="onStateChange($event)"
+                    width="300" height="80"
+                    ></youtube-player>
                 </div>
                 <div class="row" *ngIf="selectedTrack.type == 2" style="visibility: hidden">
                     <iframe id="spotify" (load)="onLoad()" [src]="selectedTrack.address | safe" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
                 </div>
                 <div class="row" *ngIf="selectedTrack.type == 3" style="visibility: hidden">
-                    <audio (loadeddata)="audioloaded()" (ended)="onAudioEnded()" id="audio1" [src]="selectedTrack.address | safe" controls="" preload="auto" autobuffer="">
+                    <audio height="80" (loadeddata)="audioloaded()" (ended)="onAudioEnded()" id="audio1" [src]="selectedTrack.address | safe" controls="" preload="auto" autobuffer="">
                     </audio>
                 </div>
                 {{selectedTrack.name}}
+                {{trackName}}
             </div>
         </div>
     </div>

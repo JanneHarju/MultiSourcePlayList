@@ -6,6 +6,8 @@ import { HttpModule }    from '@angular/http';
 import { Configuration } from './app.constants';
 import { AppRoutingModule } from './app-routing.module';
 
+
+import { YoutubePlayerModule } from 'ng2-youtube-player';
 import { PlaylistComponent } from './modules/playlist/playlist.component';
 import { TracklistComponent } from './modules/tracklist/tracklist.component';
 import { SafePipe} from './modules/shared/safepipe';
@@ -23,6 +25,7 @@ import './rxjs-extensions';
     FormsModule,
     HttpModule,
     AppRoutingModule,
+    YoutubePlayerModule
   ],
   declarations: [
     AppComponent,

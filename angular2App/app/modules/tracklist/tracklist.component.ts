@@ -23,6 +23,22 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     tracklist: Track[] = [];
     selectedTrack: Track = new Track();
     notFirstTime: boolean = false;
+    trackName: string;
+    player: YT.Player;
+    private id: string = 'yz8i6A6BTiA';
+    
+    savePlayer (player: YT.Player) {
+        this.player = player;
+        console.log('player instance', player)
+        }
+    onStateChange(event : YT.EventArgs){
+        console.log('player state', event.data);
+        if(event.data == 0)
+        {
+            //Chose next track
+            this.selectedTrack = this.tracklist[1];
+        }
+    }
     ngOnInit() {
         this.route.params
             .switchMap((params: Params) => this.trackService.getPlaylistTracks(+params['id']))
@@ -52,11 +68,13 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         {
             switch (this.selectedTrack.type) {
                 case 1://youtube
-                    
-                    this.selectedTrack.address += "&autoplay=1";
+                    this.player.loadVideoById(this.selectedTrack.address);
+                    this.player.playVideo();
+                    //this.selectedTrack.address += "&autoplay=1";
                     break;
                 case 2://spotify
                     
+                    this.player.pauseVideo();
                     /*let iframe = document.getElementById('spotify');
                     let doc = (<HTMLIFrameElement>iframe).contentDocument 
                     let playbutton = doc.getElementById("play-button");
@@ -64,6 +82,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                     break;
                 case 3://mp3
                     
+                    this.player.pauseVideo();
                     /*let audio = (<HTMLAudioElement>document.getElementById("audio1"));
                     audio.play();*/
                     break;
@@ -79,7 +98,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         {
             switch (this.selectedTrack.type) {
                 case 1://youtube
-                    
+                    this.player.playVideo();
                     break;
                 case 2://spotify
                     
@@ -106,6 +125,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             switch (this.selectedTrack.type) {
                 case 1://youtube
                     
+                    this.player.pauseVideo();
                     break;
                 case 2://spotify
                     
@@ -126,29 +146,35 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
     onLoad()  {
-        var iframe = document.getElementById('spotify');
-        var doc = (<HTMLIFrameElement>iframe).contentDocument 
-        doc.getElementById("play-button").click();
+        /*let iframe = document.getElementById('spotify');
+        let doc = (<HTMLIFrameElement>iframe).contentDocument 
+        doc.getElementById("play-button").click();*/
+    }
+    onYoutubeLoaded()  {
+        let iframe = document.getElementById('youtube');
+        let doc = (<HTMLIFrameElement>iframe).contentDocument;
+        let a = (<HTMLLinkElement>doc.getElementsByClassName('ytp-title-link')[0]);
+        this.trackName = a.getElementsByTagName("span")[1].textContent;
     }
     audioloaded()
     {
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-        audio.pause();
+        audio.play();
     }
     onYoutubeEnded()
     {
         this.selectedTrack = this.tracklist[3];
-        if(this.selectedTrack.type == 1)
+        /*if(this.selectedTrack.type == 1)
         {
             this.selectedTrack.address += "&autoplay=1";
-        }
+        }*/
     }
     onAudioEnded()
     {
         this.selectedTrack = this.tracklist[3];
-        if(this.selectedTrack.type == 1)
+        /*if(this.selectedTrack.type == 1)
         {
             this.selectedTrack.address += "&autoplay=1";
-        }
+        }*/
     }
 }
