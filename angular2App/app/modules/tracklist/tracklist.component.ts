@@ -26,7 +26,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     trackName: string;
     player: YT.Player;
     private id: string = 'yz8i6A6BTiA';
-    
+    counter: number = 0;
     savePlayer (player: YT.Player) {
         this.player = player;
         console.log('player instance', player)
@@ -37,6 +37,11 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         {
             //Chose next track
             this.selectedTrack = this.tracklist[1];
+        }
+        else
+        {
+            let data = this.player.getVideoData()
+            this.trackName = data.title;
         }
     }
     ngOnInit() {
@@ -145,10 +150,23 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         
         }
     }
+
     onLoad()  {
-        /*let iframe = document.getElementById('spotify');
-        let doc = (<HTMLIFrameElement>iframe).contentDocument 
-        doc.getElementById("play-button").click();*/
+        this.trackName = "ladattu";
+        let iframe = document.getElementById('spotify');
+        let doc = (<HTMLIFrameElement>iframe).contentDocument;
+        let playbutton = doc.getElementById("play-button")
+        if(playbutton != null)
+        {
+            playbutton.click();
+
+            let name = doc.getElementById("track-name").innerText;
+            let artist = doc.getElementById("track-artists").innerText;
+            this.trackName = artist + " - " + name;
+            console.log(++this.counter);
+        }
+        console.log(++this.counter);
+        /*doc.getElementById("play-button").click();*/
     }
     onYoutubeLoaded()  {
         let iframe = document.getElementById('youtube');
@@ -159,8 +177,13 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     audioloaded()
     {
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
+        //this.trackName = audio.audioTracks.length.toString();//[0].label + " " + audio.audioTracks[0].kind;
+
+        //audio.load();
         audio.play();
+        //this.trackName = audio.audioTracks.toString();//[0].label + " " + audio.audioTracks[0].kind;
     }
+
     onYoutubeEnded()
     {
         this.selectedTrack = this.tracklist[3];
