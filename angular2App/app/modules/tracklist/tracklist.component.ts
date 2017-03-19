@@ -3,6 +3,7 @@ import { ActivatedRoute, Params }   from '@angular/router';
 import { TrackService }         from '../../services/track.service';
 import { Track } from '../../models/track';
 import { SimpleTimer } from 'ng2-simple-timer';
+import { Router }                 from '@angular/router';
 
 @Component({
     selector: 'my-tracklist',
@@ -15,7 +16,8 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private renderer: Renderer,
     private st: SimpleTimer,
-    private el: ElementRef) { }
+    private el: ElementRef,
+    private router: Router) { }
 
     //@ViewChild('play-button') play: ElementRef;
     
@@ -27,22 +29,29 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     player: YT.Player;
     private id: string = 'yz8i6A6BTiA';
     counter: number = 0;
+    random: number = 0;
     savePlayer (player: YT.Player) {
         this.player = player;
-        console.log('player instance', player)
+        //console.log('player instance', player)
         }
     onStateChange(event : YT.EventArgs){
-        console.log('player state', event.data);
+        //console.log('player state', event.data);
         if(event.data == 0)
         {
             //Chose next track
-            this.selectedTrack = this.tracklist[1];
+            this.chooseNextTrack();
         }
         else
         {
             let data = this.player.getVideoData()
             this.trackName = data.title;
         }
+    }
+    addTrack()
+    {
+        this.router.navigate([{ outlets: { popup: 'addtrackpopup' }}]);
+        //this.router.navigate([{ outlets: { popup: 'addtrackpopup' }},this.selectedTrack.playlist]);
+    
     }
     ngOnInit() {
         this.route.params
@@ -61,6 +70,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      }
      ngOnDestroy(): void
     {
+        this.player.pauseVideo();
         this.st.delTimer('5sec');
     }
      ngAfterViewInit() {
@@ -69,6 +79,50 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      }
      onSelect(track: Track): void {
         this.selectedTrack = track;
+        
+        this.playTrack();
+        
+    }
+    chooseNextTrack()
+    {
+        let nextTracks = this.tracklist.filter(x=>x.order > this.selectedTrack.order);
+        //console.log("chooseNextTrack" + this.selectedTrack.order);
+        if(nextTracks != null && nextTracks.length > 0)
+        {
+
+            this.selectedTrack = nextTracks[0];
+            //console.log("next" + this.selectedTrack.order);
+        }
+        else
+        {
+            this.selectedTrack = this.tracklist[0];
+            //console.log("first");
+        }
+        this.playTrack();
+    }
+    next()
+    {
+        this.chooseNextTrack();
+    }
+    previous()
+    {
+        let nextTracks = this.tracklist.filter(x=>x.order < this.selectedTrack.order);
+        //console.log("chooseNextTrack" + this.selectedTrack.order);
+        if(nextTracks != null && nextTracks.length > 0)
+        {
+
+            this.selectedTrack = nextTracks[nextTracks.length-1];
+            //console.log("next" + this.selectedTrack.order);
+        }
+        else
+        {
+            this.selectedTrack = this.tracklist[this.tracklist.length-1];
+            //console.log("first");
+        }
+        this.playTrack();
+    }
+    playTrack()
+    {
         if(this.selectedTrack != null)
         {
             switch (this.selectedTrack.type) {
@@ -95,7 +149,11 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                     break;
             }
         }
-        
+    }
+
+    chooseNextRandomTrack()
+    {
+        this.random = Math.floor(Math.random() * this.tracklist.length);
     }
     play()
     {
@@ -163,9 +221,9 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             let name = doc.getElementById("track-name").innerText;
             let artist = doc.getElementById("track-artists").innerText;
             this.trackName = artist + " - " + name;
-            console.log(++this.counter);
+            //console.log(++this.counter);
         }
-        console.log(++this.counter);
+        //console.log(++this.counter);
         /*doc.getElementById("play-button").click();*/
     }
     onYoutubeLoaded()  {
@@ -178,26 +236,12 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     {
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
         //this.trackName = audio.audioTracks.length.toString();//[0].label + " " + audio.audioTracks[0].kind;
-
         //audio.load();
         audio.play();
         //this.trackName = audio.audioTracks.toString();//[0].label + " " + audio.audioTracks[0].kind;
     }
-
-    onYoutubeEnded()
-    {
-        this.selectedTrack = this.tracklist[3];
-        /*if(this.selectedTrack.type == 1)
-        {
-            this.selectedTrack.address += "&autoplay=1";
-        }*/
-    }
     onAudioEnded()
     {
-        this.selectedTrack = this.tracklist[3];
-        /*if(this.selectedTrack.type == 1)
-        {
-            this.selectedTrack.address += "&autoplay=1";
-        }*/
+        this.chooseNextTrack();
     }
 }

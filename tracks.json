@@ -3,48 +3,136 @@
     "id": 0,
     "playlist": 0,
     "address": "yz8i6A6BTiA",
-    "order": "1",
-    "type": "1",
-    "name": "Sonic"
+    "order": 1,
+    "type": 1,
+    "name": "Video games live - Sonic"
   },
   {
     "id": 1,
     "playlist": 0,
     "address": "https://embed.spotify.com/?uri=spotify%3Atrack%3A6VpUZlL6wGaVm98gGUs8Qq",
-    "order": "2",
-    "type": "2",
-    "name": "Spotify"
+    "order": 2,
+    "type": 2,
+    "name": "Metallica"
   },
   {
     "id": 4,
     "playlist": 0,
     "address": "http://66.90.93.122/ost/super-mario-bros.-3/hwwdacwmsv/02-level-theme-1.mp3",
-    "order": "3",
-    "type": "3",
-    "name": "MP3"
+    "order": 3,
+    "type": 3,
+    "name": "Super Mario 3 - Level 1"
   },
   {
     "id": 5,
     "playlist": 0,
     "address": "CRC-B8ZZBZA",
-    "order": "1",
-    "type": "1",
-    "name": "Nigthwish"
+    "order": 4,
+    "type": 1,
+    "name": "Nigthwish - Endless forms most beautifull"
   },
   {
     "id": 2,
     "playlist": 1,
     "address": "www.youtube.com",
-    "order": "1",
-    "type": "1",
+    "order": 2,
+    "type": 1,
     "name": "Casino"
   },
   {
     "id": 3,
     "playlist": 1,
     "address": "spotify",
-    "order": "2",
-    "type": "2",
+    "order": 2,
+    "type": 2,
     "name": "Forest"
+  },
+  {
+    "id": 6,
+    "playlist": 0,
+    "address": "https://www.youtube.com/watch?v=0mP5YXNqbko",
+    "order": 5,
+    "type": 1,
+    "name": "Stamina - Elokuutio"
+  },
+  {
+    "id": 7,
+    "playlist": 0,
+    "address": "https://www.youtube.com/watch?v=ueI_oDqvlkI",
+    "order": 6,
+    "type": 1,
+    "name": "Nicole - Saavumme"
+  },
+  {
+    "id": 8,
+    "playlist": 0,
+    "address": "ueI_oDqvlkI",
+    "order": 7,
+    "type": 1,
+    "name": "niikooleeeee"
+  },
+  {
+    "id": 9,
+    "playlist": 0,
+    "address": "ueI_oDqvlkI",
+    "order": 8,
+    "type": 1,
+    "name": "joojoo"
+  },
+  {
+    "id": 10,
+    "playlist": 0,
+    "address": "https://embed.spotify.com/?uri=spotify%3Atrack%3A1G391cbiT3v3Cywg8T7DM1",
+    "order": 12,
+    "type": 2,
+    "name": "Spotify kappaleita"
+  },
+  {
+    "id": 11,
+    "playlist": 0,
+    "address": "https://embed.spotify.com/?uri=spotify%3Atrack%3A48UPSzbZjgc449aqz8bxox",
+    "order": 13,
+    "type": 2,
+    "name": "RHCP"
+  },
+  {
+    "id": 12,
+    "playlist": 0,
+    "address": "https://embed.spotify.com/?uri=spotify%3Atrack%3A64BbK9SFKH2jk86U3dGj2P",
+    "order": 14,
+    "type": 2,
+    "name": "RHCP"
+  },
+  {
+    "id": 13,
+    "playlist": 0,
+    "address": "https://embed.spotify.com/?uri=spotify%3Atrack%3A3d9DChrdc6BOeFsbrZ3Is0",
+    "order": 15,
+    "type": 2,
+    "name": "RHCP"
+  },
+  {
+    "id": 14,
+    "playlist": 0,
+    "address": "https://embed.spotify.com/?uri=spotify%3Atrack%3A2aibwv5hGXSgw7Yru8IYTO",
+    "order": 16,
+    "type": 2,
+    "name": "RHCP"
+  },
+  {
+    "id": 17,
+    "playlist": 0,
+    "address": "JYlwhwZFAfQ",
+    "order": 19,
+    "type": 1,
+    "name": "nicolea"
+  },
+  {
+    "id": 18,
+    "playlist": 0,
+    "address": "NApFewYnD2U",
+    "order": 20,
+    "type": 1,
+    "name": "nicolea"
   }
 ]

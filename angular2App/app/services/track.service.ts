@@ -19,10 +19,10 @@ export class TrackService {
     }
     getPlaylistTracks(id: number): Promise<Track[]> {
         const playlist = "true";
-        let params: URLSearchParams = new URLSearchParams();
+        /*let params: URLSearchParams = new URLSearchParams();
         params.set('playlist', playlist);
         let requestOptions = new RequestOptions();
-        requestOptions.search = params;
+        requestOptions.search = params;*/
         const url = `${this.tracksUrl}/${id}/${playlist}`;
         return this.http.get(url)
                 .toPromise()
@@ -57,13 +57,20 @@ export class TrackService {
             .then(() => track)
             .catch(this.handleError);
     }
-    create(name: string): Promise<Track> {
-        const tmpTrack = new Track();
+    create(track: Track): Promise<void> {
         //tmpHero.name = name;
         return this.http
-            .post(this.tracksUrl, tmpTrack, {headers: this.headers})
+            .post(this.tracksUrl, track, {headers: this.headers})
             .toPromise()
-            .then(res => res.json())
+            .then(() => null)
+            .catch(this.handleError);
+    }
+    createMany(tracks: Track[]): Promise<void> {
+        //tmpHero.name = name;
+        return this.http
+            .post(this.tracksUrl, tracks, {headers: this.headers})
+            .toPromise()
+            .then(() => null)
             .catch(this.handleError);
     }
     delete(id: number): Promise<void> {

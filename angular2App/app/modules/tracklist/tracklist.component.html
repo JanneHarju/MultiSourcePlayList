@@ -4,9 +4,15 @@
             <div class="box-style"> 
 
                 <div class="row">
-                    <button id="play" (click)="play()" class="btn-primary">Play</button>
+                    <button id="play" (click)="play()" class="btn btn-success">Play</button>
 
-                    <button id="pause" (click)="pause()" class="btn-warning">Pause</button>
+                    <button id="pause" (click)="pause()" class="btn btn-warning">Pause</button>
+
+                </div>
+                <div class="row">
+                    <button id="previous" (click)="previous()" class="btn btn-primary"><<</button>
+
+                    <button id="next" (click)="next()" class="btn btn-primary">>></button>
 
                 </div>
                 <div class="row" style="visibility: hidden"><!--style="visibility: hidden"-->
@@ -19,10 +25,10 @@
                     width="300" height="80"
                     ></youtube-player>
                 </div>
-                <div class="row" *ngIf="selectedTrack.type == 2" ><!--style="visibility: hidden"-->
+                <div class="row" *ngIf="selectedTrack.type == 2" style="visibility: hidden"><!--style="visibility: hidden"-->
                     <iframe id="spotify" (load)="onLoad(this)" [src]="selectedTrack.address | safe" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
                 </div>
-                <div class="row" *ngIf="selectedTrack.type == 3" style="visibility: hidden">
+                <div class="row" *ngIf="selectedTrack.type == 3" style="visibility: hidden"><!--style="visibility: hidden"-->
                     <audio height="80" (loadeddata)="audioloaded()" (ended)="onAudioEnded()" id="audio1" [src]="selectedTrack.address | safe" controls="" preload="auto" autobuffer="">
                     </audio>
                 </div>
@@ -36,10 +42,12 @@
         </div>
     </div>
 </div>
+
 <div id="container">
     <div class="col-xs-12 col-sm-12 box">
         <div class="innerbox">
             <div class="box-style"> 
+                <button id="addbutton" class="btn btn-primary" (click)="addTrack()">Add tracks</button>
                 <a *ngFor="let track of tracklist" (click)="onSelect(track)"
                     [class.selected]="track === selectedTrack" >
                     <div class="module track">

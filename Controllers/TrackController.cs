@@ -37,7 +37,10 @@ namespace PlayList.Controllers
         [HttpGet("{id}/{playlist}")]
         public List<Track> GetById(int id, string playlist)
         {
-            return tracks.FindAll(x=>x.playlist == id);
+            return tracks.
+                FindAll(x=>x.playlist == id).
+                OrderBy(x=>x.order).
+                ToList();
         }
 
         // PUT api/values/5
@@ -53,12 +56,38 @@ namespace PlayList.Controllers
             SaveToFIle(tracks);
         }
         // POST api/values
-        [HttpPost]
+        /*[HttpPost]
         public void Post([FromBody]Track value)
         {
             Track lastInfo = tracks.OrderByDescending(x => x.id).First();
             value.id = lastInfo.id + 1;
+            if(value.type == 3)
+            {
+                //hae tässä kappale koneelta tai kaikki kappaleet kansiosta ja lisää ne
+                // miten kappaleitten nimet silloin kun lisätään kansiosta
+            }
             tracks.Add(value);
+            SaveToFIle(tracks);
+        }*/
+
+        //[ActionName("addMultiple")]
+        [HttpPost]
+        public void Post([FromBody]Track[] values)
+        {
+            Track lastInfo = tracks.OrderByDescending(x => x.id).First();
+            int newidIndex = 1;
+            foreach(Track newtrack in values)
+            {
+                newtrack.id = lastInfo.id + newidIndex;
+                if(newtrack.type == 3)
+                {
+                    //hae tässä kappale koneelta tai kaikki kappaleet kansiosta ja lisää ne
+                    // miten kappaleitten nimet silloin kun lisätään kansiosta
+                }
+                tracks.Add(newtrack);
+                ++newidIndex;
+            }
+            
             SaveToFIle(tracks);
         }
         private void SaveToFIle(List<Track> info)

@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { YoutubePlayerModule } from 'ng2-youtube-player';
 import { PlaylistComponent } from './modules/playlist/playlist.component';
 import { TracklistComponent } from './modules/tracklist/tracklist.component';
+import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { SafePipe} from './modules/shared/safepipe';
 
 import { TrackService }         from './services/track.service';
@@ -32,6 +33,7 @@ import './rxjs-extensions';
     PlaylistComponent,
     TracklistComponent,
     PopupComponent,
+    AddTrackPopupComponent,
     SafePipe
   ],
   providers: [
