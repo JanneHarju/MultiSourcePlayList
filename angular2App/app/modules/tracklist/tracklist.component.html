@@ -22,14 +22,14 @@
                     [videoId]="selectedTrack.address"
                     (ready)="savePlayer($event)"
                     (change)="onStateChange($event)"
-                    width="300" height="80"
+                    width="300" height="1"
                     ></youtube-player>
                 </div>
                 <div class="row" *ngIf="selectedTrack.type == 2" style="visibility: hidden"><!--style="visibility: hidden"-->
-                    <iframe id="spotify" (load)="onLoad(this)" [src]="selectedTrack.address | safe" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
+                    <iframe id="spotify" (load)="onLoad(this)" [src]="selectedTrack.address | safe" width="300" height="1" frameborder="0" allowtransparency="true"></iframe>
                 </div>
                 <div class="row" *ngIf="selectedTrack.type == 3" style="visibility: hidden"><!--style="visibility: hidden"-->
-                    <audio height="80" (loadeddata)="audioloaded()" (ended)="onAudioEnded()" id="audio1" [src]="selectedTrack.address | safe" controls="" preload="auto" autobuffer="">
+                    <audio height="1" (loadeddata)="audioloaded()" (ended)="onAudioEnded()" id="audio1" [src]="selectedTrack.address | safe" controls="" preload="auto" autobuffer="">
                     </audio>
                 </div>
                 <div>
@@ -50,7 +50,7 @@
                 <button id="addbutton" class="btn btn-primary" (click)="addTrack()">Add tracks</button>
                 <a *ngFor="let track of tracklist" (click)="onSelect(track)"
                     [class.selected]="track === selectedTrack" >
-                    <div class="module track">
+                    <div class="module track"  style.background-color="{{track.type | colorpipe}}">
                         <h4 >{{track.name}}</h4>
                         <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
                     </div>

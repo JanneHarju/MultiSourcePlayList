@@ -12,11 +12,7 @@ import { Track } from '../../models/track';
     host: {'[@routeAnimation]': ''}
 })
 export class AddTrackPopupComponent implements OnInit {
-    constructor(
-        private trackService: TrackService,
-        private router: Router,
-        private route: ActivatedRoute
-    ) { }
+    
     trackListId : number = 0;
     currentTracklist: Track[] = [];
     name : string = "";
@@ -24,6 +20,11 @@ export class AddTrackPopupComponent implements OnInit {
     newTracks : string = "";
     player: YT.Player;
     spotifyAddress : string = "https://embed.spotify.com/?uri=spotify%3Atrack%3A"; 
+    constructor(
+        private trackService: TrackService,
+        private router: Router,
+        private route: ActivatedRoute
+    ) { }
     ngOnInit() { 
         /*this.sub = this.route.params.subscribe(params => {
             this.trackListId = +params['id'];

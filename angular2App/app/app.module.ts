@@ -12,6 +12,7 @@ import { PlaylistComponent } from './modules/playlist/playlist.component';
 import { TracklistComponent } from './modules/tracklist/tracklist.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { SafePipe} from './modules/shared/safepipe';
+import { ColorPipe} from './modules/shared/colorpipe';
 
 import { TrackService }         from './services/track.service';
 import { PlaylistService } from './services/playlist.service';
@@ -34,7 +35,8 @@ import './rxjs-extensions';
     TracklistComponent,
     PopupComponent,
     AddTrackPopupComponent,
-    SafePipe
+    SafePipe,
+    ColorPipe
   ],
   providers: [
     TrackService,
