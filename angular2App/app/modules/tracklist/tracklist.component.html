@@ -48,13 +48,23 @@
         <div class="innerbox">
             <div class="box-style"> 
                 <button id="addbutton" class="btn btn-primary" (click)="addTrack()">Add tracks</button>
-                <a *ngFor="let track of tracklist" (click)="onSelect(track)"
+                <!--<a *ngFor="let track of tracklist" (click)="onSelect(track)"
                     [class.selected]="track === selectedTrack" >
                     <div class="module track"  style.background-color="{{track.type | colorpipe}}">
                         <h4 >{{track.name}}</h4>
-                        <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
                     </div>
-                </a>
+                </a>-->
+                <div class="panel-body">
+                    <ul class="list-group" dnd-sortable-container [sortableData]="tracklist">
+                        <li *ngFor="let track of tracklist; let i = index" (click)="onSelect(track)"
+                            [class.selected]="track === selectedTrack" 
+                            class="list-group-item" dnd-sortable [sortableIndex]="i"
+                            style.background-color="{{track.type | colorpipe}}">
+                            {{track.name}}
+                            <!--<button class="btn btn-danger delete" (click)="delete(track); $event.stopPropagation()">x</button>-->
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

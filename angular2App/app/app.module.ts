@@ -8,6 +8,8 @@ import { AppRoutingModule } from './app-routing.module';
 
 
 import { YoutubePlayerModule } from 'ng2-youtube-player';
+import { DndModule } from 'ng2-dnd';
+
 import { PlaylistComponent } from './modules/playlist/playlist.component';
 import { TracklistComponent } from './modules/tracklist/tracklist.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
@@ -24,6 +26,7 @@ import './rxjs-extensions';
 @NgModule({
   imports: [
     BrowserModule,
+    DndModule.forRoot(),
     FormsModule,
     HttpModule,
     AppRoutingModule,
