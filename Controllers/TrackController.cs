@@ -90,6 +90,13 @@ namespace PlayList.Controllers
             
             SaveToFIle(tracks);
         }
+        // DELETE api/values/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            tracks.RemoveAll(x=>x.id==id);
+            SaveToFIle(tracks);
+        }
         private void SaveToFIle(List<Track> info)
         {
             string json = JsonConvert.SerializeObject(info, Formatting.Indented);

@@ -3,9 +3,7 @@
          <div>
             <label>Playlist name:</label>
             <input ng-focus="true" #playlistName (keyup.enter)="add(playlistName.value); playlistName.value=''"/>
-            <button class="btn btn-primary" (click)="add(playlistName.value); playlistName.value=''">
-                Add
-            </button>
+            <button class="btn btn-primary glyphicon glyphicon-plus" (click)="add(playlistName.value); playlistName.value=''"></button>
         </div>
         <div *ngIf="playlists.length > 0" class="grid grid-pad" >
             <a *ngFor="let playlist of playlists"  [routerLink]="['/tracklist', playlist.id]" routerLinkActive="active" >

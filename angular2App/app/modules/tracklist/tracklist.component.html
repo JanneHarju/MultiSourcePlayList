@@ -4,15 +4,15 @@
             <div class="box-style"> 
 
                 <div class="row">
-                    <button id="play" (click)="play()" class="btn btn-success">Play</button>
+                    <button id="play" (click)="play()" class="control-button btn btn-success glyphicon glyphicon-play-circle"></button>
 
-                    <button id="pause" (click)="pause()" class="btn btn-warning">Pause</button>
+                    <button id="pause" (click)="pause()" class="control-button btn btn-warning glyphicon glyphicon-pause"></button>
 
                 </div>
                 <div class="row">
-                    <button id="previous" (click)="previous()" class="btn btn-primary"><<</button>
+                    <button id="previous" (click)="previous()" class="control-button btn btn-primary glyphicon glyphicon-step-backward"></button>
 
-                    <button id="next" (click)="next()" class="btn btn-primary">>></button>
+                    <button id="next" (click)="next()" class="control-button btn btn-primary glyphicon glyphicon-step-forward"></button>
 
                 </div>
                 <div class="row" style="visibility: hidden"><!--style="visibility: hidden"-->
@@ -47,7 +47,7 @@
     <div class="col-xs-12 col-sm-12 box">
         <div class="innerbox">
             <div class="box-style"> 
-                <button id="addbutton" class="btn btn-primary" (click)="addTrack()">Add tracks</button>
+                <button id="addbutton" class="btn btn-primary glyphicon glyphicon-plus" (click)="addTrack()"></button>
                 <!--<a *ngFor="let track of tracklist" (click)="onSelect(track)"
                     [class.selected]="track === selectedTrack" >
                     <div class="module track"  style.background-color="{{track.type | colorpipe}}">
@@ -61,7 +61,7 @@
                             class="list-group-item" dnd-sortable [sortableIndex]="i"
                             style.background-color="{{track.type | colorpipe}}">
                             {{track.name}}
-                            <!--<button class="btn btn-danger delete" (click)="delete(track); $event.stopPropagation()">x</button>-->
+                            <button class="btn btn-danger delete glyphicon glyphicon-remove pull-right" (click)="delete(track); $event.stopPropagation()"></button>
                         </li>
                     </ul>
                 </div>

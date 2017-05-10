@@ -244,4 +244,14 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     {
         this.chooseNextTrack();
     }
+    delete(track: Track)
+    {
+        this.trackService
+            .delete(track.id)
+            .then(() => {
+                this.tracklist = this.tracklist.filter(h => h !== track);
+                if (this.selectedTrack === track) { this.selectedTrack = null; }
+                this.ngOnInit();
+            });
+    }
 }
