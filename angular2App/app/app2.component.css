@@ -1,4 +1,8 @@
 @import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
+
+html, body {
+    height: 100vh;
+}
 h1 {
   font-size: 1.2em;
   color: #999;
@@ -30,5 +34,11 @@ nav a.active {
 }
 .container-fluid{
   background-color: black;
+  height: 100%;
 }
 
+div {
+    padding-left: 0px;
+    padding-right: 0px;
+
+}

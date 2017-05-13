@@ -1,0 +1,10 @@
+<div id="container">
+    <div class="col-xs-12 col-sm-12 box">
+        <div class="innerbox">
+            <div class="box-style"> 
+                Search:
+                <input class="form-control" #searchInput (keyup.enter)="search(searchInput.value); searchInput.value=''"/>
+            </div>
+        </div>
+    </div>
+</div>

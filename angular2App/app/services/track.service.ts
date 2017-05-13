@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
+import { Headers, Http, RequestOptions, URLSearchParams, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { Track } from '../models/track';
@@ -14,7 +14,7 @@ export class TrackService {
     getTracks(): Promise<Track[]> {
         return this.http.get(this.tracksUrl)
                 .toPromise()
-                .then(response => response.json() as Track[])
+                .then((response: Response) => response.json() as Track[])
                 .catch(this.handleError);
     }
     getPlaylistTracks(id: number): Promise<Track[]> {
@@ -26,14 +26,14 @@ export class TrackService {
         const url = `${this.tracksUrl}/${id}/${playlist}`;
         return this.http.get(url)
                 .toPromise()
-                .then(response => response.json() as Track[])
+                .then((response: Response) => response.json() as Track[])
                 .catch(this.handleError);
     }
     getTrack(id: number): Promise<Track> {
         const url = `${this.tracksUrl}/${id}`;
         return this.http.get(url)
             .toPromise()
-            .then(response => response.json() as Track)
+            .then((response: Response) => response.json() as Track)
             .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {

@@ -6,6 +6,8 @@
 #container {
     overflow: hidden;
     background-color: @background;
+    //height: 100vh;
+    overflow: scroll;
 }
 
 .box-style {
@@ -43,14 +45,14 @@ a.selected {
     background-color: #BBD8DC !important;
     color: white;
 }
-.grid-pad {
+/*.grid-pad {
     height: 80%;
     padding: 10px 0;
     overflow: scroll;
 }
 .grid-pad > [class*='col-']:last-of-type {
   padding-right: 20px;
-}
+}*/
 
 button{
     width: 120px;
@@ -73,5 +75,18 @@ button{
 {
     width: 50px;
     height: 50px;
-    font-size: 90%;
+    font-size: 1.2em;
+}
+
+a {
+	color: inherit;
+	cursor: pointer;
+	text-decoration: none;
+}
+.box {
+    padding-left: 0px;
+
+}
+ul {
+    overflow: scroll;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { Headers, Http, Response } from '@angular/http';
 import { Playlist } from '../models/playlist'
 import 'rxjs/add/operator/toPromise';
 
@@ -13,14 +13,14 @@ export class PlaylistService {
     getPlaylists(): Promise<Playlist[]> {
         return this.http.get(this.PlaylistsUrl)
                 .toPromise()
-                .then(response => response.json() as Playlist[])
+                .then((response: Response) => response.json() as Playlist[])
                 .catch(this.handleError);
     }
     getPlaylist(id: number): Promise<Playlist> {
         const url = `${this.PlaylistsUrl}/${id}`;
         return this.http.get(url)
             .toPromise()
-            .then(response => response.json() as Playlist)
+            .then((response: Response) => response.json() as Playlist)
             .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {
@@ -43,7 +43,7 @@ export class PlaylistService {
         return this.http
             .post(this.PlaylistsUrl, tmpPlaylist, {headers: this.headers})
             .toPromise()
-            .then(res => res.json())
+            .then((res: Response) => res.json())
             .catch(this.handleError);
     }
     delete(id: number): Promise<void> {

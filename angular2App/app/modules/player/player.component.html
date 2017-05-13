@@ -1,0 +1,39 @@
+<div id="container">
+    <div class="col-xs-12 col-sm-12 box">
+        <div class="innerbox">
+            <div class="box-style"> 
+
+                <div class="row">
+
+                    <a id="previous" (click)="previous()" class="control-button glyphicon glyphicon-step-backward"></a>
+                    <a id="play" (click)="play()" class="control-button glyphicon glyphicon-play-circle"></a>
+                    <a id="pause" (click)="pause()" class="control-button glyphicon glyphicon-pause"></a>
+                    <a id="next" (click)="next()" class="control-button glyphicon glyphicon-step-forward"></a>
+
+                </div>
+                <!--style="visibility: hidden"-->
+                    <!--<iframe id="youtube" (loaded)="onYoutubeLoaded()" (ended)="onYoutubeEnded()" width="560" height="80" [src]="selectedTrack.address | safe" allowfullscreen>
+                    </iframe>-->
+                    <youtube-player
+                    style="visibility: hidden"
+                    [videoId]="track.address"
+                    (ready)="savePlayer($event)"
+                    (change)="onStateChange($event)"
+                    width="1" height="40"
+                    ></youtube-player>
+                <!--<div class="row" *ngIf="track.type == 2" style="visibility: hidden">
+                    <iframe id="spotify" (load)="onLoad(this)" [src]="track.address | safe" width="300" height="1" frameborder="0" allowtransparency="true"></iframe>
+                </div>-->
+                <!--style="visibility: hidden"--><!--[currentTime]="15"-->
+                    <audio height="40" *ngIf="track.type == 3" style="visibility: hidden" (loadeddata)="audioloaded()" (ended)="onAudioEnded()" id="audio1" [src]="track.address | safe" controls="" preload="auto" autobuffer="">
+                    </audio>
+                <div>
+                    {{track.name}}
+                </div>
+                <div>
+                    {{trackName}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

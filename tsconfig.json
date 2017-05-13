@@ -17,6 +17,10 @@
       "node"
     ]
   },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "files": [
     "angular2App/app/app.module.ts",
     "angular2App/main.ts"

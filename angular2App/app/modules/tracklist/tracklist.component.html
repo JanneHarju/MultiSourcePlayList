@@ -1,47 +1,4 @@
-<div id="container">
-    <div class="col-xs-12 col-sm-12 box">
-        <div class="innerbox">
-            <div class="box-style"> 
 
-                <div class="row">
-                    <button id="play" (click)="play()" class="control-button btn btn-success glyphicon glyphicon-play-circle"></button>
-
-                    <button id="pause" (click)="pause()" class="control-button btn btn-warning glyphicon glyphicon-pause"></button>
-
-                </div>
-                <div class="row">
-                    <button id="previous" (click)="previous()" class="control-button btn btn-primary glyphicon glyphicon-step-backward"></button>
-
-                    <button id="next" (click)="next()" class="control-button btn btn-primary glyphicon glyphicon-step-forward"></button>
-
-                </div>
-                <div class="row" style="visibility: hidden"><!--style="visibility: hidden"-->
-                    <!--<iframe id="youtube" (loaded)="onYoutubeLoaded()" (ended)="onYoutubeEnded()" width="560" height="80" [src]="selectedTrack.address | safe" allowfullscreen>
-                    </iframe>-->
-                    <youtube-player
-                    [videoId]="selectedTrack.address"
-                    (ready)="savePlayer($event)"
-                    (change)="onStateChange($event)"
-                    width="300" height="1"
-                    ></youtube-player>
-                </div>
-                <div class="row" *ngIf="selectedTrack.type == 2" style="visibility: hidden"><!--style="visibility: hidden"-->
-                    <iframe id="spotify" (load)="onLoad(this)" [src]="selectedTrack.address | safe" width="300" height="1" frameborder="0" allowtransparency="true"></iframe>
-                </div>
-                <div class="row" *ngIf="selectedTrack.type == 3" style="visibility: hidden"><!--style="visibility: hidden"-->
-                    <audio height="1" (loadeddata)="audioloaded()" (ended)="onAudioEnded()" id="audio1" [src]="selectedTrack.address | safe" controls="" preload="auto" autobuffer="">
-                    </audio>
-                </div>
-                <div>
-                    {{selectedTrack.name}}
-                </div>
-                <div>
-                    {{trackName}}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div id="container">
     <div class="col-xs-12 col-sm-12 box">

@@ -74,11 +74,14 @@ namespace PlayList.Controllers
         [HttpPost]
         public void Post([FromBody]Track[] values)
         {
+            //tarkista tämä
             Track lastInfo = tracks.OrderByDescending(x => x.id).First();
+            int lastOrder = tracks.OrderByDescending(x => x.order).First().order + 1;
             int newidIndex = 1;
             foreach(Track newtrack in values)
             {
                 newtrack.id = lastInfo.id + newidIndex;
+                newtrack.order = lastOrder;
                 if(newtrack.type == 3)
                 {
                     //hae tässä kappale koneelta tai kaikki kappaleet kansiosta ja lisää ne
@@ -86,6 +89,7 @@ namespace PlayList.Controllers
                 }
                 tracks.Add(newtrack);
                 ++newidIndex;
+                ++lastOrder;
             }
             
             SaveToFIle(tracks);

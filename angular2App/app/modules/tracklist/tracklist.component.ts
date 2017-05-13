@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Renderer,OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params }   from '@angular/router';
 import { TrackService }         from '../../services/track.service';
+import { PlayerService } from '../../services/player.service';
 import { Track } from '../../models/track';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { Router }                 from '@angular/router';
@@ -13,6 +14,7 @@ import { Router }                 from '@angular/router';
 export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     constructor(
     private trackService: TrackService,
+    private playerService: PlayerService,
     private route: ActivatedRoute,
     private renderer: Renderer,
     private st: SimpleTimer,
@@ -26,27 +28,9 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     selectedTrack: Track = new Track();
     notFirstTime: boolean = false;
     trackName: string;
-    player: YT.Player;
     private id: string = 'yz8i6A6BTiA';
     counter: number = 0;
-    random: number = 0;
-    savePlayer (player: YT.Player) {
-        this.player = player;
-        //console.log('player instance', player)
-        }
-    onStateChange(event : YT.EventArgs){
-        //console.log('player state', event.data);
-        if(event.data == 0)
-        {
-            //Chose next track
-            this.chooseNextTrack();
-        }
-        else
-        {
-            let data = this.player.getVideoData()
-            this.trackName = data.title;
-        }
-    }
+    
     addTrack()
     {
         this.router.navigate([{ outlets: { popup: 'addtrackpopup' }}]);
@@ -56,12 +40,14 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         this.route.params
             .switchMap((params: Params) => this.trackService.getPlaylistTracks(+params['id']))
-            .subscribe(tracklist => 
+            .subscribe((tracklist: Track[]) => 
             {
-                this.tracklist = tracklist
+                this.tracklist = tracklist;
                 if(this.tracklist.length > 0)
                 {
                     this.selectedTrack = tracklist[0];
+                    this.playerService.setTrackList(this.tracklist);
+                    //this.playerService.setTrack(this.selectedTrack);
                 }
             });
         
@@ -70,7 +56,6 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      }
      ngOnDestroy(): void
     {
-        this.player.pauseVideo();
         this.st.delTimer('5sec');
     }
      ngAfterViewInit() {
@@ -79,135 +64,11 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      }
      onSelect(track: Track): void {
         this.selectedTrack = track;
+        this.playerService.setTrack(this.selectedTrack);
+        //this.playTrack();
         
-        this.playTrack();
-        
     }
-    chooseNextTrack()
-    {
-        let nextTracks = this.tracklist.filter(x=>x.order > this.selectedTrack.order);
-        //console.log("chooseNextTrack" + this.selectedTrack.order);
-        if(nextTracks != null && nextTracks.length > 0)
-        {
-
-            this.selectedTrack = nextTracks[0];
-            //console.log("next" + this.selectedTrack.order);
-        }
-        else
-        {
-            this.selectedTrack = this.tracklist[0];
-            //console.log("first");
-        }
-        this.playTrack();
-    }
-    next()
-    {
-        this.chooseNextTrack();
-    }
-    previous()
-    {
-        let nextTracks = this.tracklist.filter(x=>x.order < this.selectedTrack.order);
-        //console.log("chooseNextTrack" + this.selectedTrack.order);
-        if(nextTracks != null && nextTracks.length > 0)
-        {
-
-            this.selectedTrack = nextTracks[nextTracks.length-1];
-            //console.log("next" + this.selectedTrack.order);
-        }
-        else
-        {
-            this.selectedTrack = this.tracklist[this.tracklist.length-1];
-            //console.log("first");
-        }
-        this.playTrack();
-    }
-    playTrack()
-    {
-        if(this.selectedTrack != null)
-        {
-            switch (this.selectedTrack.type) {
-                case 1://youtube
-                    this.player.loadVideoById(this.selectedTrack.address);
-                    this.player.playVideo();
-                    //this.selectedTrack.address += "&autoplay=1";
-                    break;
-                case 2://spotify
-                    
-                    this.player.pauseVideo();
-                    /*let iframe = document.getElementById('spotify');
-                    let doc = (<HTMLIFrameElement>iframe).contentDocument 
-                    let playbutton = doc.getElementById("play-button");
-                    playbutton.click();*/
-                    break;
-                case 3://mp3
-                    
-                    this.player.pauseVideo();
-                    /*let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-                    audio.play();*/
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    chooseNextRandomTrack()
-    {
-        this.random = Math.floor(Math.random() * this.tracklist.length);
-    }
-    play()
-    {
-        if(this.selectedTrack != null)
-        {
-            switch (this.selectedTrack.type) {
-                case 1://youtube
-                    this.player.playVideo();
-                    break;
-                case 2://spotify
-                    
-                    let iframe = document.getElementById('spotify');
-                    let doc = (<HTMLIFrameElement>iframe).contentDocument 
-                    let playbutton = doc.getElementById("play-button");
-                    playbutton.click();
-                    break;
-                case 3://mp3
-                    
-                    let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-                    audio.play();
-                    break;
-                default:
-                    break;
-            }
-        
-        }
-    }
-    pause()
-    {
-        if(this.selectedTrack != null)
-        {
-            switch (this.selectedTrack.type) {
-                case 1://youtube
-                    
-                    this.player.pauseVideo();
-                    break;
-                case 2://spotify
-                    
-                    let iframe = document.getElementById('spotify');
-                    let doc = (<HTMLIFrameElement>iframe).contentDocument 
-                    let playbutton = doc.getElementById("play-button");
-                    playbutton.click();
-                    break;
-                case 3://mp3
-                    
-                    let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-                    audio.pause();
-                    break;
-                default:
-                    break;
-            }
-        
-        }
-    }
+    
 
     onLoad()  {
         this.trackName = "ladattu";
@@ -242,7 +103,8 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     onAudioEnded()
     {
-        this.chooseNextTrack();
+        //Call service here to choose next track
+        //this.chooseNextTrack();
     }
     delete(track: Track)
     {

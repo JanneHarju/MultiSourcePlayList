@@ -10,14 +10,19 @@ import { AppRoutingModule } from './app-routing.module';
 import { YoutubePlayerModule } from 'ng2-youtube-player';
 import { DndModule } from 'ng2-dnd';
 
+import { PlayerComponent } from './modules/player/player.component';
 import { PlaylistComponent } from './modules/playlist/playlist.component';
 import { TracklistComponent } from './modules/tracklist/tracklist.component';
+import { SearchComponent } from './modules/search/search.component';
+import { SearchlistComponent } from './modules/searchlist/searchlist.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { SafePipe} from './modules/shared/safepipe';
 import { ColorPipe} from './modules/shared/colorpipe';
 
 import { TrackService }         from './services/track.service';
 import { PlaylistService } from './services/playlist.service';
+import { SpotifyService } from './services/spotify.service';
+import { PlayerService } from './services/player.service';
 import { AppComponent }  from './app.component';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { PopupComponent} from './modules/shared/popup/popup.component';
@@ -34,8 +39,11 @@ import './rxjs-extensions';
   ],
   declarations: [
     AppComponent,
+    PlayerComponent,
     PlaylistComponent,
     TracklistComponent,
+    SearchComponent,
+    SearchlistComponent,
     PopupComponent,
     AddTrackPopupComponent,
     SafePipe,
@@ -44,6 +52,19 @@ import './rxjs-extensions';
   providers: [
     TrackService,
     PlaylistService,
+    PlayerService,
+    SpotifyService,
+    {
+        provide: "SpotifyConfig",
+        useValue: {
+            clientId: '5ab10cb4fa9045fca2b92fcd0a97545c',
+            redirectUri: 'http://localhost:8080/callback.html',
+            scope: ['user-read-private',
+            'user-modify-playback-state'],
+            // If you already have an authToken
+            authToken: localStorage.getItem('spotify-token')
+        }
+    },
     SimpleTimer,
   ],
   bootstrap: [ AppComponent ]

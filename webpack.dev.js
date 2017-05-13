@@ -123,7 +123,11 @@ module.exports = {
             inject: 'body',
             template: 'angular2App/index.html'
         }),
-
+        new HtmlWebpackPlugin({
+            filename: 'callback.html',
+            inject: 'body',
+            template: 'angular2App/callback.html'
+        }),
         new CopyWebpackPlugin([
             { from: './angular2App/images/*.*', to: 'assets/', flatten: true }
         ])
