@@ -3,6 +3,8 @@ import { Track } from '../models/track';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { TrackService } from '../services/track.service';
+import { SpotifyService } from '../services/spotify.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Injectable()
 export class PlayerService {
@@ -11,10 +13,20 @@ export class PlayerService {
     track: Track = new Track();
     tracklist: Track[] = [];
     random: number = 0;
+    subscriptionTrackEnd: Subscription;
     constructor(
-        private trackService: TrackService
+        private trackService: TrackService,
+        private spotifyService: SpotifyService
     )
-    { }
+    {
+        this.subscriptionTrackEnd = this.spotifyService.getTrackEnd().subscribe(trackEnd =>
+        {
+            if(trackEnd)
+            {
+                this.chooseNextTrack();
+            }
+        });
+    }
 
     setTrack(newTrack: Track)
     {

@@ -2,9 +2,12 @@ import { Injectable, Inject, Optional } from '@angular/core';
 import { Http, Response, Headers, Request } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { SpotifyTrack } from '../models/spotifytrack';
+import { SpotifyPlayStatus } from '../models/spotifyPlayStatus';
+import { Subject } from 'rxjs/Subject';
+import { SimpleTimer } from 'ng2-simple-timer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-
+SpotifyPlayStatus
 export interface SpotifyConfig {
   clientId: string,
   redirectUri: string,
@@ -37,28 +40,88 @@ interface HttpRequestOptions {
 
 @Injectable()
 export class SpotifyService {
-    constructor(@Inject("SpotifyConfig") private config: SpotifyConfig, private http: Http) {
+    constructor(@Inject("SpotifyConfig") private config: SpotifyConfig, 
+        private http: Http,
+        private st: SimpleTimer)
+    {
+
         config.apiBase = 'https://api.spotify.com/v1';
     }
-    //if Spotify result is something like now rights i.e. then login. Don't login at start if you already have working token.
-    play(trackUri: string, options?: SpotifyOptions) {
-        options = options || {};
 
-        return this.api({
-        method: 'put',
-        url: `/me/player/play`,
-        search: options,
-        headers: this.getHeaders(true),
-        body: {
-            uris :
-            ["spotify:track:"+ this.getIdFromUri(trackUri)]}
-        
-        }).map(res => res.json());
+    timerId: string;
+    playing: boolean;
+    private subjectPlaying = new Subject<boolean>();
+    private subjectTrackEnded = new Subject<boolean>();
+    callback()
+    {
+        this.checkPlayerState().subscribe(playState => 
+        {
+            if(playState.progress_ms == 0 && this.playing && !playState.is_playing )
+            {
+                this.st.delTimer('2sec');
+                this.setTrackEnd(true);
+                //kappale loppui. onko tämä tilanne aukoton?
+            }
+            this.setPlaying(playState.is_playing);
+        });
+    }
+    setPlaying(playing: boolean)
+    {
+        this.playing = playing;
+        this.subjectPlaying.next(playing);
+    }
+    
+    getPlaying() : Observable<boolean>
+    {
+        return this.subjectPlaying.asObservable();
+    }
+    setTrackEnd(trackEnd: boolean)
+    {
+        this.subjectTrackEnded.next(trackEnd);
+    }
+    getTrackEnd() : Observable<boolean>
+    {
+        return this.subjectTrackEnded.asObservable();
+    }
+    //if Spotify result is something like now rights i.e. then login. Don't login at start if you already have working token.
+    play(trackUri?: string, options?: SpotifyOptions) {
+        options = options || {};
+        this.setPlaying(true);
+        this.setTrackEnd(false);
+        //Only one of either context_uri or uris can be specified. If neither are present, calling /play will resume playback.
+        this.st.newTimer('2sec', 2);
+        this.timerId = this.st.subscribe('2sec', e => this.callback());
+        if(trackUri)
+        {
+            return this.api({
+                method: 'put',
+                url: `/me/player/play`,
+                search: options,
+                headers: this.getHeaders(true),
+                body: {
+                    uris :
+                    ["spotify:track:"+ this.getIdFromUri(trackUri)]}
+            
+            }).map(res => res.json());
+        }
+        else
+        {
+            return this.api({
+                method: 'put',
+                url: `/me/player/play`,
+                search: options,
+                headers: this.getHeaders(true)
+            
+            }).map(res => res.json());
+        }
         
     }
+    
     pause(options?: SpotifyOptions) {
         options = options || {};
 
+        this.setPlaying(false);
+        this.st.delTimer('2sec');
         return this.api({
             method: 'put',
             url: `/me/player/pause`,
@@ -67,6 +130,16 @@ export class SpotifyService {
             }).map(res => res.json());
     }
 
+    checkPlayerState(options?: SpotifyOptions) {
+        options = options || {};
+
+        return this.api({
+            method: 'get',
+            url: `/me/player/currently-playing`,
+            search: options,
+            headers: this.getHeaders(true)
+            }).map(res => res.json() as SpotifyPlayStatus);
+    }
     //#region search
 
   /**

@@ -50,7 +50,7 @@
   {
     "id": 6,
     "playlist": 0,
-    "address": "https://www.youtube.com/watch?v=0mP5YXNqbko",
+    "address": "0mP5YXNqbko",
     "order": 5,
     "type": 1,
     "name": "Stamina - Elokuutio"
@@ -58,26 +58,10 @@
   {
     "id": 7,
     "playlist": 0,
-    "address": "https://www.youtube.com/watch?v=ueI_oDqvlkI",
+    "address": "ueI_oDqvlkI",
     "order": 6,
     "type": 1,
     "name": "Nicole - Saavumme"
-  },
-  {
-    "id": 8,
-    "playlist": 0,
-    "address": "ueI_oDqvlkI",
-    "order": 7,
-    "type": 1,
-    "name": "niikooleeeee"
-  },
-  {
-    "id": 9,
-    "playlist": 0,
-    "address": "ueI_oDqvlkI",
-    "order": 8,
-    "type": 1,
-    "name": "joojoo"
   },
   {
     "id": 10,

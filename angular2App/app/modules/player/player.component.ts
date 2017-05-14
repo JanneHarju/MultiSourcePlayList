@@ -20,25 +20,30 @@ export class PlayerComponent implements OnInit, OnDestroy {
     player: YT.Player;
     notFirstTime: boolean = false;
     random: number = 0;
-
-    subscription: Subscription;
+    playing: boolean;
+    subscriptionPlaying: Subscription;
+    subscriptionTrack: Subscription;
     ngOnInit(): void 
     {
         this.spotifyService.login().then(token => {
                 console.log(token);
             });
-        this.subscription = this.playerService.getTrack().subscribe(track => 
+        this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
         {
             this.track = track;
             if(this.track)
-                this.play();
+                this.play(this.track.address);
+        });
+        this.subscriptionTrack = this.spotifyService.getPlaying().subscribe(playing =>
+        {
+            this.playing = playing;
         });
     } 
 
     ngOnDestroy(): void
     {
         this.player.pauseVideo();
-        this.subscription.unsubscribe();
+        this.subscriptionTrack.unsubscribe();
     }
 
     constructor(
@@ -63,9 +68,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         //console.log('player state', event.data);
         if(event.data == 0)
         {
-            //Chose next track
-            //call service here
-            //this.chooseNextTrack();
+            this.playerService.chooseNextTrack();
         }
         else
         {
@@ -89,7 +92,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.playerService.choosePreviousTrack();
     }
     
-    play()
+    play(trackUri?: string)
     {
         if(this.track != null)
         {
@@ -98,7 +101,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
                     this.pauseSpotify();
                     if(this.player)
                     {
-                        this.player.loadVideoById(this.track.address);
+                        if(trackUri)
+                        {
+                            this.player.loadVideoById(trackUri);
+                        }
                         this.player.playVideo();
                     }
                     break;
@@ -109,7 +115,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                     let doc = (<HTMLIFrameElement>iframe).contentDocument 
                     let playbutton = doc.getElementById("play-button");
                     playbutton.click();*/
-                    this.playSpotify();
+                    this.playSpotify(trackUri);
                     break;
                 case 3://mp3
 
@@ -117,7 +123,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
                     this.pauseSpotify();
                     let audio = (<HTMLAudioElement>document.getElementById("audio1"));
                     if(audio)
+                    {
                         audio.play();
+                    }
                     break;
                 default:
                     break;
@@ -162,9 +170,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
         audio.play();
         //this.trackName = audio.audioTracks.toString();//[0].label + " " + audio.audioTracks[0].kind;
     }
-    playSpotify()
+
+    onAudioEnded()
     {
-        this.spotifyService.play(this.track.address).subscribe(result =>
+        //Call service here to choose next track
+        this.playerService.chooseNextTrack();
+    }
+    playSpotify(trackUri?: string)
+    {
+        this.spotifyService.play(trackUri).subscribe(result =>
         {
             console.log(result);
         });

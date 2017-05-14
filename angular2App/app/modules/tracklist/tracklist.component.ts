@@ -70,7 +70,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     
 
-    onLoad()  {
+    /*onLoad()  {
         this.trackName = "ladattu";
         let iframe = document.getElementById('spotify');
         let doc = (<HTMLIFrameElement>iframe).contentDocument;
@@ -85,8 +85,8 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             //console.log(++this.counter);
         }
         //console.log(++this.counter);
-        /*doc.getElementById("play-button").click();*/
-    }
+        //doc.getElementById("play-button").click();
+    }*/
     onYoutubeLoaded()  {
         let iframe = document.getElementById('youtube');
         let doc = (<HTMLIFrameElement>iframe).contentDocument;

@@ -30,9 +30,10 @@
                 <div>
                     {{track.name}}
                 </div>
-                <div>
-                    {{trackName}}
+                <div *ngIf="playing">
+                    Spotify soitin päällä
                 </div>
+
             </div>
         </div>
     </div>
