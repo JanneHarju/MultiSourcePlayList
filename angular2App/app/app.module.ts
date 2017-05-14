@@ -18,6 +18,7 @@ import { SearchlistComponent } from './modules/searchlist/searchlist.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { SafePipe} from './modules/shared/safepipe';
 import { ColorPipe} from './modules/shared/colorpipe';
+import { DisplayTimePipe} from './modules/shared/displaytimepipe';
 
 import { TrackService }         from './services/track.service';
 import { PlaylistService } from './services/playlist.service';
@@ -47,7 +48,8 @@ import './rxjs-extensions';
     PopupComponent,
     AddTrackPopupComponent,
     SafePipe,
-    ColorPipe
+    ColorPipe,
+    DisplayTimePipe
   ],
   providers: [
     TrackService,

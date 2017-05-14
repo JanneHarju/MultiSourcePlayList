@@ -23,8 +23,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
     playing: boolean;
     subscriptionPlaying: Subscription;
     subscriptionTrack: Subscription;
+    progress: number;
+    duration: number;
     ngOnInit(): void 
     {
+        this.duration = 120*1000;
+        this.progress = 30*1000;
         this.spotifyService.login().then(token => {
                 console.log(token);
             });
@@ -189,6 +193,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
         {
             console.log(result);
         });
+    }
+    changeprogress()
+    {
+        console.log("progress");
     }
 }
 
