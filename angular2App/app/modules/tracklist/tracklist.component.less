@@ -4,10 +4,10 @@
 @box-big-margin: 2 * @box-small-margin;
 
 #container {
-    overflow: hidden;
+    overflow: visible;
     background-color: @background;
-    //height: 100vh;
-    overflow: scroll;
+    height: 100vh;
+	scroll-behavior: auto;
 }
 
 .box-style {
@@ -88,5 +88,5 @@ a {
 
 }
 ul {
-    overflow: scroll;
+    //overflow: scroll;
 }

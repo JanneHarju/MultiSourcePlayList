@@ -15,7 +15,7 @@
 						<div class="progress">{{ progress | displaytime }}</div>
 						<div class="duration">{{ duration | displaytime }}</div>
 						<div class="slider">
-							<input type="range" [(ngModel)]="progress" (change)="changeprogress()" min="0" max="{{duration}}" />
+							<input type="range" [(ngModel)]="progress" (change)="changeprogress()" min="0" max="{{duration}}" (mousedown)=mouseDown() />
 						</div>
 					</div>
                 </div>
@@ -32,7 +32,7 @@
                 <!--<div class="row" *ngIf="track.type == 2" style="visibility: hidden">
                     <iframe id="spotify" (load)="onLoad(this)" [src]="track.address | safe" width="300" height="1" frameborder="0" allowtransparency="true"></iframe>
                 </div>-->
-                <!--style="visibility: hidden"--><!--[currentTime]="15"-->
+                <!--style="visibility: hidden"--><!--[currentTime]="15" [duration]="{{duration}}" [currentTime]="{{progress}}" (loadedmetadata)="loadedmeadata()"-->
                     <audio height="40" *ngIf="track.type == 3" style="visibility: hidden" (loadeddata)="audioloaded()" (ended)="onAudioEnded()" id="audio1" [src]="track.address | safe" controls="" preload="auto" autobuffer="">
                     </audio>
                 <div>

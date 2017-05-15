@@ -28,6 +28,7 @@ export interface SpotifyOptions {
   locale?: string,
   public?: boolean,
   name?: string,
+  position_ms?: number
 }
 
 interface HttpRequestOptions {
@@ -49,31 +50,31 @@ export class SpotifyService {
     }
 
     timerId: string;
-    playing: boolean;
-    private subjectPlaying = new Subject<boolean>();
+    playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
+    private subjectPlayStatus = new Subject<SpotifyPlayStatus>();
     private subjectTrackEnded = new Subject<boolean>();
     callback()
     {
         this.checkPlayerState().subscribe(playState => 
         {
-            if(playState.progress_ms == 0 && this.playing && !playState.is_playing )
+            if(playState.progress_ms == 0 && this.playStatus && !playState.is_playing )
             {
-                this.st.delTimer('2sec');
+                this.st.delTimer('spotify');
                 this.setTrackEnd(true);
                 //kappale loppui. onko tämä tilanne aukoton?
             }
-            this.setPlaying(playState.is_playing);
+            this.setPlayStatus(playState);
         });
     }
-    setPlaying(playing: boolean)
+    setPlayStatus(playStatus: SpotifyPlayStatus)
     {
-        this.playing = playing;
-        this.subjectPlaying.next(playing);
+        this.playStatus = playStatus;
+        this.subjectPlayStatus.next(playStatus);
     }
     
-    getPlaying() : Observable<boolean>
+    getPlayStatus() : Observable<SpotifyPlayStatus>
     {
-        return this.subjectPlaying.asObservable();
+        return this.subjectPlayStatus.asObservable();
     }
     setTrackEnd(trackEnd: boolean)
     {
@@ -86,11 +87,13 @@ export class SpotifyService {
     //if Spotify result is something like now rights i.e. then login. Don't login at start if you already have working token.
     play(trackUri?: string, options?: SpotifyOptions) {
         options = options || {};
-        this.setPlaying(true);
+        this.playStatus.is_playing = true;
+        this.setPlayStatus(this.playStatus);
         this.setTrackEnd(false);
         //Only one of either context_uri or uris can be specified. If neither are present, calling /play will resume playback.
-        this.st.newTimer('2sec', 2);
-        this.timerId = this.st.subscribe('2sec', e => this.callback());
+        this.st.delTimer('spotify');
+        this.st.newTimer('spotify', 1);
+        this.timerId = this.st.subscribe('spotify', e => this.callback());
         if(trackUri)
         {
             return this.api({
@@ -119,9 +122,10 @@ export class SpotifyService {
     
     pause(options?: SpotifyOptions) {
         options = options || {};
-
-        this.setPlaying(false);
-        this.st.delTimer('2sec');
+        
+        this.playStatus.is_playing = true;
+        this.setPlayStatus(this.playStatus);
+        this.st.delTimer('spotify');
         return this.api({
             method: 'put',
             url: `/me/player/pause`,
@@ -130,6 +134,15 @@ export class SpotifyService {
             }).map(res => res.json());
     }
 
+    seek(options?: SpotifyOptions) {
+        options = options || {};
+        return this.api({
+            method: 'put',
+            url: `/me/player/seek`,
+            search: options,
+            headers: this.getHeaders(true)
+            }).map(res => res.json());
+    }
     checkPlayerState(options?: SpotifyOptions) {
         options = options || {};
 
