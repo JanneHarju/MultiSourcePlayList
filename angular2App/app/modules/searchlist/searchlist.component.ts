@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params }   from '@angular/router';
 import { SpotifyService } from '../../services/spotify.service';
+import { YoutubeAPIService } from '../../services/youtubeapi.service';
 import { SpotifyTrack } from '../../models/spotifytrack';
+import { YoutubeVideo } from '../../models/youtubeVideo';
 import { PlaylistService} from '../../services/playlist.service';
 import { Playlist } from '../../models/playlist'
 import { Track } from '../../models/track'
@@ -15,10 +17,12 @@ import { TrackService }         from '../../services/track.service';
 
 export class SearchlistComponent implements OnInit {
     spotifyTracks : SpotifyTrack[] = [];
+    youtubeVideos : YoutubeVideo[] = [];
     playlists: Playlist[] = [];
     constructor(
         private route: ActivatedRoute,
         private spotifyService: SpotifyService,
+        private youtubeApiService: YoutubeAPIService,
         private playlistService: PlaylistService,
         private trackService: TrackService
         ) { }
@@ -40,10 +44,24 @@ export class SearchlistComponent implements OnInit {
                     //this.playerService.setTrack(this.selectedTrack);
                 }*/
             });
+        this.route.params
+            .switchMap((params: Params) => this.youtubeApiService.search(params['id']))
+            .subscribe((youtubeVideos: YoutubeVideo[]) => 
+            {
+                this.youtubeVideos = youtubeVideos;
+                console.log(youtubeVideos);
+                /*this.tracklist = tracklist;
+                if(this.tracklist.length > 0)
+                {
+                    this.selectedTrack = tracklist[0];
+                    this.playerService.setTrackList(this.tracklist);
+                    //this.playerService.setTrack(this.selectedTrack);
+                }*/
+            });
         this.playlistService.getPlaylists()
         .then((playlists : Playlist[])=> this.playlists = playlists);
      }
-     addTrackToPlaylist(playlist: number, track: SpotifyTrack)
+     addSpotifyTrackToPlaylist(playlist: number, track: SpotifyTrack)
      {
         console.log(playlist + " " + track.name);
         let newTrack: Track = new Track();
@@ -51,6 +69,21 @@ export class SearchlistComponent implements OnInit {
         newTrack.address = track.uri;
         newTrack.name = track.artists[0].name +" - "+ track.name;
         newTrack.type = 2;
+        newTrack.playlist = playlist;
+        trackList.push(newTrack);
+        this.trackService.createMany(trackList).then(ret =>
+        {
+
+        });
+     }
+     addVideoToPlaylist(playlist: number, video: YoutubeVideo)
+     {
+        console.log(playlist + " " + video.snippet.title);
+        let newTrack: Track = new Track();
+        let trackList: Track[] = [];
+        newTrack.address = video.id.videoId;
+        newTrack.name = video.snippet.title;
+        newTrack.type = 1;
         newTrack.playlist = playlist;
         trackList.push(newTrack);
         this.trackService.createMany(trackList).then(ret =>

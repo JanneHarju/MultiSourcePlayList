@@ -23,6 +23,7 @@ import { DisplayTimePipe} from './modules/shared/displaytimepipe';
 import { TrackService }         from './services/track.service';
 import { PlaylistService } from './services/playlist.service';
 import { SpotifyService } from './services/spotify.service';
+import { YoutubeAPIService } from './services/youtubeapi.service';
 import { PlayerService } from './services/player.service';
 import { AppComponent }  from './app.component';
 import { SimpleTimer } from 'ng2-simple-timer';
@@ -67,6 +68,7 @@ import './rxjs-extensions';
             authToken: localStorage.getItem('spotify-token')
         }
     },
+    YoutubeAPIService,
     SimpleTimer,
   ],
   bootstrap: [ AppComponent ]

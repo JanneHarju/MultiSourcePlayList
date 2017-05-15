@@ -31,7 +31,7 @@ export interface SpotifyOptions {
   position_ms?: number
 }
 
-interface HttpRequestOptions {
+export interface HttpRequestOptions {
   method?: string,
   url: string,
   search?: Object,

@@ -87,12 +87,12 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         //console.log(++this.counter);
         //doc.getElementById("play-button").click();
     }*/
-    onYoutubeLoaded()  {
+    /*onYoutubeLoaded()  {
         let iframe = document.getElementById('youtube');
         let doc = (<HTMLIFrameElement>iframe).contentDocument;
         let a = (<HTMLLinkElement>doc.getElementsByClassName('ytp-title-link')[0]);
         this.trackName = a.getElementsByTagName("span")[1].textContent;
-    }
+    }*/
     audioloaded()
     {
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));

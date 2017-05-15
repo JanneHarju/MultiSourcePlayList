@@ -3,7 +3,7 @@
 @box-small-margin: 15px;
 @box-big-margin: 2 * @box-small-margin;
 #container {
-    overflow: visible;
+    overflow: scroll;
     background-color: @background;
 	scroll-behavior: auto;
 	height: 100vh;
@@ -64,4 +64,11 @@ table tr th {
 	font-size: 9pt;
 	color: #fff;
 	padding: 4px 10px 4px 0;
+}
+
+.drop
+{
+	max-height: 100px;
+	scroll-behavior: auto;
+	overflow: scroll;
 }

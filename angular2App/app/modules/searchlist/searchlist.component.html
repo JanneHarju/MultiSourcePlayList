@@ -2,7 +2,7 @@
     <div class="col-xs-12 col-sm-12 box">
         <div class="innerbox">
             <div class="box-style"> 
-                Search result:
+                Spotify Search result:
                 <table class="tracks">
                     <thead>
                         <th>TRACK</th>
@@ -18,14 +18,48 @@
                                 <a href="#">{{track.artists[0].name}}</a>
                             </td>
                             <td>
-                                <div class="dropdown">
+                                <div class="dropup">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         ...
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <ul class="dropdown-menu drop" aria-labelledby="dropdownMenu1">
                                         <li *ngFor="let playlist of playlists">
-                                            <a (click)="addTrackToPlaylist(playlist.id, track)">
+                                            <a (click)="addSpotifyTrackToPlaylist(playlist.id, track)">
+                                                {{playlist.name}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+                Youtube Search result:
+                <table class="tracks">
+                    <thead>
+                        <th>Channel name</th>
+                        <th>Video name</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let video of youtubeVideos">
+                            <td>
+                                <a ng-click="play(t.track.uri)">{{video.snippet.channelTitle}}</a>
+                            </td>
+                            <td>
+                                <a href="#">{{video.snippet.title}}</a>
+                            </td>
+                            <td>
+                                <div class="dropup">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        ...
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu drop" aria-labelledby="dropdownMenu1">
+                                        <li *ngFor="let playlist of playlists">
+                                            <a (click)="addVideoToPlaylist(playlist.id, video)">
                                                 {{playlist.name}}
                                             </a>
                                         </li>

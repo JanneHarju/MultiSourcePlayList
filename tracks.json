@@ -64,30 +64,6 @@
     "name": "Nicole - Saavumme"
   },
   {
-    "id": 10,
-    "playlist": 0,
-    "address": "spotify:track:1G391cbiT3v3Cywg8T7DM1",
-    "order": 12,
-    "type": 2,
-    "name": "Spotify kappaleita"
-  },
-  {
-    "id": 13,
-    "playlist": 0,
-    "address": "spotify:track:3d9DChrdc6BOeFsbrZ3Is0",
-    "order": 15,
-    "type": 2,
-    "name": "RHCP"
-  },
-  {
-    "id": 14,
-    "playlist": 0,
-    "address": "spotify:track:2aibwv5hGXSgw7Yru8IYTO",
-    "order": 16,
-    "type": 2,
-    "name": "RHCP"
-  },
-  {
     "id": 18,
     "playlist": 0,
     "address": "NApFewYnD2U",
@@ -134,5 +110,117 @@
     "order": 27,
     "type": 2,
     "name": "London Philharmonic Orchestra - Sonic the Hedgehog: a Symphonic Suite"
+  },
+  {
+    "id": 26,
+    "playlist": 0,
+    "address": "spotify:track:1G391cbiT3v3Cywg8T7DM1",
+    "order": 28,
+    "type": 2,
+    "name": "Red Hot Chili Peppers - Scar Tissue"
+  },
+  {
+    "id": 27,
+    "playlist": 0,
+    "address": "spotify:track:3d9DChrdc6BOeFsbrZ3Is0",
+    "order": 29,
+    "type": 2,
+    "name": "Red Hot Chili Peppers - Under The Bridge"
+  },
+  {
+    "id": 28,
+    "playlist": 0,
+    "address": "spotify:track:2aibwv5hGXSgw7Yru8IYTO",
+    "order": 30,
+    "type": 2,
+    "name": "Red Hot Chili Peppers - Snow (Hey Oh)"
+  },
+  {
+    "id": 29,
+    "playlist": 0,
+    "address": "4tdKl-gTpZg",
+    "order": 31,
+    "type": 1,
+    "name": "Metallica: Moth Into Flame (Official Music Video)"
+  },
+  {
+    "id": 30,
+    "playlist": 0,
+    "address": "yz8i6A6BTiA",
+    "order": 32,
+    "type": 1,
+    "name": "SONIC - VIDEO GAMES LIVE LEVEL 2"
+  },
+  {
+    "id": 31,
+    "playlist": 0,
+    "address": "spotify:track:0yPdYW7EDdRfBNYrLcUbcW",
+    "order": 33,
+    "type": 2,
+    "name": "Sara - Lasken"
+  },
+  {
+    "id": 32,
+    "playlist": 0,
+    "address": "felZqrYmYOE",
+    "order": 34,
+    "type": 1,
+    "name": "Sara - Tanssiin"
+  },
+  {
+    "id": 33,
+    "playlist": 0,
+    "address": "spotify:track:12J4jQmXhCbIa0hada33Dy",
+    "order": 35,
+    "type": 2,
+    "name": "Sara - Tanssiin"
+  },
+  {
+    "id": 34,
+    "playlist": 0,
+    "address": "ZY6NodMdKlA",
+    "order": 36,
+    "type": 1,
+    "name": "Nicole - Lahja f. Jorma Korhonen (Live @ Rytmikorjaamo '07)"
+  },
+  {
+    "id": 35,
+    "playlist": 0,
+    "address": "PSNZT-pN8WA",
+    "order": 37,
+    "type": 1,
+    "name": "Nicole - Maalaudun"
+  },
+  {
+    "id": 36,
+    "playlist": 0,
+    "address": "pSmUTnOeBpo",
+    "order": 38,
+    "type": 1,
+    "name": "NICOLE - Suunta [OFFICIAL MUSIC VIDEO] 2005"
+  },
+  {
+    "id": 37,
+    "playlist": 0,
+    "address": "L5KOd3BaIh4",
+    "order": 39,
+    "type": 1,
+    "name": "Nicole-Kahdet kädet"
+  },
+  {
+    "id": 38,
+    "playlist": 0,
+    "address": "uPBuHzKXmxs",
+    "order": 40,
+    "type": 1,
+    "name": "Discore - Rautakahle"
+  },
+  {
+    "id": 39,
+    "playlist": 0,
+    "address": "eqYFw_xcJ4g",
+    "order": 41,
+    "type": 1,
+    "name": "Discore - Lyijynraskas"
   }
 ]

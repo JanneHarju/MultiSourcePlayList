@@ -11,7 +11,25 @@
                         <h4 >{{track.name}}</h4>
                     </div>
                 </a>-->
-                <div class="panel-body">
+                <table class="tracks list-group" dnd-sortable-container [sortableData]="tracklist">
+                    <thead>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let track of tracklist; let i = index" (click)="onSelect(track)"
+                            [class.selected]="track === selectedTrack" 
+                            class="list-group-item tablerow" dnd-sortable [sortableIndex]="i"
+                            style.background-color="{{track.type | colorpipe}}">
+                            <td class="tablerowdata">
+                                <div>
+                                    {{track.name}}
+                                    <button class="btn btn-danger delete glyphicon glyphicon-remove pull-right" (click)="delete(track); $event.stopPropagation()"></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!--<div class="panel-body">
                     <ul class="list-group" dnd-sortable-container [sortableData]="tracklist">
                         <li *ngFor="let track of tracklist; let i = index" (click)="onSelect(track)"
                             [class.selected]="track === selectedTrack" 
@@ -21,7 +39,7 @@
                             <button class="btn btn-danger delete glyphicon glyphicon-remove pull-right" (click)="delete(track); $event.stopPropagation()"></button>
                         </li>
                     </ul>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>
