@@ -10,12 +10,12 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let track of spotifyTracks">
+                        <tr *ngFor="let track of spotifyTracks" (click)="onSpotifySelect(track)">
                             <td>
-                                <a ng-click="play(t.track.uri)">{{track.name}}</a>
+                                {{track.name}}
                             </td>
                             <td>
-                                <a href="#">{{track.artists[0].name}}</a>
+                                {{track.artists[0].name}}
                             </td>
                             <td>
                                 <div class="dropup">
@@ -44,12 +44,12 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let video of youtubeVideos">
+                        <tr *ngFor="let video of youtubeVideos" (click)="onYoutubeSelect(video)">
                             <td>
-                                <a ng-click="play(t.track.uri)">{{video.snippet.channelTitle}}</a>
+                                {{video.snippet.channelTitle}}
                             </td>
                             <td>
-                                <a href="#">{{video.snippet.title}}</a>
+                                {{video.snippet.title}}
                             </td>
                             <td>
                                 <div class="dropup">

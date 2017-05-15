@@ -8,6 +8,7 @@ import { PlaylistService} from '../../services/playlist.service';
 import { Playlist } from '../../models/playlist'
 import { Track } from '../../models/track'
 import { TrackService }         from '../../services/track.service';
+import { PlayerService } from '../../services/player.service';
 
 @Component({
     selector: 'my-searchlist',
@@ -24,7 +25,8 @@ export class SearchlistComponent implements OnInit {
         private spotifyService: SpotifyService,
         private youtubeApiService: YoutubeAPIService,
         private playlistService: PlaylistService,
-        private trackService: TrackService
+        private trackService: TrackService,
+        private playerService: PlayerService
         ) { }
 
 
@@ -97,4 +99,33 @@ export class SearchlistComponent implements OnInit {
             console.log(result);
         });
     }*/
+    onSpotifySelect(track: SpotifyTrack)
+    {
+        let tempTrack: Track = new Track();
+        tempTrack.address = track.uri;
+        tempTrack.id = 99999;
+        tempTrack.name = track.artists[0].name + " - " + track.name;
+        tempTrack.playlist = 99999;
+        tempTrack.type = 2;
+
+        let tracklist: Track[] = [];
+        tracklist.push(tempTrack);
+        this.playerService.setTrackList(tracklist);
+        this.playerService.setTrack(tempTrack);
+
+    }
+    onYoutubeSelect(video: YoutubeVideo)
+    {
+        let tempTrack: Track = new Track();
+        tempTrack.address = video.id.videoId;
+        tempTrack.id = 99999;
+        tempTrack.name = video.snippet.title
+        tempTrack.playlist = 99999;
+        tempTrack.type = 1;
+
+        let tracklist: Track[] = [];
+        tracklist.push(tempTrack);
+        this.playerService.setTrackList(tracklist);
+        this.playerService.setTrack(tempTrack);
+    }
 }
