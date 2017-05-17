@@ -1,5 +1,3 @@
-
-
 <div id="container">
     <div class="col-xs-12 col-sm-12 box">
         <div class="innerbox">
@@ -10,20 +8,30 @@
                     <div class="module track"  style.background-color="{{track.type | colorpipe}}">
                         <h4 >{{track.name}}</h4>
                     </div>
-                </a>-->
-                <table class="tracks list-group" dnd-sortable-container [sortableData]="tracklist">
+                </a>--><!--style.background-color="{{track.type | colorpipe}}">-->
+                <table class="tracks list-group" dnd-sortable-container (dragend)="orderedTrack()" [sortableData]="tracklist">
                     <thead>
                         <th></th>
                     </thead>
                     <tbody>
                         <tr *ngFor="let track of tracklist; let i = index" (click)="onSelect(track)"
                             [class.selected]="track === selectedTrack" 
-                            class="list-group-item tablerow" dnd-sortable [sortableIndex]="i"
-                            style.background-color="{{track.type | colorpipe}}">
+                            class="list-group-item tablerow" dnd-sortable [sortableIndex]="i">
+                            
                             <td class="tablerowdata">
-                                <div>
+                                <div class="col-sm-1 logos">
+                                    <img *ngIf="track.type == 1" src="assets/YouTube-social-squircle_red_128px.png" width="30" align="left">
+                                    <img *ngIf="track.type == 2" src="assets/Spotify_Logo_RGB_Green.png" width="30" align="left">
+                                    <img *ngIf="track.type == 3" src="assets/128px-MP3_logo.png" width="30" align="left">
+                                </div>
+                                <div class="col-sm-8 trackname">
                                     {{track.name}}
-                                    <button class="btn btn-danger delete glyphicon glyphicon-remove pull-right" (click)="delete(track); $event.stopPropagation()"></button>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="pull-right btn-group" role="group">
+                                        <button class="trackbuttons btn btn-info glyphicon glyphicon-align-center" (click)="myModal.open(); $event.stopPropagation(); lyrics(track)"></button>
+                                        <button class="trackbuttons btn btn-danger glyphicon glyphicon-remove" (click)="delete(track); $event.stopPropagation()"></button>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -44,3 +52,17 @@
         </div>
     </div>
 </div>
+<modal #myModal modalClass="modal-lg">
+    <modal-header>
+        <h1>Lyrics for: {{lyricHeader}}</h1>
+    </modal-header>
+    <modal-content>
+        <pre class="lyric">
+            {{lyric}}
+            </pre>
+    </modal-content>
+    <modal-footer>
+        <img class="pull-left" [src]="lyricImageUrl | safe">
+        <button class="btn btn-primary" (click)="myModal.close()">close</button>
+    </modal-footer>
+</modal>

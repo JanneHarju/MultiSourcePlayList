@@ -10,17 +10,16 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let track of spotifyTracks" (click)="onSpotifySelect(track)">
-                            <td>
+                        <tr *ngFor="let track of spotifyTracks">
+                            <td (click)="onSpotifySelect(track)">
                                 {{track.name}}
                             </td>
-                            <td>
+                            <td (click)="onSpotifySelect(track)">
                                 {{track.artists[0].name}}
                             </td>
                             <td>
                                 <div class="dropup">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        ...
+                                    <button class="btn dropdown-toggle glyphicon glyphicon-option-horizontal" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu drop" aria-labelledby="dropdownMenu1">
@@ -44,17 +43,16 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let video of youtubeVideos" (click)="onYoutubeSelect(video)">
-                            <td>
+                        <tr *ngFor="let video of youtubeVideos">
+                            <td (click)="onYoutubeSelect(video)">
                                 {{video.snippet.channelTitle}}
                             </td>
-                            <td>
+                            <td (click)="onYoutubeSelect(video)">
                                 {{video.snippet.title}}
                             </td>
                             <td>
                                 <div class="dropup">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        ...
+                                    <button class="btn dropdown-toggle glyphicon glyphicon-option-horizontal" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu drop" aria-labelledby="dropdownMenu1">

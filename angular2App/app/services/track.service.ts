@@ -48,7 +48,14 @@ export class TrackService {
             .then(response => response.json() as Info)
             .catch(this.handleError);
     }*/
-
+    updatePlaylistOrder(tracks: Track[])
+    {
+        return this.http
+            .put(this.tracksUrl, tracks, {headers: this.headers})
+            .toPromise()
+            .then(() => null)
+            .catch(this.handleError);
+    }
     update(track: Track): Promise<Track> {
         const url = `${this.tracksUrl}/${track.id}`;
         return this.http

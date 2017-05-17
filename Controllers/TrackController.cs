@@ -55,6 +55,25 @@ namespace PlayList.Controllers
             updateInfo.type = value.type;
             SaveToFIle(tracks);
         }
+
+        // PUT api/values/5
+        [HttpPut]
+        public void UpdateOrder([FromBody]Track[] values)
+        {
+            if(values != null && values.Any())
+            {
+                int playlistId = values[0].playlist;
+                tracks.RemoveAll(track => track.playlist == playlistId);
+                int order = 0;
+                foreach(Track track in values)
+                {
+                    track.order = order;
+                    tracks.Add(track);
+                    ++order;
+                }
+                SaveToFIle(tracks);
+            }
+        }
         // POST api/values
         /*[HttpPost]
         public void Post([FromBody]Track value)

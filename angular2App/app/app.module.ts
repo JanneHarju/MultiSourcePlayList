@@ -10,6 +10,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { YoutubePlayerModule } from 'ng2-youtube-player';
 import { DndModule } from 'ng2-dnd';
 
+import { ModalModule } from "ng2-modal";
+
 import { PlayerComponent } from './modules/player/player.component';
 import { PlaylistComponent } from './modules/playlist/playlist.component';
 import { TracklistComponent } from './modules/tracklist/tracklist.component';
@@ -24,6 +26,7 @@ import { TrackService }         from './services/track.service';
 import { PlaylistService } from './services/playlist.service';
 import { SpotifyService } from './services/spotify.service';
 import { YoutubeAPIService } from './services/youtubeapi.service';
+import { MusixMatchAPIService } from './services/musixmatch.service';
 import { PlayerService } from './services/player.service';
 import { AppComponent }  from './app.component';
 import { SimpleTimer } from 'ng2-simple-timer';
@@ -37,7 +40,8 @@ import './rxjs-extensions';
     FormsModule,
     HttpModule,
     AppRoutingModule,
-    YoutubePlayerModule
+    YoutubePlayerModule,
+    ModalModule
   ],
   declarations: [
     AppComponent,
@@ -69,7 +73,8 @@ import './rxjs-extensions';
         }
     },
     YoutubeAPIService,
-    SimpleTimer,
+    MusixMatchAPIService,
+    SimpleTimer
   ],
   bootstrap: [ AppComponent ]
 })

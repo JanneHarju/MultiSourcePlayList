@@ -1,10 +1,12 @@
 import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Renderer,OnDestroy } from '@angular/core';
-import { ActivatedRoute, Params }   from '@angular/router';
-import { TrackService }         from '../../services/track.service';
+import { ActivatedRoute, Params } from '@angular/router';
+import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
+import { MusixMatchAPIService } from '../../services/musixmatch.service';
 import { Track } from '../../models/track';
+import { MusixMatchLyric } from '../../models/musixmatchlyric';
 import { SimpleTimer } from 'ng2-simple-timer';
-import { Router }                 from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'my-tracklist',
@@ -15,14 +17,12 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     constructor(
     private trackService: TrackService,
     private playerService: PlayerService,
+    private musixmatchService: MusixMatchAPIService,
     private route: ActivatedRoute,
     private renderer: Renderer,
     private st: SimpleTimer,
     private el: ElementRef,
     private router: Router) { }
-
-    //@ViewChild('play-button') play: ElementRef;
-    
     timerId: string;
     tracklist: Track[] = [];
     selectedTrack: Track = new Track();
@@ -30,12 +30,13 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     trackName: string;
     private id: string = 'yz8i6A6BTiA';
     counter: number = 0;
-    
+    closeResult: string;
+    lyric: string = "";
+    lyricHeader: string = "";
+    lyricImageUrl: string = "";
     addTrack()
     {
         this.router.navigate([{ outlets: { popup: 'addtrackpopup' }}]);
-        //this.router.navigate([{ outlets: { popup: 'addtrackpopup' }},this.selectedTrack.playlist]);
-    
     }
     ngOnInit() {
         this.route.params
@@ -50,9 +51,6 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                     //this.playerService.setTrack(this.selectedTrack);
                 }
             });
-        
-        //this.st.newTimer('5sec', 5);
-        //this.timerId = this.st.subscribe('5sec', e => this.callback());
      }
      ngOnDestroy(): void
     {
@@ -60,52 +58,19 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     }
      ngAfterViewInit() {
 
-        //this.renderer.invokeElementMethod(this.play.nativeElement, 'click');
      }
      onSelect(track: Track): void {
         this.selectedTrack = track;
         this.playerService.setTrack(this.selectedTrack);
-        //this.playTrack();
         
     }
     
-
-    /*onLoad()  {
-        this.trackName = "ladattu";
-        let iframe = document.getElementById('spotify');
-        let doc = (<HTMLIFrameElement>iframe).contentDocument;
-        let playbutton = doc.getElementById("play-button")
-        if(playbutton != null)
-        {
-            playbutton.click();
-
-            let name = doc.getElementById("track-name").innerText;
-            let artist = doc.getElementById("track-artists").innerText;
-            this.trackName = artist + " - " + name;
-            //console.log(++this.counter);
-        }
-        //console.log(++this.counter);
-        //doc.getElementById("play-button").click();
-    }*/
-    /*onYoutubeLoaded()  {
-        let iframe = document.getElementById('youtube');
-        let doc = (<HTMLIFrameElement>iframe).contentDocument;
-        let a = (<HTMLLinkElement>doc.getElementsByClassName('ytp-title-link')[0]);
-        this.trackName = a.getElementsByTagName("span")[1].textContent;
-    }*/
     audioloaded()
     {
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-        //this.trackName = audio.audioTracks.length.toString();//[0].label + " " + audio.audioTracks[0].kind;
-        //audio.load();
         audio.play();
-        //this.trackName = audio.audioTracks.toString();//[0].label + " " + audio.audioTracks[0].kind;
     }
-    onAudioEnded()
-    {
-        //Call service here to choose next track
-        //this.chooseNextTrack();
-    }
+    
     delete(track: Track)
     {
         this.trackService
@@ -113,6 +78,31 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             .then(() => {
                 this.tracklist = this.tracklist.filter(h => h !== track);
                 if (this.selectedTrack === track) { this.selectedTrack = null; }
+                this.ngOnInit();
+            });
+    }
+    lyrics(track: Track) {
+        this.lyricHeader = track.name;
+        this.lyric = "";
+        this.lyricImageUrl = "";
+        this.musixmatchService.search(track.name)
+            .subscribe(lyrics => 
+            {
+
+                if(lyrics)
+                {
+                    this.lyric = lyrics.lyrics_body;
+                    this.lyricImageUrl = lyrics.pixel_tracking_url;
+                }
+                else
+                    this.lyric = "Lyrics dosen't found.";
+            });
+    }
+    orderedTrack()
+    {
+        this.trackService
+            .updatePlaylistOrder(this.tracklist)
+            .then(() => {
                 this.ngOnInit();
             });
     }
