@@ -20,6 +20,7 @@ export class SearchlistComponent implements OnInit {
     spotifyTracks : SpotifyTrack[] = [];
     youtubeVideos : YoutubeVideo[] = [];
     playlists: Playlist[] = [];
+    query: string = "";
     constructor(
         private route: ActivatedRoute,
         private spotifyService: SpotifyService,
@@ -32,33 +33,20 @@ export class SearchlistComponent implements OnInit {
 
     ngOnInit() {
         
+        
+        this.route.params.subscribe((params: Params) => this.query = params['id']);
+
         this.route.params
             .switchMap((params: Params) => this.spotifyService.search(params['id'],"track"))
             .subscribe((tracklist: SpotifyTrack[]) => 
             {
                 this.spotifyTracks = tracklist;
-                console.log(tracklist);
-                /*this.tracklist = tracklist;
-                if(this.tracklist.length > 0)
-                {
-                    this.selectedTrack = tracklist[0];
-                    this.playerService.setTrackList(this.tracklist);
-                    //this.playerService.setTrack(this.selectedTrack);
-                }*/
             });
         this.route.params
             .switchMap((params: Params) => this.youtubeApiService.search(params['id']))
             .subscribe((youtubeVideos: YoutubeVideo[]) => 
             {
                 this.youtubeVideos = youtubeVideos;
-                console.log(youtubeVideos);
-                /*this.tracklist = tracklist;
-                if(this.tracklist.length > 0)
-                {
-                    this.selectedTrack = tracklist[0];
-                    this.playerService.setTrackList(this.tracklist);
-                    //this.playerService.setTrack(this.selectedTrack);
-                }*/
             });
         this.playlistService.getPlaylists()
         .then((playlists : Playlist[])=> this.playlists = playlists);
