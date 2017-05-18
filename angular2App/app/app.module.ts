@@ -17,6 +17,7 @@ import { PlaylistComponent } from './modules/playlist/playlist.component';
 import { TracklistComponent } from './modules/tracklist/tracklist.component';
 import { SearchComponent } from './modules/search/search.component';
 import { SearchlistComponent } from './modules/searchlist/searchlist.component';
+import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplaylist.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { SafePipe} from './modules/shared/safepipe';
 import { ColorPipe} from './modules/shared/colorpipe';
@@ -50,6 +51,7 @@ import './rxjs-extensions';
     TracklistComponent,
     SearchComponent,
     SearchlistComponent,
+    SpotifyPlaylistComponent,
     PopupComponent,
     AddTrackPopupComponent,
     SafePipe,

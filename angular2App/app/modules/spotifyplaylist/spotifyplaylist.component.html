@@ -1,0 +1,41 @@
+<div id="container">
+    <div class="col-xs-12 col-sm-12 box">
+        <div class="innerbox">
+            <div class="box-style"> 
+                Spotify tracks for:  {{query}}
+                <table class="tracks">
+                    <thead>
+                        <th>ARTIST</th>
+                        <th>TRACK</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let track of spotifyTracks">
+                            <td class="tdArtist" (click)="onSpotifySelect(track.track)">
+                                {{track.track.artists[0].name}}
+                            </td>
+                            <td class="tdTrack" (click)="onSpotifySelect(track.track)">
+                                {{track.track.name}}
+                            </td>
+                            <td class="pull-right">
+                                <div class="dropup">
+                                    <button class="btn dropdown-toggle glyphicon glyphicon-option-horizontal" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu drop" aria-labelledby="dropdownMenu1">
+                                        <li *ngFor="let playlist of playlists">
+                                            <a (click)="addSpotifyTrackToPlaylist(playlist.id, track.track)">
+                                                {{playlist.name}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

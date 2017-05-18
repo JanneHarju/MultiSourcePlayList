@@ -1,10 +1,15 @@
 import { Injectable, Inject, Optional } from '@angular/core';
 import { Http, Response, Headers, Request } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { SpotifyUser } from '../models/spotifyUser';
 import { SpotifyTrack } from '../models/spotifytrack';
+import { SpotifyPlaylistTrack } from '../models/spotifyplaylisttrack';
+import { SpotifyTracklist } from '../models/spotifytracklist';
+import { SpotifyPlaylist } from '../models/spotifyplaylist';
 import { SpotifyPlayStatus } from '../models/spotifyPlayStatus';
 import { Subject } from 'rxjs/Subject';
 import { SimpleTimer } from 'ng2-simple-timer';
+import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 SpotifyPlayStatus
@@ -50,14 +55,16 @@ export class SpotifyService {
     }
 
     timerId: string;
+    currentUser: SpotifyUser;
     playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
+    tempPlaylist: SpotifyPlaylistTrack[] = [];
     private subjectPlayStatus = new Subject<SpotifyPlayStatus>();
     private subjectTrackEnded = new Subject<boolean>();
     callback()
     {
         this.checkPlayerState().subscribe(playState => 
         {
-            if(playState.progress_ms == 0 && this.playStatus && !playState.is_playing )
+            if(playState.progress_ms == 0 && this.playStatus.is_playing && !playState.is_playing )
             {
                 this.st.delTimer('spotify');
                 this.setTrackEnd(true);
@@ -174,6 +181,62 @@ export class SpotifyService {
 
     //#endregion
     
+    getUsersPlaylist( options?: SpotifyOptions) {
+        options = options || {};
+
+        return this.api({
+        method: 'get',
+        url: `/me/playlists`,
+        search: options,
+        headers: this.getHeaders(true)
+        }).map(res => 
+        {
+            console.log(res);
+            return res.json().items as SpotifyPlaylist[];}
+    );
+    }
+    getUser() :SpotifyUser
+    {
+        if(this.currentUser)
+            return this.currentUser;
+        else
+            return new SpotifyUser();
+    }
+    getPlaylistTracks(playlistId: string, options?: SpotifyOptions) {
+        this.tempPlaylist = [];
+        options = options || {};
+        
+        return this.api({
+            method: 'get',
+            url: '/users/'+this.currentUser.id+'/playlists/'+playlistId+'/tracks',
+            search: options,
+            headers: this.getHeaders(true)
+        })
+        .toPromise()
+        .then(res => 
+        {
+            return res.json() as SpotifyTracklist;
+        })
+        .catch(this.handlePromiseError);
+        
+}
+
+    getCurrentUser( options?: SpotifyOptions) {
+        options = options || {};
+
+        return this.api({
+        method: 'get',
+        url: `/me`,
+        search: options,
+        headers: this.getHeaders(true)
+        }).map(res => 
+        {
+            let user = res.json() as SpotifyUser;
+            this.currentUser = user;
+            console.log(res);
+            return user}
+    );
+    }
     //#region login
 
     login() : Promise<Object> {
@@ -278,7 +341,10 @@ export class SpotifyService {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
     }
-
+    private handlePromiseError(error: any): Promise<any> {
+        //console.error('An error occurred', error); // for demo purposes only
+        return Promise.reject(error.message || error);
+    }
     private api(requestOptions: HttpRequestOptions) {
         return this.http.request(new Request({
         url: this.config.apiBase + requestOptions.url,

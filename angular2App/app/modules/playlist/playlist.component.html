@@ -7,7 +7,19 @@
             <button class="btn btn-primary glyphicon glyphicon-log-in" (click)="loginToSpotify()"></button>
         </div>
         <div *ngIf="playlists.length > 0" class="grid grid-pad" >
+            <h3> Local playlist: </h3>
             <a *ngFor="let playlist of playlists"  [routerLink]="['/tracklist', playlist.id]" routerLinkActive="active" >
+                <div class="module track">
+                    <h4 >{{playlist.name}}</h4>
+                    <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
+                </div>
+            </a>
+        </div>
+        <div *ngIf="spotifyplaylists.length > 0" class="grid grid-pad" >
+            <h3> {{currentSpotifyUser.id}}</h3>
+            <h3> {{currentSpotifyUser.display_name}}</h3>
+            <h3> Spotify playlists: </h3>
+            <a *ngFor="let playlist of spotifyplaylists"  [routerLink]="['/spotifylist', playlist.id]" routerLinkActive="active" >
                 <div class="module track">
                     <h4 >{{playlist.name}}</h4>
                     <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->

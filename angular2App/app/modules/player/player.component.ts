@@ -32,9 +32,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     {
         //this.setProgress(0);
         //this.duration = 0;
-        this.spotifyService.login().then(token => {
-                console.log(token);
-            });
+        
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
         {
             this.track = track;

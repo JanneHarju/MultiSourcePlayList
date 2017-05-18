@@ -3,6 +3,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PlaylistService} from '../../services/playlist.service';
 import { SpotifyService } from '../../services/spotify.service';
 import { Playlist } from '../../models/playlist'
+import { SpotifyPlaylist } from '../../models/spotifyplaylist';
+import { SpotifyUser } from '../../models/spotifyUser';
 
 @Component({
     selector: 'my-playlist',
@@ -16,7 +18,8 @@ export class PlaylistComponent implements OnInit {
         private spotifyService: SpotifyService,
         private router: Router) { }
     playlists: Playlist[] = [];
-
+    spotifyplaylists: SpotifyPlaylist[] = [];
+    currentSpotifyUser: SpotifyUser = new SpotifyUser();
     loginToSpotify()
     {
         this.spotifyService.login().then(token => {
@@ -31,13 +34,6 @@ export class PlaylistComponent implements OnInit {
             //() => { });
     }
     
-    play(): void {
-        //3d9DChrdc6BOeFsbrZ3Is0, spotify:track:5IyL3XOaRPpTgxVjRIAxXU Ziggy stardust
-        this.spotifyService.play("spotify:track:3d9DChrdc6BOeFsbrZ3Is0").subscribe(result =>
-        {
-            console.log(result);
-        });
-    }
     ngOnInit() 
     { 
         this.getPlaylists();
@@ -45,6 +41,9 @@ export class PlaylistComponent implements OnInit {
     getPlaylists(): void {
         this.playlistService.getPlaylists()
             .then((playlists : Playlist[])=> this.playlists = playlists);
+        this.spotifyService.getUsersPlaylist()
+            .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
+        this.currentSpotifyUser = this.spotifyService.getUser();
     }
     add(name: string): void {
         name = name.trim();
