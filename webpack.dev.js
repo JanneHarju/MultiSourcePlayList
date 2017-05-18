@@ -22,7 +22,7 @@ module.exports = {
     },
 
     output: {
-        path: './wwwroot/',
+        path: __dirname +  '/wwwroot/',
         filename: 'dist/[name].bundle.js',
         chunkFilename: 'dist/[id].chunk.js',
         publicPath: '/'
@@ -35,7 +35,11 @@ module.exports = {
     devServer: {
         historyApiFallback: true,
         stats: 'minimal',
-        outputPath: path.join(__dirname, 'wwwroot/'),
+        watchOptions: {
+            aggregateTimeout: 300,
+            poll: 1000
+        },
+        contentBase: path.join(__dirname, '/wwwroot/'),
         hot: true,
         proxy: {
             '/api/playlists/*': {
