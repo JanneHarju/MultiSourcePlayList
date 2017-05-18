@@ -6,6 +6,7 @@ import { SpotifyTrack } from '../models/spotifytrack';
 import { SpotifyPlaylistTrack } from '../models/spotifyplaylisttrack';
 import { SpotifyTracklist } from '../models/spotifytracklist';
 import { SpotifyPlaylist } from '../models/spotifyplaylist';
+import { SpotifyPlaylistInfo } from '../models/spotifyplaylistinfo';
 import { SpotifyPlayStatus } from '../models/spotifyPlayStatus';
 import { Subject } from 'rxjs/Subject';
 import { SimpleTimer } from 'ng2-simple-timer';
@@ -219,7 +220,26 @@ export class SpotifyService {
         })
         .catch(this.handlePromiseError);
         
-}
+    }
+
+    getPlaylistInfo(playlistId: string, options?: SpotifyOptions) {
+        this.tempPlaylist = [];
+        options = options || {};
+        options.limit = 1;
+        return this.api({
+            method: 'get',
+            url: '/users/'+this.currentUser.id+'/playlists/'+playlistId,
+            search: options,
+            headers: this.getHeaders(true)
+        })
+        .toPromise()
+        .then(res => 
+        {
+            return res.json() as SpotifyPlaylistInfo;
+        })
+        .catch(this.handlePromiseError);
+        
+    }
 
     getCurrentUser( options?: SpotifyOptions) {
         options = options || {};
@@ -234,8 +254,8 @@ export class SpotifyService {
             let user = res.json() as SpotifyUser;
             this.currentUser = user;
             console.log(res);
-            return user}
-    );
+            return user;
+        });
     }
     //#region login
 

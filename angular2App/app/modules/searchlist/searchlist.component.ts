@@ -89,31 +89,44 @@ export class SearchlistComponent implements OnInit {
     }*/
     onSpotifySelect(track: SpotifyTrack)
     {
-        let tempTrack: Track = new Track();
-        tempTrack.address = track.uri;
-        tempTrack.id = 99999;
-        tempTrack.name = track.artists[0].name + " - " + track.name;
-        tempTrack.playlist = 99999;
-        tempTrack.type = 2;
+        let trackList: Track[] = [];
+        let order: number = 0;
+        this.spotifyTracks.forEach(st =>
+        {
 
-        let tracklist: Track[] = [];
-        tracklist.push(tempTrack);
-        this.playerService.setTrackList(tracklist);
+            let newTrack: Track = new Track();
+            newTrack.address = st.uri;
+            newTrack.name = st.artists[0].name +" - "+ st.name;
+            newTrack.type = 2;
+            newTrack.playlist = 99999;
+            newTrack.order = order;
+            ++order;
+            trackList.push(newTrack);
+        });
+        this.playerService.setTrackList(trackList);
+        let tempTrack = trackList.find(tr => tr.address == track.uri);
         this.playerService.setTrack(tempTrack);
 
     }
     onYoutubeSelect(video: YoutubeVideo)
     {
-        let tempTrack: Track = new Track();
-        tempTrack.address = video.id.videoId;
-        tempTrack.id = 99999;
-        tempTrack.name = video.snippet.title
-        tempTrack.playlist = 99999;
-        tempTrack.type = 1;
+        let trackList: Track[] = [];
+        let order: number = 0;
+        this.youtubeVideos.forEach(ytv =>
+        {
 
-        let tracklist: Track[] = [];
-        tracklist.push(tempTrack);
-        this.playerService.setTrackList(tracklist);
+            let newTrack: Track = new Track();
+            newTrack.address = ytv.id.videoId;
+            newTrack.id = 99999;
+            newTrack.name = ytv.snippet.title
+            newTrack.type = 1;
+            newTrack.playlist = 99999;
+            newTrack.order = order;
+            ++order;
+            trackList.push(newTrack);
+        });
+        this.playerService.setTrackList(trackList);
+        let tempTrack = trackList.find(tr => tr.address == video.id.videoId);
         this.playerService.setTrack(tempTrack);
     }
 }

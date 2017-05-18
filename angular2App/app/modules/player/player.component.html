@@ -7,8 +7,8 @@
 
                     <div class="row">
                         <a id="previous" (click)="previous()" class="control-button glyphicon glyphicon-step-backward"></a>
-                        <a id="play" (click)="play()" class="control-button glyphicon glyphicon-play"></a>
-                        <a id="pause" (click)="pause()" class="control-button glyphicon glyphicon-pause"></a>
+                        <a id="play" *ngIf="isplaying == false" (click)="play()" class="control-button glyphicon glyphicon-play"></a>
+                        <a id="pause" *ngIf="isplaying == true" (click)="pause()" class="control-button glyphicon glyphicon-pause"></a>
                         <a id="next" (click)="next()" class="control-button glyphicon glyphicon-step-forward"></a>
                     </div>
                     <div class="row seekcontrols">

@@ -28,6 +28,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     progress: number;
     duration: number;
     disableProgressUpdate: boolean = false;
+    isplaying: boolean = false;
     ngOnInit(): void 
     {
         //this.setProgress(0);
@@ -112,7 +113,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     
     play(trackUri?: string)
     {
-        
+        this.isplaying = true;
         this.disableProgressUpdate = true;
         if(this.track != null)
         {
@@ -161,6 +162,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     pause()
     {
+        this.isplaying = false;
         if(this.track != null)
         {
             switch (this.track.type) {

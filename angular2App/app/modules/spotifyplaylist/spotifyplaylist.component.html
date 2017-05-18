@@ -2,8 +2,23 @@
     <div class="col-xs-12 col-sm-12 box">
         <div class="innerbox">
             <div class="box-style"> 
-                Spotify tracks for:  {{query}}
-                <table class="tracks">
+                <div class="row">
+                    Spotify tracks for:  {{playlistInfo.name}}
+                    <div class="dropdown addall">
+                        <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Lisää kaikki kappaleet:
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li *ngFor="let playlist of playlists">
+                                <a (click)="addAllSpotifyTrackToPlaylist(playlist.id)">
+                                    {{playlist.name}}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <table class="tracks row">
                     <thead>
                         <th>ARTIST</th>
                         <th>TRACK</th>
