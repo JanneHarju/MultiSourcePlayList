@@ -13,7 +13,7 @@ const routes: Routes = [
   //{ path: 'playlist',  component: PlaylistComponent },SearchlistComponent
   { path: 'tracklist/:id',  component: TracklistComponent, },
   { path: 'searchlist/:id',  component: SearchlistComponent, },
-  { path: 'spotifylist/:id',  component: SpotifyPlaylistComponent, },
+  { path: 'spotifylist/:id/:id2',  component: SpotifyPlaylistComponent, },
   { path: 'addtrackpopup', component: AddTrackPopupComponent, outlet: 'popup' }
   //{ path: 'popup', component: PopupComponent, outlet: 'popup' },
   /**children: [{

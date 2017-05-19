@@ -13,10 +13,12 @@ namespace PlayList.Controllers
     {
         List<Playlist> playlists = new List<Playlist>();
         private string filePath = @"./playlist.json";
+        List<Track> tracks = new List<Track>();
+        private string trackfilePath = @"./tracks.json";
         public PlaylistController()
          : base()
         {
-            playlists = GetInfosFromFile();
+            playlists = GetPlaylistsFromFile();
         }
 
 
@@ -44,30 +46,55 @@ namespace PlayList.Controllers
             updatePlaylist.name = value.name;
             updatePlaylist.order = value.order;
             updatePlaylist.owner = value.owner;
-            SaveToFIle(playlists);
+            SavePlaylistsToFile(playlists);
         }
         // POST api/values
         [HttpPost]
         public Playlist Post([FromBody]Playlist value)
         {
             Playlist lastPlaylist = playlists.OrderByDescending(x => x.id).First();
+            int lastOrder = playlists.OrderByDescending(x => x.order).First().order + 1;
+            value.order = lastOrder;
             value.id = lastPlaylist.id + 1;
             playlists.Add(value);
-            SaveToFIle(playlists);
+            SavePlaylistsToFile(playlists);
             return value;
         }
-        private void SaveToFIle(List<Playlist> playlist)
+        // DELETE api/values/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            var tracks = GetTracksFromFile();
+            playlists.RemoveAll(x=>x.id==id);
+            tracks.RemoveAll(x=>x.playlist == id);
+            SavePlaylistsToFile(playlists);
+            SaveTracksToFIle(tracks);
+        }
+        private void SavePlaylistsToFile(List<Playlist> playlist)
         {
             string json = JsonConvert.SerializeObject(playlist, Formatting.Indented);
 
             //write string to file
             System.IO.File.WriteAllText(filePath, json);
         }
-        private List<Playlist> GetInfosFromFile()
+        private List<Playlist> GetPlaylistsFromFile()
         {
             //List<Hero> heroesFromFile = new List<Hero>();
-            string heroString = System.IO.File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<List<Playlist>>(heroString);
+            string playlistsString = System.IO.File.ReadAllText(filePath);
+            return JsonConvert.DeserializeObject<List<Playlist>>(playlistsString);
+        }
+        private void SaveTracksToFIle(List<Track> trackList)
+        {
+            string json = JsonConvert.SerializeObject(trackList, Formatting.Indented);
+
+            //write string to file
+            System.IO.File.WriteAllText(trackfilePath, json);
+        }
+        private List<Track> GetTracksFromFile()
+        {
+            //List<Hero> heroesFromFile = new List<Hero>();
+            string tracksString = System.IO.File.ReadAllText(trackfilePath);
+            return JsonConvert.DeserializeObject<List<Track>>(tracksString);
         }
     }
 }

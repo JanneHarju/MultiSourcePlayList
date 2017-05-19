@@ -3,42 +3,24 @@
     "id": 0,
     "order": 1,
     "owner": 1,
-    "name": "Sonic"
-  },
-  {
-    "id": 1,
-    "order": 2,
-    "owner": 2,
-    "name": "Sonic 2"
+    "name": "Rokkia"
   },
   {
     "id": 3,
-    "order": 0,
+    "order": 3,
     "owner": 0,
     "name": "jaajaa"
   },
   {
-    "id": 4,
-    "order": 0,
-    "owner": 0,
-    "name": "asssss"
-  },
-  {
-    "id": 5,
-    "order": 0,
-    "owner": 0,
-    "name": "seuraava"
-  },
-  {
-    "id": 6,
-    "order": 0,
-    "owner": 0,
-    "name": "lisää"
-  },
-  {
     "id": 7,
-    "order": 0,
+    "order": 6,
     "owner": 0,
-    "name": "liikaa"
+    "name": "uusi liikaa"
+  },
+  {
+    "id": 8,
+    "order": 7,
+    "owner": 0,
+    "name": "räppiä"
   }
 ]

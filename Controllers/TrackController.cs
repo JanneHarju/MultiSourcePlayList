@@ -94,8 +94,9 @@ namespace PlayList.Controllers
         public void Post([FromBody]Track[] values)
         {
             //tarkista tämä
+            Track someTrack = values[0];
             Track lastInfo = tracks.OrderByDescending(x => x.id).First();
-            int lastOrder = tracks.OrderByDescending(x => x.order).First().order + 1;
+            int lastOrder = tracks.Where(y=>y.playlist==someTrack.playlist).OrderByDescending(x => x.order).First().order + 1;
             int newidIndex = 1;
             foreach(Track newtrack in values)
             {

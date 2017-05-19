@@ -19,6 +19,7 @@ export class YoutubeAPIService {
     baseUri: string = "https://www.googleapis.com/youtube/v3";
     key: string = "AIzaSyCBJf1-O0F4J37lTx7Avlfk5hTWYBydWQE";
     constructor(private http: Http) { }
+    
     search(q: string) {
         let options: YoutubeOptions;
         options = {};

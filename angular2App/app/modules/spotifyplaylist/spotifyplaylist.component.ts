@@ -39,11 +39,12 @@ export class SpotifyPlaylistComponent implements OnInit {
         
         
         this.route.params.subscribe((params: Params) => this.query = params['id']);
-
+        //bring here ownerId as well playlist id
         let limit = 100;
         this.spotifyTracks  = [];
+        
         this.route.params
-            .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'],
+            .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'],params['id2'],
                 {
                     limit: limit
                 }))
@@ -60,7 +61,7 @@ export class SpotifyPlaylistComponent implements OnInit {
 
                     console.log("Whilessä: "+ offset);
                     this.route.params
-                    .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'],
+                    .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'],params['id2'],
                         {
                             limit: limit,
                             offset: offset + limit

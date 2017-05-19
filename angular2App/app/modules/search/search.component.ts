@@ -16,8 +16,6 @@ export class SearchComponent implements OnInit {
     ngOnInit() { }
     search(q: string): void {
         //naigoidaan tässä
-
-        this.router.navigate([{ outlets: { popup: 'addtrackpopup' }}]);
         this.router.navigate(['/searchlist', q]);
     }
 }

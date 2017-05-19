@@ -203,13 +203,13 @@ export class SpotifyService {
         else
             return new SpotifyUser();
     }
-    getPlaylistTracks(playlistId: string, options?: SpotifyOptions) {
+    getPlaylistTracks(playlistId: string,ownerId:string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
         
         return this.api({
             method: 'get',
-            url: '/users/'+this.currentUser.id+'/playlists/'+playlistId+'/tracks',
+            url: '/users/'+ownerId+'/playlists/'+playlistId+'/tracks',
             search: options,
             headers: this.getHeaders(true)
         })

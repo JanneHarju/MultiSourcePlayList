@@ -2,24 +2,28 @@
      <div class="box-style"> 
          <div>
             <label>Playlist name:</label>
-            <input class="form-control" ng-focus="true" #playlistName (keyup.enter)="add(playlistName.value); playlistName.value=''"/>
+            <input class="form-control" #playlistName (keyup.enter)="add(playlistName.value); playlistName.value=''"/>
             <button class="btn btn-primary glyphicon glyphicon-plus" (click)="add(playlistName.value); playlistName.value=''"></button>
             <button class="btn btn-primary glyphicon glyphicon-log-in" (click)="loginToSpotify()"></button>
         </div>
         <div *ngIf="playlists.length > 0" class="grid grid-pad" >
             <h3> Local playlist: </h3>
-            <a *ngFor="let playlist of playlists"  [routerLink]="['/tracklist', playlist.id]" routerLinkActive="active" >
-                <div class="module track">
-                    <h4 >{{playlist.name}}</h4>
-                    <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
+            <div *ngFor="let playlist of playlists" class="pldiv">
+                <a (click)="selectPlaylist(playlist)" [routerLink]="['/tracklist', playlist.id]" routerLinkActive="active">
+                {{playlist.name}}
+                </a>
+                <div class="pull-right btn-group buttongroup" role="group">
+                    <button class="editbuttons btn btn-info glyphicon glyphicon-pencil" (click)="newPlaylistName.value = ''; editModal.open(); setRenameTarget(playlist); $event.stopPropagation()"></button>
+                    <button class="editbuttons btn btn-danger glyphicon glyphicon-remove" (click)="removeConfirmationModal.open(); setDeleteTarget(playlist); $event.stopPropagation()"></button>
+                                
                 </div>
-            </a>
+                        <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
+                
+            </div>
         </div>
         <div *ngIf="spotifyplaylists.length > 0" class="grid grid-pad" >
-            <h3> {{currentSpotifyUser.id}}</h3>
-            <h3> {{currentSpotifyUser.display_name}}</h3>
             <h3> Spotify playlists: </h3>
-            <a *ngFor="let playlist of spotifyplaylists"  [routerLink]="['/spotifylist', playlist.id]" routerLinkActive="active" >
+            <a *ngFor="let playlist of spotifyplaylists"  [routerLink]="['/spotifylist', playlist.id, playlist.owner.id]" routerLinkActive="active" >
                 <div class="module track">
                     <h4 >{{playlist.name}}</h4>
                     <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
@@ -36,3 +40,28 @@
         </ul>-->
      </div>
  </div>
+ <!--Playlist name edit modal-->
+ <modal #editModal modalClass="modal-sm">
+    <modal-header>
+        <h1>New name for: {{renametarget.name}}</h1>
+    </modal-header>
+    <modal-content>
+        <input class="form-control" (keyup.enter)="editModal.close(); rename(newPlaylistName.value)" ng-focus="true" #newPlaylistName />
+            
+    </modal-content>
+    <modal-footer>
+        <button class="btn btn-primary confirmbutton" (click)="editModal.close(); rename(newPlaylistName.value)">OK</button>
+        <button class="btn btn-primary" (click)="editModal.close()">Cancel</button>
+    </modal-footer>
+</modal>
+
+ <!--Playlist remove confirmation modal-->
+ <modal #removeConfirmationModal modalClass="modal-md">
+    <modal-header>
+        <h1>Are you sure you want to remove: {{removetarget.name}} ?</h1>
+    </modal-header>
+    <modal-footer>
+        <button class="btn btn-primary confirmbutton" (click)="removeConfirmationModal.close(); delete()">Yes</button>
+        <button class="btn btn-primary" (click)="removeConfirmationModal.close()">No</button>
+    </modal-footer>
+</modal>
