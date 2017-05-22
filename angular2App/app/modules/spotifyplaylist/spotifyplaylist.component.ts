@@ -50,9 +50,8 @@ export class SpotifyPlaylistComponent implements OnInit {
                 }))
             .subscribe((tracklist: SpotifyTracklist) => 
             {
-
                 this.spotifyTracks  = [];
-                this.spotifyTracks = this.spotifyTracks.concat(tracklist.items);
+                this.spotifyTracks = this.spotifyTracks.concat(tracklist.items.filter(tra => !tra.is_local && tra.track));
                 let promises = [],
                 total = tracklist.total,
                 offset = tracklist.offset;
@@ -68,7 +67,7 @@ export class SpotifyPlaylistComponent implements OnInit {
                         }))
                     .subscribe((innerResult: SpotifyTracklist) => 
                     {
-                        this.spotifyTracks = this.spotifyTracks.concat(innerResult.items);
+                        this.spotifyTracks = this.spotifyTracks.concat(innerResult.items.filter(tra => !tra.is_local && tra.track));
                     });
                     offset += limit;
                 }
@@ -86,6 +85,7 @@ export class SpotifyPlaylistComponent implements OnInit {
             .switchMap((params: Params) => this.spotifyService.getPlaylistInfo(params['id']))
             .subscribe((playlistInfo: SpotifyPlaylistInfo) => 
             {
+                //console.log(params);
                 this.playlistInfo = playlistInfo;
             });
         this.playlistService.getPlaylists()

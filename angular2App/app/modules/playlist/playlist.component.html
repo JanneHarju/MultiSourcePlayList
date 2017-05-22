@@ -5,6 +5,7 @@
             <input class="form-control" #playlistName (keyup.enter)="add(playlistName.value); playlistName.value=''"/>
             <button class="btn btn-primary glyphicon glyphicon-plus" (click)="add(playlistName.value); playlistName.value=''"></button>
             <button class="btn btn-primary glyphicon glyphicon-log-in" (click)="loginToSpotify()"></button>
+            <button class="btn btn-primary glyphicon glyphicon-log-out" (click)="logoutFromSpotify()"></button>
         </div>
         <div *ngIf="playlists.length > 0" class="grid grid-pad" >
             <h3> Local playlist: </h3>

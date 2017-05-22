@@ -5,6 +5,8 @@ import { SpotifyService } from '../../services/spotify.service';
 import { Playlist } from '../../models/playlist'
 import { SpotifyPlaylist } from '../../models/spotifyplaylist';
 import { SpotifyUser } from '../../models/spotifyUser';
+import { CookieService } from 'angular2-cookie/services/cookies.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'my-playlist',
@@ -16,16 +18,18 @@ export class PlaylistComponent implements OnInit {
     constructor(
         private playlistService: PlaylistService,
         private spotifyService: SpotifyService,
-        private router: Router) { }
+        private router: Router,
+        private cookieService: CookieService) { }
     playlists: Playlist[] = [];
     spotifyplaylists: SpotifyPlaylist[] = [];
     selectedPlaylist: Playlist = new Playlist();
     currentSpotifyUser: SpotifyUser = new SpotifyUser();
     renametarget : Playlist = new Playlist();
     removetarget : Playlist = new Playlist();
+    subscriptionAuthenticationComplited : Subscription;
     loginToSpotify()
     {
-        this.spotifyService.login().then(token => {
+        this.spotifyService.login(true).then(token => {
                 console.log(token);
 
                 //this.spotifyService.getCurrentUser()
@@ -36,10 +40,18 @@ export class PlaylistComponent implements OnInit {
             //err => console.error(err),
             //() => { });
     }
-    
+    logoutFromSpotify()
+    {
+        this.cookieService.remove("_ga",{domain:"spotify.com",path: "/"});
+        //localStorage.removeItem('spotify-token');
+        
+    }
     ngOnInit() 
     { 
-        this.getPlaylists();
+        this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
+        {
+            this.getPlaylists();
+        });
     }
     getPlaylists(): void {
         this.playlistService.getPlaylists()

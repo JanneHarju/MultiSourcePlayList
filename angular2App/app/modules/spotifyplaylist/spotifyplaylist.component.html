@@ -3,9 +3,9 @@
         <div class="innerbox">
             <div class="box-style"> 
                 <div class="row">
-                    Spotify tracks for:  {{playlistInfo.name}}
+                    Tracks from Spotify playlist:  {{playlistInfo.name}}
                     <div class="dropdown addall">
-                        <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             Add all tracks to...
                             <span class="caret"></span>
                         </button>
@@ -27,14 +27,19 @@
                     <tbody>
                         <tr *ngFor="let track of spotifyTracks">
                             <td class="tdArtist" (click)="onSpotifySelect(track.track)">
-                                {{track.track.artists[0].name}}
+                                <div *ngIf="track.track">
+                                    {{track.track.artists[0].name}}
+                                </div>
                             </td>
                             <td class="tdTrack" (click)="onSpotifySelect(track.track)">
-                                {{track.track.name}}
+
+                                <div *ngIf="track.track">
+                                    {{track.track.name}}
+                                </div>
                             </td>
                             <td class="pull-right">
                                 <div class="dropup">
-                                    <button class="btn dropdown-toggle glyphicon glyphicon-option-horizontal" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <button class="btn btn-primary dropdown-toggle glyphicon glyphicon-option-horizontal" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu drop" aria-labelledby="dropdownMenu1">

@@ -59,8 +59,10 @@ export class SpotifyService {
     currentUser: SpotifyUser;
     playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
     tempPlaylist: SpotifyPlaylistTrack[] = [];
+    authenticationComplited: string = "";
     private subjectPlayStatus = new Subject<SpotifyPlayStatus>();
     private subjectTrackEnded = new Subject<boolean>();
+    private subjectAuthenticationComplited = new Subject<string>();
     callback()
     {
         this.checkPlayerState().subscribe(playState => 
@@ -74,6 +76,16 @@ export class SpotifyService {
             this.setPlayStatus(playState);
         });
     }
+    setAuthenticationComplited(status: string)
+    {
+        this.authenticationComplited = status;
+        this.subjectAuthenticationComplited.next(status);
+    }
+    getAuthenticationComplited() : Observable<string>
+    {
+        return this.subjectAuthenticationComplited.asObservable();
+    }
+
     setPlayStatus(playStatus: SpotifyPlayStatus)
     {
         this.playStatus = playStatus;
@@ -259,7 +271,7 @@ export class SpotifyService {
     }
     //#region login
 
-    login() : Promise<Object> {
+    login(relogin: boolean) : Promise<Object> {
         return (new Promise((resolve, reject) => {
         var w = 400,
             h = 500,
@@ -270,7 +282,8 @@ export class SpotifyService {
             client_id: this.config.clientId,
             redirect_uri: this.config.redirectUri,
             scope: this.config.scope.join(' ') || '',
-            response_type: 'token'
+            response_type: 'token',
+            show_dialog: relogin
         };
         var authCompleted = false;
         console.log(this.toQueryString(params));
@@ -294,6 +307,7 @@ export class SpotifyService {
                 authCompleted = true;
 
                 this.config.authToken = e.newValue;
+                this.setAuthenticationComplited(e.newValue);
                 window.removeEventListener('storage', storageChanged, false);
 
                 return resolve(e.newValue);

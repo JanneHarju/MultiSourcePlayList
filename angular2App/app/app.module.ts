@@ -32,6 +32,7 @@ import { PlayerService } from './services/player.service';
 import { AppComponent }  from './app.component';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { PopupComponent} from './modules/shared/popup/popup.component';
+import { CookieService } from 'angular2-cookie/services/cookies.service';
 import './rxjs-extensions';
 
 @NgModule({
@@ -76,7 +77,8 @@ import './rxjs-extensions';
     },
     YoutubeAPIService,
     MusixMatchAPIService,
-    SimpleTimer
+    SimpleTimer,
+    CookieService
   ],
   bootstrap: [ AppComponent ]
 })

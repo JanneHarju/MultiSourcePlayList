@@ -96,7 +96,12 @@ namespace PlayList.Controllers
             //tarkista tämä
             Track someTrack = values[0];
             Track lastInfo = tracks.OrderByDescending(x => x.id).First();
-            int lastOrder = tracks.Where(y=>y.playlist==someTrack.playlist).OrderByDescending(x => x.order).First().order + 1;
+            int lastOrder = 0;
+            var temp = tracks.Where(y=>y.playlist==someTrack.playlist);
+            if(temp.Any())
+            {
+                lastOrder = temp.OrderByDescending(x => x.order).First().order + 1;
+            }
             int newidIndex = 1;
             foreach(Track newtrack in values)
             {
