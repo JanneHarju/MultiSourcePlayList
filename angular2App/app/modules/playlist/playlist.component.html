@@ -1,9 +1,6 @@
  <div class="innerbox">
      <div class="box-style"> 
          <div>
-            <label>Playlist name:</label>
-            <input class="form-control" #playlistName (keyup.enter)="add(playlistName.value); playlistName.value=''"/>
-            <button class="btn btn-primary glyphicon glyphicon-plus" (click)="add(playlistName.value); playlistName.value=''"></button>
             <button class="btn btn-primary glyphicon glyphicon-log-in" (click)="loginToSpotify()"></button>
             <button class="btn btn-primary glyphicon glyphicon-log-out" (click)="logoutFromSpotify()"></button>
         </div>
@@ -21,6 +18,7 @@
                         <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
                 
             </div>
+            <button class="addButton btn btn-primary glyphicon glyphicon-plus pull-left" (click)="addNewPlaylistModal.open()"></button>
         </div>
         <div *ngIf="spotifyplaylists.length > 0" class="grid grid-pad" >
             <h3> Spotify playlists: </h3>
@@ -64,5 +62,20 @@
     <modal-footer>
         <button class="btn btn-primary confirmbutton" (click)="removeConfirmationModal.close(); delete()">Yes</button>
         <button class="btn btn-primary" (click)="removeConfirmationModal.close()">No</button>
+    </modal-footer>
+</modal>
+
+<!--Playlist remove confirmation modal-->
+ <modal #addNewPlaylistModal modalClass="modal-sm">
+    <modal-header>
+        <h1>Create a new playlist</h1>
+    <modal-content>
+        <label>Playlist name:</label>
+        <input class="form-control" (keyup.enter)="addNewPlaylistModal.close(); add(newPlaylistName.value); newPlaylistName.value=''" ng-focus="true" #newPlaylistName />
+    </modal-content> 
+    </modal-header>
+    <modal-footer>
+        <button class="btn btn-primary confirmbutton" (click)="addNewPlaylistModal.close(); add(newPlaylistName.value); newPlaylistName.value=''">Create</button>
+        <button class="btn btn-primary" (click)="addNewPlaylistModal.close()">Cancel</button>
     </modal-footer>
 </modal>
