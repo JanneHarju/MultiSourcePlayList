@@ -62,7 +62,7 @@ export class AddTrackPopupComponent implements OnInit {
             let tr = new Track();
             //tr.address = newtrack;
             tr.order = this.currentTracklist[this.currentTracklist.length -1].order + addIndex;
-            tr.playlist = this.trackListId;
+            //tr.playlist = this.trackListId;
             //https://www.youtube.com/watch?v=ueI_oDqvlkI
             //https://open.spotify.com/track/48UPSzbZjgc449aqz8bxox
             //https://embed.spotify.com/?uri=spotify%3Atrack%3A6VpUZlL6wGaVm98gGUs8Qq

@@ -82,7 +82,7 @@ export class SpotifyPlaylistComponent implements OnInit {
                 });*/
             });
         this.route.params
-            .switchMap((params: Params) => this.spotifyService.getPlaylistInfo(params['id']))
+            .switchMap((params: Params) => this.spotifyService.getPlaylistInfo(params['id'],params['id2']))
             .subscribe((playlistInfo: SpotifyPlaylistInfo) => 
             {
                 //console.log(params);
@@ -91,7 +91,7 @@ export class SpotifyPlaylistComponent implements OnInit {
         this.playlistService.getPlaylists()
             .then((playlists : Playlist[])=> this.playlists = playlists);
      }
-     addSpotifyTrackToPlaylist(playlist: number, track: SpotifyTrack)
+     addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
         console.log(playlist + " " + track.name);
         let newTrack: Track = new Track();
@@ -106,7 +106,7 @@ export class SpotifyPlaylistComponent implements OnInit {
 
         });
      }
-     addAllSpotifyTrackToPlaylist(playlist: number)
+     addAllSpotifyTrackToPlaylist(playlist: Playlist)
      {
         let trackList: Track[] = [];
         this.spotifyTracks.forEach(st =>
@@ -128,6 +128,8 @@ export class SpotifyPlaylistComponent implements OnInit {
     {
         let trackList: Track[] = [];
         let order: number = 0;
+        let newPlaylist: Playlist = new Playlist();
+        newPlaylist.id = 99999;
         this.spotifyTracks.forEach(st =>
         {
 
@@ -135,7 +137,7 @@ export class SpotifyPlaylistComponent implements OnInit {
             newTrack.address = st.track.uri;
             newTrack.name = st.track.artists[0].name +" - "+ st.track.name;
             newTrack.type = 2;
-            newTrack.playlist = 99999;
+            newTrack.playlist = newPlaylist;
             newTrack.order = order;
             ++order;
             trackList.push(newTrack);

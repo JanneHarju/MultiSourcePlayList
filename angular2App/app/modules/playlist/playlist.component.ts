@@ -55,7 +55,10 @@ export class PlaylistComponent implements OnInit {
     }
     getPlaylists(): void {
         this.playlistService.getPlaylists()
-            .then((playlists : Playlist[])=> this.playlists = playlists);
+            .then((playlists : Playlist[])=> 
+            {
+                this.playlists = playlists;
+            });
         this.spotifyService.getUsersPlaylist()
             .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
         //this.currentSpotifyUser = this.spotifyService.getUser();

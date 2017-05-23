@@ -11,7 +11,7 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                             <li *ngFor="let playlist of playlists">
-                                <a (click)="addAllSpotifyTrackToPlaylist(playlist.id)">
+                                <a (click)="addAllSpotifyTrackToPlaylist(playlist)">
                                     {{playlist.name}}
                                 </a>
                             </li>
@@ -44,7 +44,7 @@
                                     </button>
                                     <ul class="dropdown-menu drop" aria-labelledby="dropdownMenu1">
                                         <li *ngFor="let playlist of playlists">
-                                            <a (click)="addSpotifyTrackToPlaylist(playlist.id, track.track)">
+                                            <a (click)="addSpotifyTrackToPlaylist(playlist, track.track)">
                                                 {{playlist.name}}
                                             </a>
                                         </li>

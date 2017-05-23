@@ -51,7 +51,7 @@ export class SearchlistComponent implements OnInit {
         this.playlistService.getPlaylists()
         .then((playlists : Playlist[])=> this.playlists = playlists);
      }
-     addSpotifyTrackToPlaylist(playlist: number, track: SpotifyTrack)
+     addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
         console.log(playlist + " " + track.name);
         let newTrack: Track = new Track();
@@ -66,7 +66,7 @@ export class SearchlistComponent implements OnInit {
 
         });
      }
-     addVideoToPlaylist(playlist: number, video: YoutubeVideo)
+     addVideoToPlaylist(playlist: Playlist, video: YoutubeVideo)
      {
         console.log(playlist + " " + video.snippet.title);
         let newTrack: Track = new Track();
@@ -91,6 +91,8 @@ export class SearchlistComponent implements OnInit {
     {
         let trackList: Track[] = [];
         let order: number = 0;
+        let newPlaylist: Playlist = new Playlist();
+        newPlaylist.id = 99999;
         this.spotifyTracks.forEach(st =>
         {
 
@@ -98,7 +100,7 @@ export class SearchlistComponent implements OnInit {
             newTrack.address = st.uri;
             newTrack.name = st.artists[0].name +" - "+ st.name;
             newTrack.type = 2;
-            newTrack.playlist = 99999;
+            newTrack.playlist = newPlaylist;
             newTrack.order = order;
             ++order;
             trackList.push(newTrack);
@@ -112,6 +114,8 @@ export class SearchlistComponent implements OnInit {
     {
         let trackList: Track[] = [];
         let order: number = 0;
+        let newPlaylist: Playlist = new Playlist();
+        newPlaylist.id = 99999;
         this.youtubeVideos.forEach(ytv =>
         {
 
@@ -120,7 +124,7 @@ export class SearchlistComponent implements OnInit {
             newTrack.id = 99999;
             newTrack.name = ytv.snippet.title
             newTrack.type = 1;
-            newTrack.playlist = 99999;
+            newTrack.playlist = newPlaylist;
             newTrack.order = order;
             ++order;
             trackList.push(newTrack);

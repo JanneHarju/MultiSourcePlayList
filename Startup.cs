@@ -5,8 +5,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 using PlayList.Controllers;
+using PlayList.Repositories;
 
 namespace PlayList
 {
@@ -18,6 +22,7 @@ namespace PlayList
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("config.json")
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -27,6 +32,11 @@ namespace PlayList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connection = Configuration["Production:SqliteConnectionString"];
+ 
+            services.AddDbContext<MultiSourcePlaylistContext>(options =>
+                options.UseSqlite(connection)
+            );
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
@@ -38,9 +48,14 @@ namespace PlayList
                             .AllowAnyMethod();
                     });
             });
+            services.AddScoped<IMultiSourcePlaylistRepository, MultiSourcePlaylistRepository>();
 
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

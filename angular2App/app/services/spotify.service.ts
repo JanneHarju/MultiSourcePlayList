@@ -205,8 +205,8 @@ export class SpotifyService {
         }).map(res => 
         {
             console.log(res);
-            return res.json().items as SpotifyPlaylist[];}
-    );
+            return res.json().items as SpotifyPlaylist[];
+        });
     }
     getUser() :SpotifyUser
     {
@@ -215,7 +215,7 @@ export class SpotifyService {
         else
             return new SpotifyUser();
     }
-    getPlaylistTracks(playlistId: string,ownerId:string, options?: SpotifyOptions) {
+    getPlaylistTracks(playlistId: string, ownerId:string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
         
@@ -234,13 +234,13 @@ export class SpotifyService {
         
     }
 
-    getPlaylistInfo(playlistId: string, options?: SpotifyOptions) {
+    getPlaylistInfo(playlistId: string, ownerId:string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
         options.limit = 1;
         return this.api({
             method: 'get',
-            url: '/users/'+this.currentUser.id+'/playlists/'+playlistId,
+            url: '/users/'+ownerId+'/playlists/'+playlistId,
             search: options,
             headers: this.getHeaders(true)
         })
