@@ -16,7 +16,7 @@ namespace PlayList.Repositories
         List<Playlist> GetAllPlaylists();
         Playlist GetPlaylist(long id);
         void PostTrack(Track track);
-        Playlist AttachPlaylist(int id);
+        Playlist AttachPlaylist(long id);
         void PutTrack(long id, [FromBody] Track track);
         void PostPlaylist(Playlist playlist);
         void PutPlaylist(long id, [FromBody] Playlist playlist);

@@ -58,7 +58,7 @@ namespace PlayList.Controllers
         {
             if(values != null && values.Any())
             {
-                int playlistId = values[0].playlist.id;
+                long playlistId = values[0].playlist.id;
                 _multiSourcePlaylistRepository.DeleteTracksByPlaylistId(playlistId);
                 int order = 0;
                 Playlist pl = _multiSourcePlaylistRepository.AttachPlaylist(playlistId);

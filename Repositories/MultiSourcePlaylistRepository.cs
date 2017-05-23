@@ -75,7 +75,7 @@ namespace PlayList.Repositories
             _context.SaveChanges();
         }
 
-        public Playlist AttachPlaylist(int playlist)
+        public Playlist AttachPlaylist(long playlist)
         {
             Playlist myPlaylist = new Playlist { id = playlist };
             _context.Playlists.Attach(myPlaylist);

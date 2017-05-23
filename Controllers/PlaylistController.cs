@@ -5,6 +5,7 @@ using PlayList.Models;
 using PlayList.Repositories;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace PlayList.Controllers
 {
@@ -13,10 +14,13 @@ namespace PlayList.Controllers
     public class PlaylistController : Controller
     {
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
-        public PlaylistController(IMultiSourcePlaylistRepository multiSourcePlaylistRepository)
+        private readonly ILogger _logger;
+        public PlaylistController(IMultiSourcePlaylistRepository multiSourcePlaylistRepository
+            ,ILoggerFactory loggerFactory)
          : base()
         {
             _multiSourcePlaylistRepository = multiSourcePlaylistRepository;
+            _logger = loggerFactory.CreateLogger("PlaylistController");  
         }
         // GET api/values
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
@@ -47,7 +51,7 @@ namespace PlayList.Controllers
             var lastPlaylist = allPlaylists.OrderByDescending(x => x.order).FirstOrDefault();
             if(lastPlaylist != null)
             {
-                lastOrder = lastPlaylist.id +1;
+                lastOrder = lastPlaylist.order +1;
             }
             value.order = lastOrder;
             _multiSourcePlaylistRepository.PostPlaylist(value);
@@ -58,9 +62,6 @@ namespace PlayList.Controllers
         public void Delete(int id)
         {
             _multiSourcePlaylistRepository.DeletePlaylist(id);
-            //onko tämä tarpeen
-            var templist = _multiSourcePlaylistRepository.GetTracks(id);
-            _multiSourcePlaylistRepository.DeleteTracksByPlaylistId(id);
         }
     }
 }

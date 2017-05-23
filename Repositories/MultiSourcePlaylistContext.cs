@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using PlayList.Models;
 
 namespace PlayList.Repositories
@@ -20,9 +21,14 @@ namespace PlayList.Repositories
        
         protected override void OnModelCreating(ModelBuilder builder)
         { 
-            builder.Entity<Track>().HasKey(m => m.id); 
-            builder.Entity<Track>().HasOne(track=>track.playlist).WithMany(playlist => playlist.tracks); 
+            builder.Entity<Track>()
+                .HasKey(m => m.id); 
+            builder.Entity<Track>()
+                .HasOne(track=>track.playlist)
+                .WithMany(playlist => playlist.tracks)
+                .OnDelete(DeleteBehavior.Cascade); 
             builder.Entity<Playlist>().HasKey(m => m.id); 
+            
             //builder.Entity<Playlist>().HasMany(playlist=>playlist.tracks).WithOne(track => track.playlist); 
             base.OnModelCreating(builder); 
         } 
