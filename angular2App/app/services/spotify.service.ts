@@ -104,6 +104,12 @@ export class SpotifyService {
     {
         return this.subjectTrackEnded.asObservable();
     }
+    startTimer()
+    {
+        this.st.delTimer('spotify');
+        this.st.newTimer('spotify', 1);
+        this.timerId = this.st.subscribe('spotify', e => this.callback());
+    }
     //if Spotify result is something like now rights i.e. then login. Don't login at start if you already have working token.
     play(trackUri?: string, options?: SpotifyOptions) {
         options = options || {};
@@ -111,9 +117,7 @@ export class SpotifyService {
         this.setPlayStatus(this.playStatus);
         this.setTrackEnd(false);
         //Only one of either context_uri or uris can be specified. If neither are present, calling /play will resume playback.
-        this.st.delTimer('spotify');
-        this.st.newTimer('spotify', 1);
-        this.timerId = this.st.subscribe('spotify', e => this.callback());
+        this.startTimer();
         if(trackUri)
         {
             return this.api({

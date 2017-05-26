@@ -25,6 +25,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
     subscriptionPlayStatus: Subscription;
     subscriptionTrack: Subscription;
+    subscriptionAuthenticationComplited : Subscription;
     progress: number;
     duration: number;
     disableProgressUpdate: boolean = false;
@@ -39,6 +40,22 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.track = track;
             if(this.track)
                 this.play(this.track.address);
+        });
+
+        this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
+        {
+            if(auth)
+            {
+                this.spotifyService.checkPlayerState().subscribe(status =>
+                {
+                    console.log("rekisteröity")
+                    if(status.is_playing)
+                    {
+                        console.log("rekisteröity")
+                        this.spotifyService.startTimer();
+                    }
+                });
+            }
         });
         this.subscriptionPlayStatus = this.spotifyService.getPlayStatus().subscribe(playStatus =>
         {
