@@ -19,6 +19,8 @@ import { SearchComponent } from './modules/search/search.component';
 import { SearchlistComponent } from './modules/searchlist/searchlist.component';
 import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplaylist.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
+import { NavbarComponent } from './modules/navbar/navbar.component';
+import { LoginComponent } from './modules/login/login.component';
 import { SafePipe} from './modules/shared/safepipe';
 import { ColorPipe} from './modules/shared/colorpipe';
 import { DisplayTimePipe} from './modules/shared/displaytimepipe';
@@ -29,6 +31,7 @@ import { SpotifyService } from './services/spotify.service';
 import { YoutubeAPIService } from './services/youtubeapi.service';
 import { MusixMatchAPIService } from './services/musixmatch.service';
 import { PlayerService } from './services/player.service';
+import { AuthService } from "./services/auth.service";
 import { AppComponent }  from './app.component';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { PopupComponent} from './modules/shared/popup/popup.component';
@@ -55,6 +58,8 @@ import './rxjs-extensions';
     SpotifyPlaylistComponent,
     PopupComponent,
     AddTrackPopupComponent,
+    NavbarComponent,
+    LoginComponent,
     SafePipe,
     ColorPipe,
     DisplayTimePipe
@@ -63,6 +68,7 @@ import './rxjs-extensions';
     TrackService,
     PlaylistService,
     PlayerService,
+    AuthService,
     SpotifyService,
     {
         provide: "SpotifyConfig",

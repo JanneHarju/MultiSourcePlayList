@@ -35,6 +35,12 @@ namespace PlayList.Repositories
             _context.SaveChanges();
         }
 
+        public void DeleteUser(long id)
+        {
+            var entity = _context.Users.First(t => t.Id == id);
+            _context.Users.Remove(entity);
+            _context.SaveChanges();
+        }
         public Track GetTrack(long id)
         {
             return _context.Tracks.First(x=>x.id == id);
@@ -65,8 +71,19 @@ namespace PlayList.Repositories
         {
             _logger.LogCritical("Getting a the existing records");
             return _context.Playlists
-            .OrderBy(x=>x.order)
-            .ToList();
+                .OrderBy(x=>x.order)
+                .ToList();
+        }
+        public User GetUser(long id)
+        {
+            return _context.Users
+                .First(x=>x.Id == id);
+        }
+
+        public List<User> GetAllUsers()
+        {
+            return _context.Users
+                .ToList();
         }
         public void PostTrack(Track track)
         {
@@ -75,6 +92,17 @@ namespace PlayList.Repositories
             _context.SaveChanges();
         }
 
+        public void PostPlaylist(Playlist playlist)
+        {
+            _context.Playlists.Add(playlist);
+            _context.SaveChanges();
+        }
+
+        public void PostUser(User user)
+        {
+            _context.Users.Add(user);
+            _context.SaveChanges();
+        }
         public Playlist AttachPlaylist(long playlist)
         {
             Playlist myPlaylist = new Playlist { id = playlist };
@@ -89,14 +117,15 @@ namespace PlayList.Repositories
             _context.Tracks.Update(track);
             _context.SaveChanges();
         }
-        public void PostPlaylist(Playlist playlist)
-        {
-            _context.Playlists.Add(playlist);
-            _context.SaveChanges();
-        }
         public void PutPlaylist(long id, [FromBody] Playlist playlist)
         {
             _context.Playlists.Update(playlist);
+            _context.SaveChanges();
+        }
+
+        public void PutUser(long id, [FromBody] User user)
+        {
+            _context.Users.Update(user);
             _context.SaveChanges();
         }
     }

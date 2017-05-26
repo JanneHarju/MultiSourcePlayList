@@ -16,12 +16,9 @@ export class AppComponent implements OnInit
         private spotifyService: SpotifyService) { }
     ngOnInit(): void 
     {
-        this.spotifyService.login(true).then(token => {
+        this.spotifyService.login(false).then(token => {
             console.log("login onnistui");
-            this.spotifyService.getCurrentUser().subscribe(user =>
-            {
-                console.log("userin haku onnistui onnistui");
-            })
+            
         });
     }
 }

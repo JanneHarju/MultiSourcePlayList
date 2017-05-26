@@ -5,7 +5,7 @@ html, body {
 }
 #container {
     overflow: scroll;
-    height: 100vh;
+    height: 95vh;
 	  scroll-behavior: auto;
 }
 h1 {
@@ -18,25 +18,6 @@ h2 {
   margin-top: 0;
   padding-top: 0;
 }
-nav a {
-  padding: 5px 10px;
-  text-decoration: none;
-  margin-top: 10px;
-  display: inline-block;
-  background-color: #eee;
-  border-radius: 4px;
-  
-}
-nav a:visited, a:link {
-  color: #607D8B;
-}
-nav a:hover {
-  color: #039be5;
-  background-color: #CFD8DC;
-}
-nav a.active {
-  color: #039be5;
-}
 .container-fluid{
   background-color: black;
   height: 100%;
@@ -46,4 +27,9 @@ div {
     padding-left: 0px;
     padding-right: 0px;
 
+}
+.mynavbar
+{
+  height: 6vh;
+  background-color: #242021;
 }

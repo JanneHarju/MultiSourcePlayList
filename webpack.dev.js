@@ -41,15 +41,20 @@ module.exports = {
         },
         contentBase: path.join(__dirname, '/wwwroot/'),
         hot: true,
-        proxy: {
+        proxy: 
+        {
             '/api/playlists/*': {
             target: 'http://localhost:5000',
             secure: false
-        },
+            },
             '/api/tracks/*': {
             target: 'http://localhost:5000',
             secure: false
-        }
+            },
+            '/api/tokeauth/*': {
+            target: 'http://localhost:5000',
+            secure: false
+            }
         }
     },
 
@@ -132,6 +137,14 @@ module.exports = {
             inject: 'body',
             template: 'angular2App/callback.html'
         }),
+        new HtmlWebpackPlugin({
+            filename: 'login.html',
+            inject: 'body',
+            template: 'angular2App/login.html'
+        }),
+        new CopyWebpackPlugin([
+            { from: './angular2App/login.css', to: 'assets/', flatten: true }
+        ]),
         new CopyWebpackPlugin([
             { from: './angular2App/images/*.*', to: 'assets/', flatten: true }
         ])

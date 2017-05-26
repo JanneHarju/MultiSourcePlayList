@@ -1,0 +1,26 @@
+<div class="container">
+
+    <form class="form-signin">
+        <h2 class="form-signin-heading">Please log in</h2>
+        <label for="inputEmail" class="sr-only">User name</label>
+        <input [(ngModel)]="loginUser.Username" type="username" name="username" id="inputEmail" class="form-control" placeholder="User name" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input [(ngModel)]="loginUser.Password" type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <label *ngIf="register" for="inputFname" class="sr-only">First name</label>
+        <input *ngIf="register" [(ngModel)]="loginUser.Fname" type="username" name="firstname" id="inputFirstname" class="form-control" placeholder="First name" required>
+        <label *ngIf="register" for="inputLname" class="sr-only">Last name</label>
+        <input *ngIf="register" [(ngModel)]="loginUser.Lname" type="username" name="lastname" id="inputLastname" class="form-control" placeholder="Last name" required>
+        
+        <a *ngIf="register == false" (click)="registerState()">Register</a>
+
+        <a *ngIf="register" (click)="loginState()">Login</a>
+        <!--<div class="checkbox">
+            <label>
+            <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>-->
+        <button *ngIf="register == false" (click)="login()" class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+        <button *ngIf="register" (click)="registerUser()" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+    </form>
+
+</div>

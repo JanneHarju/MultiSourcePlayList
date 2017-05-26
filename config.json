@@ -1,6 +1,6 @@
 {
     "Production": {
-        "SqliteConnectionString": "Data Source=\\Users\\paiviharju\\Documents\\Database\\MSPL.sqlite"
+        "SqliteConnectionString": "Data Source=//Users//paiviharju//Documents//Database//MSPL.sqlite"
     }
 } 
 

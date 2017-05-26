@@ -4,7 +4,6 @@ import { PlaylistService} from '../../services/playlist.service';
 import { SpotifyService } from '../../services/spotify.service';
 import { Playlist } from '../../models/playlist'
 import { SpotifyPlaylist } from '../../models/spotifyplaylist';
-import { SpotifyUser } from '../../models/spotifyUser';
 import { CookieService } from 'angular2-cookie/services/cookies.service';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -23,7 +22,6 @@ export class PlaylistComponent implements OnInit {
     playlists: Playlist[] = [];
     spotifyplaylists: SpotifyPlaylist[] = [];
     selectedPlaylist: Playlist = new Playlist();
-    currentSpotifyUser: SpotifyUser = new SpotifyUser();
     renametarget : Playlist = new Playlist();
     removetarget : Playlist = new Playlist();
     subscriptionAuthenticationComplited : Subscription;
