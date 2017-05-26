@@ -69,6 +69,10 @@ export class PlaylistComponent implements OnInit {
                 this.playlists = [];
             }
         });
+        if(this.authService.checkLogin())
+        {
+            this.getPlaylists();
+        }
     }
     getPlaylists(): void {
         this.playlistService.getUsersPlaylists()

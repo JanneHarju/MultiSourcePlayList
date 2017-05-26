@@ -35,27 +35,35 @@ export class NavbarComponent implements OnInit {
         {
             if(auth)
             {
-                this.authService.getUserInfo().then(res =>
-                {
-                    console.log(res);
-                    var info = res.Data as UserInfo;
-                    if (res != null && info) {
-                        if (info && info.UserName) {
-                            this.userName = info.UserName;
-                        }
-                        else
-                        {
-                            this.userName = "";
-                        }
-                    }
-                });
+                this.getUserInfo();
             }
             else
             {
                 this.userName = "";
             }
         });
+        if(this.authService.checkLogin())
+        {
+            this.getUserInfo();
+        }
         
+    }
+    getUserInfo()
+    {
+        this.authService.getUserInfo().then(res =>
+        {
+            console.log(res);
+            var info = res.Data as UserInfo;
+            if (res != null && info) {
+                if (info && info.UserName) {
+                    this.userName = info.UserName;
+                }
+                else
+                {
+                    this.userName = "";
+                }
+            }
+        });
     }
     logout(){
         this.authService.setAuthenticationComplited(false);
