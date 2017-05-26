@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
 using PlayList.Controllers;
 using PlayList.Repositories;
@@ -44,21 +43,13 @@ namespace PlayList
             services.AddDbContext<MultiSourcePlaylistContext>(options =>
                 options.UseSqlite(connection)
             );
-            
             // Enable the use of an [Authorize("Bearer")] attribute on methods and classes to protect.
             services.AddAuthorization(auth =>
             {
                 auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
                     .RequireAuthenticatedUser().Build());
             });
-            /*services.AddCookieAuthentication(options =>
-            {
-                options.LoginPath = new PathString("/login/");
-                options.AccessDeniedPath = new PathString("/login/");
-                options.CookieName = "Bearer";
-                //options.SessionStore = new MemoryCacheSessionStore();
-            });*/
             /*services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<MultiSourcePlaylistContext>()
                 .AddDefaultTokenProviders();*/
@@ -89,7 +80,6 @@ namespace PlayList
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            app.UseIdentity();
             #region Handle Exception
             app.UseExceptionHandler(appBuilder =>
             {
@@ -127,8 +117,7 @@ namespace PlayList
             #endregion
 
             #region UseJwtBearerAuthentication
-            app.UseAuthentication();
-            /*app.UseJwtBearerAuthentication(new JwtBearerOptions()
+            app.UseJwtBearerAuthentication(new JwtBearerOptions()
             {
                 TokenValidationParameters = new TokenValidationParameters()
                 {
@@ -145,7 +134,7 @@ namespace PlayList
                     // used, some leeway here could be useful.
                     ClockSkew = TimeSpan.FromMinutes(0)
                 }
-            });*/
+            });
             #endregion
             var angularRoutes = new[] {
                  "/track"

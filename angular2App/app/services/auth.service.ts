@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Headers, Http, Response, RequestOptions } from "@angular/http";
 
 import { Router, CanActivate } from '@angular/router';
+import { Subject } from 'rxjs/Subject';
 
 import { Observable } from 'rxjs/Observable';
 import { User } from '../models/user';
@@ -12,6 +13,7 @@ import 'rxjs/add/operator/toPromise';
 export class AuthService implements CanActivate {
     private tokeyKey = "token";
 
+    private subjectAuthenticationComplited = new Subject<boolean>();
     constructor(private http: Http, private router: Router) { }
 
     public canActivate() {
@@ -27,11 +29,16 @@ export class AuthService implements CanActivate {
         let header = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: header });
 
-        return this.http.put("/api/tokeauth/Login", user, options).toPromise().then(
+        return this.http.put("/api/tokenauth/Login", user, options).toPromise().then(
             res => {
                 let result = res.json();
                 if (result.State == 1 && result.Data && result.Data.accessToken) {
                     sessionStorage.setItem(this.tokeyKey, result.Data.accessToken);
+                    this.setAuthenticationComplited(true);
+                }
+                else
+                {
+                    this.setAuthenticationComplited(false);
                 }
                 return result;
             }
@@ -42,11 +49,16 @@ export class AuthService implements CanActivate {
         let header = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: header });
 
-        return this.http.post("/api/tokeauth/Register", user, options).toPromise().then(
+        return this.http.post("/api/tokenauth/Register", user, options).toPromise().then(
             res => {
                 let result = res.json();
                 if (result.State == 1 && result.Data && result.Data.accessToken) {
                     sessionStorage.setItem(this.tokeyKey, result.Data.accessToken);
+                    this.setAuthenticationComplited(true);
+                }
+                else
+                {
+                    this.setAuthenticationComplited(false);
                 }
                 return result;
             }
@@ -62,7 +74,14 @@ export class AuthService implements CanActivate {
             .catch(this.handleError);
     }
 
-   
+    public setAuthenticationComplited(status: boolean)
+    {
+        this.subjectAuthenticationComplited.next(status);
+    }
+    public getAuthenticationComplited() : Observable<boolean>
+    {
+        return this.subjectAuthenticationComplited.asObservable();
+    }
 
     public checkLogin(): boolean {
         let token = sessionStorage.getItem(this.tokeyKey);
@@ -70,7 +89,7 @@ export class AuthService implements CanActivate {
     }
 
     public getUserInfo() {
-        return this.authGet("/api/tokeauth");
+        return this.authGet("/api/tokenauth");
     }
 
     public authPost$(url: string, body: any) {

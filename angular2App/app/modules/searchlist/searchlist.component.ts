@@ -48,8 +48,8 @@ export class SearchlistComponent implements OnInit {
             {
                 this.youtubeVideos = youtubeVideos;
             });
-        this.playlistService.getPlaylists()
-        .then((playlists : Playlist[])=> this.playlists = playlists);
+        this.playlistService.getUsersPlaylists()
+            .then((playlists : Playlist[])=> this.playlists = playlists);
      }
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {

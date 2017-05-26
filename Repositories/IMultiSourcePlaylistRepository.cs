@@ -13,8 +13,9 @@ namespace PlayList.Repositories
         void DeleteUser(long id);
         Track GetTrack(long id);
         List<Track> GetAllTracks();
-        List<Track> GetTracks(long playlistId);
+        List<Track> GetUsersPlaylistTracks(long playlistId, long userId);
         List<Playlist> GetAllPlaylists();
+        List<Playlist> GetUsersPlaylists(long userId);
         Playlist GetPlaylist(long id);
         User GetUser(long id);
         List<User> GetAllUsers();

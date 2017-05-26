@@ -53,12 +53,14 @@ namespace PlayList.Repositories
                 .Include(y=>y.playlist)
                 .ToList();
         }
-        public List<Track> GetTracks(long playlistId)
+        //public List<Track> GetUsersPlaylistTracks(long playlistId, long userId)
+        public List<Track> GetUsersPlaylistTracks(long playlistId, long userId)
         {
             _logger.LogCritical("Getting a the existing record" + playlistId);
             return _context.Tracks
                 .Include(y=>y.playlist)
-                .Where(x=>x.playlist.id == playlistId)
+                .ThenInclude(t=>t.owner)
+                .Where(x=>x.playlist.id == playlistId && x.playlist.owner.Id == userId)
                 .OrderBy(x=>x.order)
                 .ToList();
         }
@@ -71,6 +73,15 @@ namespace PlayList.Repositories
         {
             _logger.LogCritical("Getting a the existing records");
             return _context.Playlists
+                .OrderBy(x=>x.order)
+                .ToList();
+        }
+
+        public List<Playlist> GetUsersPlaylists(long userId)
+        {
+            return _context.Playlists
+                .Include(x=>x.owner)
+                .Where(x=>x.owner.Id == userId)
                 .OrderBy(x=>x.order)
                 .ToList();
         }

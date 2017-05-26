@@ -23,6 +23,17 @@ export class PlaylistService {
                 .then((response: Response) => response.json() as Playlist[])
                 .catch(this.handleError);
     }
+    getUsersPlaylists(): Promise<Playlist[]> {
+
+        let headers = this.authService.initAuthHeaders();
+        let options = new RequestOptions({ headers: headers });
+        
+        let url = this.PlaylistsUrl + "/GetUsersPlaylists";
+        return this.http.get(url, options)
+                .toPromise()
+                .then((response: Response) => response.json() as Playlist[])
+                .catch(this.handleError);
+    }
     getPlaylist(id: number): Promise<Playlist> {
         const url = `${this.PlaylistsUrl}/${id}`;
         let headers = this.authService.initAuthHeaders();

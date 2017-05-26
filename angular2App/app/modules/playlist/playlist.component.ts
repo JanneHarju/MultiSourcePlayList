@@ -5,6 +5,7 @@ import { SpotifyService } from '../../services/spotify.service';
 import { Playlist } from '../../models/playlist'
 import { SpotifyPlaylist } from '../../models/spotifyplaylist';
 import { CookieService } from 'angular2-cookie/services/cookies.service';
+import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -17,6 +18,7 @@ export class PlaylistComponent implements OnInit {
     constructor(
         private playlistService: PlaylistService,
         private spotifyService: SpotifyService,
+        private authService: AuthService,
         private router: Router,
         private cookieService: CookieService) { }
     playlists: Playlist[] = [];
@@ -25,6 +27,7 @@ export class PlaylistComponent implements OnInit {
     renametarget : Playlist = new Playlist();
     removetarget : Playlist = new Playlist();
     subscriptionAuthenticationComplited : Subscription;
+    subscriptionAppAuthenticationComplited : Subscription;
     loginToSpotify()
     {
         this.spotifyService.login(true).then(token => {
@@ -48,17 +51,34 @@ export class PlaylistComponent implements OnInit {
     { 
         this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
         {
-            this.getPlaylists();
+            if(auth)
+            {
+                console.log("spotifyhaku");
+                this.spotifyService.getUsersPlaylist()
+                    .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
+            }
+        });
+        this.subscriptionAppAuthenticationComplited = this.authService.getAuthenticationComplited().subscribe(auth => 
+        {
+            if(auth)
+            {
+                this.getPlaylists();
+            }
+            else
+            {
+                this.playlists = [];
+            }
         });
     }
     getPlaylists(): void {
-        this.playlistService.getPlaylists()
+        this.playlistService.getUsersPlaylists()
             .then((playlists : Playlist[])=> 
             {
                 this.playlists = playlists;
+                console.log(this.playlists);
             });
         this.spotifyService.getUsersPlaylist()
-            .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
+                .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
         //this.currentSpotifyUser = this.spotifyService.getUser();
     }
     add(name: string): void {

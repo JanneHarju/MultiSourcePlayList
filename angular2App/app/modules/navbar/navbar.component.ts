@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { SpotifyUser } from '../../models/spotifyUser';
+import { UserInfo } from '../../models/userInfo';
 
 @Component({
     selector: 'my-navbar',
@@ -12,36 +13,52 @@ import { SpotifyUser } from '../../models/spotifyUser';
 })
 
 export class NavbarComponent implements OnInit {
+    subscriptionSpotifyAuthenticationComplited : Subscription;
+    subscriptionAppAuthenticationComplited : Subscription;
+    currentSpotifyUser: SpotifyUser = new SpotifyUser();
+    userName: string = "";
     constructor(
         private spotifyService: SpotifyService,
         private authService: AuthService,
         private router: Router) { }
 
-    subscriptionAuthenticationComplited : Subscription;
-    currentSpotifyUser: SpotifyUser = new SpotifyUser();
-    userName: string = "";
     ngOnInit() 
     {
-        this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
+        this.subscriptionSpotifyAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
         {
             this.spotifyService.getCurrentUser().subscribe(user => 
             {
                 this.currentSpotifyUser = user;
             });
-            this.authService.getUserInfo().then(res =>
+        });
+        this.subscriptionAppAuthenticationComplited = this.authService.getAuthenticationComplited().subscribe(auth => 
+        {
+            if(auth)
             {
-                console.log(res);
-                if (res != null && res.Data) {
-                    let thisuser = res.Data
-                    if (thisuser && thisuser.UserName) {
-                        this.userName = thisuser.UserName;
+                this.authService.getUserInfo().then(res =>
+                {
+                    console.log(res);
+                    var info = res.Data as UserInfo;
+                    if (res != null && info) {
+                        if (info && info.UserName) {
+                            this.userName = info.UserName;
+                        }
+                        else
+                        {
+                            this.userName = "";
+                        }
                     }
-                }
-            });
+                });
+            }
+            else
+            {
+                this.userName = "";
+            }
         });
         
     }
     logout(){
+        this.authService.setAuthenticationComplited(false);
         sessionStorage.clear();
         this.router.navigate(["login"]);
     }

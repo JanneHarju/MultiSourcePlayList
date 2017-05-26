@@ -22,9 +22,14 @@
                     Change spotify user
                     </a>
                 </li>
-                <li>
+                <li *ngIf="userName != ''">
                     <a (click)="logout()">
                     Logout from app
+                    </a>
+                </li>
+                <li *ngIf="userName == ''">
+                    <a (click)="logout()">
+                    Log in
                     </a>
                 </li>
             </ul>

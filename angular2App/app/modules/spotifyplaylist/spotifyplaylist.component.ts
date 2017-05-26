@@ -88,7 +88,7 @@ export class SpotifyPlaylistComponent implements OnInit {
                 //console.log(params);
                 this.playlistInfo = playlistInfo;
             });
-        this.playlistService.getPlaylists()
+        this.playlistService.getUsersPlaylists()
             .then((playlists : Playlist[])=> this.playlists = playlists);
      }
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)

@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace PlayList
 {
     [Produces("application/json")]
-    [Route("api/tokeauth")]
+    [Route("api/tokenauth")]
     public class TokenAuthController : Controller
     {
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
@@ -29,6 +29,7 @@ namespace PlayList
             _logger = loggerFactory.CreateLogger("TokenAuthController");  
         }
         [HttpPut("Login")]
+        [AllowAnonymous]
         public IActionResult Login([FromBody]User user)
         {
             _logger.LogCritical("user "+ JsonConvert.SerializeObject(user));
@@ -64,6 +65,7 @@ namespace PlayList
             }
         }
         [HttpPost("Register")]
+        [AllowAnonymous]
         public IActionResult Register([FromBody]User user)
         {
             _logger.LogCritical("exists user "+ JsonConvert.SerializeObject(user));
@@ -136,14 +138,17 @@ namespace PlayList
         }
 
         [HttpGet]
+        [Authorize("Bearer")]
         public IActionResult GetUserInfo()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
+
+            var Id = claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value;
             return Json(new RequestResult
             {
                 State = RequestState.Success,
-                Data = new { User = User.Identity,
-                             UserName = claimsIdentity.Name,
+                Data = new { Id = Id,
+                            UserName = claimsIdentity.Name,
                             IsAuthenticated = claimsIdentity.IsAuthenticated }
             });
         }

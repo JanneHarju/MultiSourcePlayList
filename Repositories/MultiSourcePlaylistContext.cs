@@ -8,10 +8,10 @@ using Microsoft.Data.Sqlite;
 
 namespace PlayList.Repositories
 {
-
+/* 
     public class MultiSourcePlaylistContextFactory : IDbContextFactory<MultiSourcePlaylistContext>
     {
-        
+        */
         /*public IConfigurationRoot Configuration { get; set;}
         public MultiSourcePlaylistContext Create()
         {
@@ -71,21 +71,23 @@ namespace PlayList.Repositories
                 nameof(setting));
             var connection = setting[0];*/
 //DbContextFactoryOptions
+/* 
         public MultiSourcePlaylistContext Create(string[] setting)
         {
             
-
+            */
             /*var builder = new ConfigurationBuilder()
                     .AddJsonFile("config.json")
                     .AddEnvironmentVariables();
             Configuration = builder.Build();
             var connection = Configuration["Production:SqliteConnectionString"];*/
+            /* 
             var contextbuilder = new DbContextOptionsBuilder<MultiSourcePlaylistContext>();
             string connection = "Data Source=//Users//paiviharju//Documents//Database//MSPL.sqlite";
             contextbuilder.UseSqlite(connection);
             return new MultiSourcePlaylistContext(contextbuilder.Options);
         }
-    }
+    }*/
     public class MultiSourcePlaylistContext : DbContext
     {
         public MultiSourcePlaylistContext(DbContextOptions<MultiSourcePlaylistContext> options) :base(options)

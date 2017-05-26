@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
                 if (result.State == 1) {
                     this.router.navigate(["/tracklist",0]);
                 } else {
-                    alert(result.msg);
+                    alert(result.Msg);
                 }
             }
         )
@@ -41,10 +41,10 @@ export class LoginComponent implements OnInit {
     {
         this.authService.register(this.loginUser).then(
             result => {
-                if (result.state == 1) {
+                if (result.State == 1) {
                     this.router.navigate(["/tracklist",0]);
                 } else {
-                    alert(result.msg);
+                    alert(result.Msg);
                 }
             }
         )

@@ -51,7 +51,7 @@ module.exports = {
             target: 'http://localhost:5000',
             secure: false
             },
-            '/api/tokeauth/*': {
+            '/api/tokenauth/*': {
             target: 'http://localhost:5000',
             secure: false
             }

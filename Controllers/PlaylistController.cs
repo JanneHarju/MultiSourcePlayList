@@ -6,7 +6,9 @@ using PlayList.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace PlayList.Controllers
 {
@@ -26,28 +28,49 @@ namespace PlayList.Controllers
         // GET api/values
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         [HttpGet]
+        [Authorize("Bearer")]
         public List<Playlist> Get()
         {
             return _multiSourcePlaylistRepository.GetAllPlaylists();
         }
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize("Bearer")]
         public Playlist Get(int id)
         {
             return _multiSourcePlaylistRepository.GetPlaylist(id);
         }
+        // GET api/values/5
 
+        [HttpGet("GetUsersPlaylists")]
+        [Authorize("Bearer")]
+        public List<Playlist> GetUsersPlaylists()
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
+            _logger.LogCritical("UserId"+userId.ToString());
+            var usersPlaylists = _multiSourcePlaylistRepository.GetUsersPlaylists(userId);
+            usersPlaylists.ForEach(x=>x.owner=null);
+            return usersPlaylists;
+        }
         // PUT api/values/5
         [HttpPut("{id}")]
+        [Authorize("Bearer")]
         public void Put(int id, [FromBody]Playlist value)
         {
             _multiSourcePlaylistRepository.PutPlaylist(id,value);
         }
         // POST api/values
         [HttpPost]
+        [Authorize("Bearer")]
         public Playlist Post([FromBody]Playlist value)
         {
             var allPlaylists = _multiSourcePlaylistRepository.GetAllPlaylists();
+            
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
+            var user = _multiSourcePlaylistRepository.GetUser(userId);
+            value.owner = user;
             int lastOrder = 0;
             var lastPlaylist = allPlaylists.OrderByDescending(x => x.order).FirstOrDefault();
             if(lastPlaylist != null)
@@ -60,6 +83,7 @@ namespace PlayList.Controllers
         }
         // DELETE api/values/5
         [HttpDelete("{id}")]
+        [Authorize("Bearer")]
         public void Delete(int id)
         {
             _multiSourcePlaylistRepository.DeletePlaylist(id);

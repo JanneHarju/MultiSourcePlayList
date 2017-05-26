@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System;
 
 namespace PlayList.Controllers
 {
@@ -30,24 +32,31 @@ namespace PlayList.Controllers
         // GET api/values
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         [HttpGet]
+        [Authorize("Bearer")]
         public List<Track> Get()
         {
             return _multiSourcePlaylistRepository.GetAllTracks();
         }
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize("Bearer")]
         public Track Get(int id)
         {
             return _multiSourcePlaylistRepository.GetTrack(id);
         }
         [HttpGet("{id}/{playlist}")]
+        [Authorize("Bearer")]
         public List<Track> GetById(int id, string playlist)
         {
-            return _multiSourcePlaylistRepository.GetTracks(id);
+
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
+            return _multiSourcePlaylistRepository.GetUsersPlaylistTracks(id, userId);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
+        [Authorize("Bearer")]
         public void Put(int id, [FromBody]Track value)
         {
             _multiSourcePlaylistRepository.PutTrack(id,value);
@@ -55,6 +64,7 @@ namespace PlayList.Controllers
 
         // PUT api/values/5
         [HttpPut]
+        [Authorize("Bearer")]
         public void UpdateOrder([FromBody]Track[] values)
         {
             if(values != null && values.Any())
@@ -89,6 +99,7 @@ namespace PlayList.Controllers
 
         //[ActionName("addMultiple")]
         [HttpPost]
+        [Authorize("Bearer")]
         public void Post([FromBody]Track[] values)
         {
             Track someTrack = values[0];
@@ -125,6 +136,7 @@ namespace PlayList.Controllers
         }
         // DELETE api/values/5
         [HttpDelete("{id}")]
+        [Authorize("Bearer")]
         public void Delete(int id)
         {
             _multiSourcePlaylistRepository.DeleteTrack(id);

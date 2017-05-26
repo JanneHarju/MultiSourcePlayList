@@ -92,7 +92,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         {
             let data = this.player.getVideoData()
             this.duration = this.player.getDuration()*1000;
-            this.setProgress(this.player.getCurrentTime());
+            //this.setProgress(this.player.getCurrentTime());
             //this.trackName = data.title;
         }
     }
