@@ -9,7 +9,7 @@ import { Playlist } from '../../models/playlist'
 import { Track } from '../../models/track'
 import { TrackService }         from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
-
+var bandcamp = require('bandcamp-scraper');
 @Component({
     selector: 'my-searchlist',
     templateUrl: 'searchlist.component.html',
@@ -48,8 +48,31 @@ export class SearchlistComponent implements OnInit {
             {
                 this.youtubeVideos = youtubeVideos;
             });
+            this.route.params
+            .subscribe((params: Params) => this.bandcampSearch(params['id']));
+
         this.playlistService.getUsersPlaylists()
             .then((playlists : Playlist[])=> this.playlists = playlists);
+
+     }
+     bandcampSearch(q: string)
+     {
+         var params = {
+        query: q,
+        page: 1
+        };
+        console.log("joojoo");
+        bandcamp.search(params, (error: any, searchResults: any) => {
+            console.log("weeee")
+            if (error)
+            {
+                console.log(error);
+            }
+            else
+            {
+                console.log(searchResults);
+            }
+        });
      }
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
