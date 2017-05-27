@@ -28,6 +28,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     subscriptionAuthenticationComplited : Subscription;
     progress: number;
     duration: number;
+    shuffle: boolean = false;
     disableProgressUpdate: boolean = false;
     isplaying: boolean = false;
     ngOnInit(): void 
@@ -48,10 +49,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
             {
                 this.spotifyService.checkPlayerState().subscribe(status =>
                 {
-                    console.log("rekisteröity")
                     if(status.is_playing)
                     {
-                        console.log("rekisteröity")
+                        //Tämä ei riitä pitää hakea myös kappaleen tiedot yms.
+                        //entä soittolista?
                         this.spotifyService.startTimer();
                     }
                 });
@@ -60,7 +61,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.subscriptionPlayStatus = this.spotifyService.getPlayStatus().subscribe(playStatus =>
         {
             this.playStatus = playStatus;
-            //console.log("Progress "+this.playStatus.progress_ms + "duration: "+ this.playStatus.item.duration_ms);
             this.setProgress(this.playStatus.progress_ms);
             if(this.playStatus.item)
                 this.duration = this.playStatus.item.duration_ms;
@@ -75,9 +75,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     ngOnDestroy(): void
     {
-        this.player.pauseVideo();
         this.subscriptionTrack.unsubscribe();
         this.subscriptionPlayStatus.unsubscribe();
+        this.subscriptionAuthenticationComplited.unsubscribe();
     }
 
     constructor(
@@ -89,18 +89,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private st: SimpleTimer) { }
 
-    /*getInfo(): void {
-        let urlParts = this.router.url.split("/");
-        let parameter = urlParts[urlParts.length-1];
-        this.infoService.getTrack(+parameter)
-            .then((track :Track)=> this.track = track);
-    }*/
     savePlayer (player: YT.Player) {
         this.player = player;
-        //console.log('player instance', player)
         }
     onStateChange(event : YT.EventArgs){
-        //console.log('player state', event.data);
         if(event.data == 0)
         {
             this.playerService.chooseNextTrack();
@@ -109,23 +101,24 @@ export class PlayerComponent implements OnInit, OnDestroy {
         {
             let data = this.player.getVideoData()
             this.duration = this.player.getDuration()*1000;
-            //this.setProgress(this.player.getCurrentTime());
-            //this.trackName = data.title;
         }
     }
     
     next()
     {
-        //call service here
-        //this.chooseNextTrack();
         this.playerService.chooseNextTrack();
     }
     previous()
     {
-        //call here service to select previous track
-        //Every time track is changed start playing it
-        //this.play();
-        this.playerService.choosePreviousTrack();
+        if(this.progress < 1500)
+        {
+            this.playerService.choosePreviousTrack();
+        }
+        else
+        {
+            this.progress = 0;
+            this.changeprogressTo(this.progress);
+        }
     }
     
     play(trackUri?: string)
@@ -215,6 +208,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         //audio.load();
         
         this.duration = audio.duration*1000;
+        //audio.audioTracks[0].label;
         audio.play();
         //this.trackName = audio.audioTracks.toString();//[0].label + " " + audio.audioTracks[0].kind;
     }
@@ -223,7 +217,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
         
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
         
-        console.log("tänne toisaalle"+ audio.duration);
         
         this.duration = audio.duration;
     }*/
@@ -236,25 +229,27 @@ export class PlayerComponent implements OnInit, OnDestroy {
     {
         this.spotifyService.play(trackUri).subscribe(result =>
         {
-            //console.log(result);
         });
     }
     pauseSpotify()
     {
         this.spotifyService.pause().subscribe(result =>
         {
-            //console.log(result);
         });
     }
     changeprogress()
     {
+        this.changeprogressTo(this.progress);
+    }
+    changeprogressTo(seek: number)
+    {
         if(this.track.type == 1)//youtube
         {
-            this.player.seekTo(this.progress/1000, true);
+            this.player.seekTo(seek/1000, true);
         }
         else if(this.track.type == 2)//spotify
         {
-            this.spotifyService.seek({position_ms: this.progress}).subscribe(res =>
+            this.spotifyService.seek({position_ms: seek}).subscribe(res =>
             {
                 //Onnistui
             });
@@ -262,10 +257,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
         else if(this.track.type == 3)//mp3
         {
             let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-            audio.currentTime = this.progress/1000;
+            audio.currentTime = seek/1000;
         }
         
         this.disableProgressUpdate = false;
+    }
+    shuffleChanged()
+    {
+        this.playerService.shuffle = !this.shuffle;
     }
     callback()
     {

@@ -28,9 +28,8 @@ export class LoginComponent implements OnInit {
     login() {
         this.authService.login(this.loginUser).then(
             result => {
-                console.log(result);
                 if (result.State == 1) {
-                    this.router.navigate(["/tracklist",0]);
+                    this.router.navigate(["/main"]);
                 } else {
                     alert(result.Msg);
                 }
@@ -42,7 +41,7 @@ export class LoginComponent implements OnInit {
         this.authService.register(this.loginUser).then(
             result => {
                 if (result.State == 1) {
-                    this.router.navigate(["/tracklist",0]);
+                    this.router.navigate(["/main"]);
                 } else {
                     alert(result.Msg);
                 }

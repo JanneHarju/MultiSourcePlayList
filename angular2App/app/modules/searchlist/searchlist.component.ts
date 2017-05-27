@@ -53,7 +53,6 @@ export class SearchlistComponent implements OnInit {
      }
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
-        console.log(playlist + " " + track.name);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
         newTrack.address = track.uri;
@@ -68,7 +67,6 @@ export class SearchlistComponent implements OnInit {
      }
      addVideoToPlaylist(playlist: Playlist, video: YoutubeVideo)
      {
-        console.log(playlist + " " + video.snippet.title);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
         newTrack.address = video.id.videoId;
@@ -84,7 +82,6 @@ export class SearchlistComponent implements OnInit {
      /*search(q: string): void {
         this.spotifyService.search(q,"track").subscribe(result =>
         {
-            console.log(result);
         });
     }*/
     onSpotifySelect(track: SpotifyTrack)

@@ -21,6 +21,7 @@ import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplayl
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { NavbarComponent } from './modules/navbar/navbar.component';
 import { LoginComponent } from './modules/login/login.component';
+import { MainComponent} from './modules/main/main.component';
 import { SafePipe} from './modules/shared/safepipe';
 import { ColorPipe} from './modules/shared/colorpipe';
 import { DisplayTimePipe} from './modules/shared/displaytimepipe';
@@ -35,7 +36,6 @@ import { AuthService } from "./services/auth.service";
 import { AppComponent }  from './app.component';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { PopupComponent} from './modules/shared/popup/popup.component';
-import { CookieService } from 'angular2-cookie/services/cookies.service';
 import './rxjs-extensions';
 
 @NgModule({
@@ -50,6 +50,7 @@ import './rxjs-extensions';
   ],
   declarations: [
     AppComponent,
+    MainComponent,
     PlayerComponent,
     PlaylistComponent,
     TracklistComponent,
@@ -83,8 +84,7 @@ import './rxjs-extensions';
     },
     YoutubeAPIService,
     MusixMatchAPIService,
-    SimpleTimer,
-    CookieService
+    SimpleTimer
   ],
   bootstrap: [ AppComponent ]
 })

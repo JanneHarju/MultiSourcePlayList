@@ -13,6 +13,7 @@ export class PlayerService {
     track: Track = new Track();
     tracklist: Track[] = [];
     random: number = 0;
+    public shuffle: boolean;
     subscriptionTrackEnd: Subscription;
     constructor(
         private trackService: TrackService,
@@ -43,14 +44,21 @@ export class PlayerService {
     }
     chooseNextTrack()
     {
-        let nextTracks = this.tracklist.filter(x=>x.order > this.track.order);
-        if(nextTracks != null && nextTracks.length > 0)
+        if(!this.shuffle)
         {
-            this.setTrack(nextTracks[0]);
+            let nextTracks = this.tracklist.filter(x=>x.order > this.track.order);
+            if(nextTracks != null && nextTracks.length > 0)
+            {
+                this.setTrack(nextTracks[0]);
+            }
+            else
+            {
+                this.setTrack(this.tracklist[0]);
+            }
         }
         else
         {
-            this.setTrack(this.tracklist[0]);
+            this.chooseNextRandomTrack();
         }
     }
     choosePreviousTrack()
@@ -65,28 +73,6 @@ export class PlayerService {
             this.setTrack(this.tracklist[this.tracklist.length-1]);
         }
     }
-    /*next()
-    {
-        this.chooseNextTrack();
-    }*/
-    /*previous()
-    {
-        let nextTracks = this.tracklist.filter(x=>x.order < this.track.order);
-        //console.log("chooseNextTrack" + this.track.order);
-        if(nextTracks != null && nextTracks.length > 0)
-        {
-
-            this.track = nextTracks[nextTracks.length-1];
-            //console.log("next" + this.track.order);
-        }
-        else
-        {
-            this.track = this.tracklist[this.tracklist.length-1];
-            //console.log("first");
-        }
-    }*/
-    
-
     chooseNextRandomTrack()
     {
         this.random = Math.floor(Math.random() * this.tracklist.length);

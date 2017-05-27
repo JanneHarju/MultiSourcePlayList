@@ -8,7 +8,7 @@
             <h3> Local playlist: </h3>
             <div *ngIf="playlists.length > 0">
                 <div *ngFor="let playlist of playlists" class="pldiv">
-                    <a (click)="selectPlaylist(playlist)" [routerLink]="['/tracklist', playlist.id]" routerLinkActive="active">
+                    <a (click)="selectPlaylist(playlist)" [routerLink]="['/main/tracklist', playlist.id]" routerLinkActive="active">
                     {{playlist.name}}
                     </a>
                     <div class="pull-right btn-group buttongroup" role="group">
@@ -24,7 +24,7 @@
         </div>
         <div *ngIf="spotifyplaylists.length > 0" class="grid grid-pad" >
             <h3> Spotify playlists: </h3>
-            <a *ngFor="let playlist of spotifyplaylists"  [routerLink]="['/spotifylist', playlist.id, playlist.owner.id]" routerLinkActive="active" >
+            <a *ngFor="let playlist of spotifyplaylists"  [routerLink]="['/main/spotifylist', playlist.id, playlist.owner.id]" routerLinkActive="active" >
                 <div class="module track">
                     <h4 >{{playlist.name}}</h4>
                     <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
@@ -47,11 +47,11 @@
         <h1>New name for: {{renametarget.name}}</h1>
     </modal-header>
     <modal-content>
-        <input class="form-control" (keyup.enter)="editModal.close(); rename(newPlaylistName.value)" ng-focus="true" #newPlaylistName />
+        <input class="form-control" (keyup.enter)="editModal.close(); rename(renamePlaylistName.value)" ng-focus="true" #renamePlaylistName />
             
     </modal-content>
     <modal-footer>
-        <button class="btn btn-primary confirmbutton" (click)="editModal.close(); rename(newPlaylistName.value)">OK</button>
+        <button class="btn btn-primary confirmbutton" (click)="editModal.close(); rename(renamePlaylistName.value)">OK</button>
         <button class="btn btn-primary" (click)="editModal.close()">Cancel</button>
     </modal-footer>
 </modal>

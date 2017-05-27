@@ -4,7 +4,6 @@ import { PlaylistService} from '../../services/playlist.service';
 import { SpotifyService } from '../../services/spotify.service';
 import { Playlist } from '../../models/playlist'
 import { SpotifyPlaylist } from '../../models/spotifyplaylist';
-import { CookieService } from 'angular2-cookie/services/cookies.service';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -19,8 +18,7 @@ export class PlaylistComponent implements OnInit {
         private playlistService: PlaylistService,
         private spotifyService: SpotifyService,
         private authService: AuthService,
-        private router: Router,
-        private cookieService: CookieService) { }
+        private router: Router) { }
     playlists: Playlist[] = [];
     spotifyplaylists: SpotifyPlaylist[] = [];
     selectedPlaylist: Playlist = new Playlist();
@@ -28,32 +26,13 @@ export class PlaylistComponent implements OnInit {
     removetarget : Playlist = new Playlist();
     subscriptionAuthenticationComplited : Subscription;
     subscriptionAppAuthenticationComplited : Subscription;
-    loginToSpotify()
-    {
-        this.spotifyService.login(true).then(token => {
-                console.log(token);
-
-                //this.spotifyService.getCurrentUser()
-                //    .subscribe(data=> { console.log("getCurrentUser: ", data); this.user = data },
-                //    err=> console.error(err));
-
-            });//,
-            //err => console.error(err),
-            //() => { });
-    }
-    logoutFromSpotify()
-    {
-        this.cookieService.remove("_ga",{domain:"spotify.com",path: "/"});
-        //localStorage.removeItem('spotify-token');
-        
-    }
+    
     ngOnInit() 
     { 
         this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
         {
             if(auth)
             {
-                console.log("spotifyhaku");
                 this.spotifyService.getUsersPlaylist()
                     .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
             }
@@ -79,11 +58,9 @@ export class PlaylistComponent implements OnInit {
             .then((playlists : Playlist[])=> 
             {
                 this.playlists = playlists;
-                console.log(this.playlists);
             });
         this.spotifyService.getUsersPlaylist()
                 .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
-        //this.currentSpotifyUser = this.spotifyService.getUser();
     }
     add(name: string): void {
         name = name.trim();
@@ -91,7 +68,6 @@ export class PlaylistComponent implements OnInit {
         this.playlistService.create(name)
             .then((playlist : Playlist) => {
             this.playlists.push(playlist);
-            //this.selectedHero = null;
             this.getPlaylists();
             });
     }
@@ -128,7 +104,6 @@ export class PlaylistComponent implements OnInit {
         this.renametarget.name = newName;
         this.playlistService.update(this.renametarget).then(plaa =>
         {
-            
         });
     }
 }

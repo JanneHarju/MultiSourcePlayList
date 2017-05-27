@@ -110,7 +110,7 @@ export class SpotifyService {
         this.st.newTimer('spotify', 1);
         this.timerId = this.st.subscribe('spotify', e => this.callback());
     }
-    //if Spotify result is something like now rights i.e. then login. Don't login at start if you already have working token.
+    //if Spotify result is something like no rights i.e. then login. Don't login at start if you already have working token.
     play(trackUri?: string, options?: SpotifyOptions) {
         options = options || {};
         this.playStatus.is_playing = true;
@@ -208,7 +208,6 @@ export class SpotifyService {
         headers: this.getHeaders(true)
         }).map(res => 
         {
-            console.log(res);
             return res.json().items as SpotifyPlaylist[];
         });
     }
@@ -269,7 +268,6 @@ export class SpotifyService {
         {
             let user = res.json() as SpotifyUser;
             this.currentUser = user;
-            console.log(res);
             return user;
         });
     }
@@ -290,7 +288,6 @@ export class SpotifyService {
             show_dialog: relogin
         };
         var authCompleted = false;
-        console.log(this.toQueryString(params));
         var authWindow = this.openDialog(
             'https://accounts.spotify.com/authorize?' + this.toQueryString(params),
             'Spotify',
@@ -380,7 +377,7 @@ export class SpotifyService {
         return Observable.throw(error.json().error || 'Server error');
     }
     private handlePromiseError(error: any): Promise<any> {
-        //console.error('An error occurred', error); // for demo purposes only
+        console.error('An error occurred', error); // for demo purposes only
         return Promise.reject(error.message || error);
     }
     private api(requestOptions: HttpRequestOptions) {

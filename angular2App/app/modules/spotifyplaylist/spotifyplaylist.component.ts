@@ -57,8 +57,6 @@ export class SpotifyPlaylistComponent implements OnInit {
                 offset = tracklist.offset;
                 while(total > limit + offset)
                 {
-
-                    console.log("Whilessä: "+ offset);
                     this.route.params
                     .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'],params['id2'],
                         {
@@ -71,21 +69,11 @@ export class SpotifyPlaylistComponent implements OnInit {
                     });
                     offset += limit;
                 }
-                /*promises.forEach(callback => 
-                {
-                    console.log("Whilessä: "+ callback);
-                    callback.then(result => 
-                    {
-
-                        this.spotifyTracks = this.spotifyTracks.concat(result.items);
-                    })
-                });*/
             });
         this.route.params
             .switchMap((params: Params) => this.spotifyService.getPlaylistInfo(params['id'],params['id2']))
             .subscribe((playlistInfo: SpotifyPlaylistInfo) => 
             {
-                //console.log(params);
                 this.playlistInfo = playlistInfo;
             });
         this.playlistService.getUsersPlaylists()
@@ -93,7 +81,6 @@ export class SpotifyPlaylistComponent implements OnInit {
      }
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
-        console.log(playlist + " " + track.name);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
         newTrack.address = track.uri;

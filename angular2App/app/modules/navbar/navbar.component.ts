@@ -52,7 +52,6 @@ export class NavbarComponent implements OnInit {
     {
         this.authService.getUserInfo().then(res =>
         {
-            console.log(res);
             var info = res.Data as UserInfo;
             if (res != null && info) {
                 if (info && info.UserName) {
@@ -73,13 +72,13 @@ export class NavbarComponent implements OnInit {
     loginToSpotify()
     {
         this.spotifyService.login(true).then(token => {
-                console.log(token);
             });
         
     }
     
     search(q: string): void {
         //naigoidaan tässä
-        this.router.navigate(['/searchlist', q]);
+        this.router.navigate(['main/searchlist', q]);
+        //this.router.navigate(['/searchlist', q]);
     }
 }

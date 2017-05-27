@@ -16,6 +16,8 @@ export class SearchComponent implements OnInit {
     ngOnInit() { }
     search(q: string): void {
         //naigoidaan tässä
-        this.router.navigate(['/searchlist', q]);
+
+        this.router.navigate(['../main/searchlist', q]);
+        //this.router.navigate(['/main/searchlist', q], { relativeTo: this.route});
     }
 }

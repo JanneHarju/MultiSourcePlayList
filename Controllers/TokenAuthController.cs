@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using PlayList.Models;
 using PlayList.Repositories;
 using Microsoft.Extensions.Logging;
@@ -32,10 +33,15 @@ namespace PlayList
         [AllowAnonymous]
         public IActionResult Login([FromBody]User user)
         {
-            _logger.LogCritical("user "+ JsonConvert.SerializeObject(user));
-            User existUser = _multiSourcePlaylistRepository.GetAllUsers().FirstOrDefault(u => u.Username == user.Username && u.Password == user.Password);
+            PasswordHasher<User> haser = new PasswordHasher<User>();
+            //string hashedPW = haser.HashPassword(user,user.Password);
+            //_logger.LogCritical("plaa"+hashedPW);
+            User existUser = _multiSourcePlaylistRepository
+                .GetAllUsers()
+                .FirstOrDefault(u => 
+                    u.Username == user.Username
+                    && haser.VerifyHashedPassword(user,u.Password, user.Password) == PasswordVerificationResult.Success );
 
-            _logger.LogCritical("exists user "+ JsonConvert.SerializeObject(existUser));
             if (existUser != null)
             {
 
@@ -68,17 +74,18 @@ namespace PlayList
         [AllowAnonymous]
         public IActionResult Register([FromBody]User user)
         {
-            _logger.LogCritical("exists user "+ JsonConvert.SerializeObject(user));
             User existUser = _multiSourcePlaylistRepository.GetAllUsers().FirstOrDefault(u => u.Username == user.Username);
 
-            _logger.LogCritical("exists user "+ JsonConvert.SerializeObject(existUser));
             if (existUser == null)
             {
+
+                PasswordHasher<User> haser = new PasswordHasher<User>();
+                string hashedPW = haser.HashPassword(user,user.Password);
+                user.Password = hashedPW;
                 _multiSourcePlaylistRepository.PostUser(user);
 
                 User newUser = _multiSourcePlaylistRepository.GetAllUsers().FirstOrDefault(u => u.Username == user.Username);
                 
-                _logger.LogCritical("exists user "+ JsonConvert.SerializeObject(newUser));
                 if(newUser != null)
                 {
                     var requestAt = DateTime.Now;

@@ -1,0 +1,20 @@
+<div class="mynavbar">
+    <my-navbar></my-navbar>
+</div>
+<div class='container-fluid'>
+    <div id="container" class="left-panel col-sm-4 col-xs-12">
+        <div class="row">
+            <my-player></my-player>
+        </div>
+        <div class="row">
+            <my-playlist></my-playlist>
+        </div>
+    </div>
+    <div id='body-content' class="col-sm-8 col-xs-12">
+        <router-outlet></router-outlet>
+        <router-outlet name="popup"></router-outlet>
+        <!--<router-outlet [@routerTransition]="void">
+            <my-info></my-info>
+        </router-outlet>-->
+    </div>
+</div>
