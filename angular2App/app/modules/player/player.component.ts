@@ -106,100 +106,113 @@ export class PlayerComponent implements OnInit, OnDestroy {
     
     next()
     {
-        this.playerService.chooseNextTrack();
+        if(this.playerService.track)
+        {
+            this.playerService.chooseNextTrack();
+        }
     }
     previous()
     {
-        if(this.progress < 1500)
+
+        if(this.playerService.track)
         {
-            this.playerService.choosePreviousTrack();
-        }
-        else
-        {
-            this.progress = 0;
-            this.changeprogressTo(this.progress);
+            if(this.progress < 1500)
+            {
+                this.playerService.choosePreviousTrack();
+            }
+            else
+            {
+                this.progress = 0;
+                this.changeprogressTo(this.progress);
+            }
         }
     }
     
     play(trackUri?: string)
     {
-        this.isplaying = true;
-        this.disableProgressUpdate = true;
-        if(this.track != null)
+        if(this.playerService.track)
         {
-            switch (this.track.type) {
-                case 1://youtube
-                    this.pauseSpotify();
-                    if(this.player)
-                    {
-                        if(trackUri)
+            this.isplaying = true;
+            this.disableProgressUpdate = true;
+            if(this.track != null)
+            {
+                switch (this.track.type) {
+                    case 1://youtube
+                        this.pauseSpotify();
+                        if(this.player)
                         {
-                            this.player.loadVideoById(trackUri);
+                            if(trackUri)
+                            {
+                                this.player.loadVideoById(trackUri);
+                            }
+                            this.player.playVideo();
                         }
-                        this.player.playVideo();
-                    }
-                    break;
-                case 2://spotify
-                    
-                    this.player.pauseVideo();
-                    /*let iframe = document.getElementById('spotify');
-                    let doc = (<HTMLIFrameElement>iframe).contentDocument 
-                    let playbutton = doc.getElementById("play-button");
-                    playbutton.click();*/
-                    this.playSpotify(trackUri);
-                    break;
-                case 3://mp3
+                        break;
+                    case 2://spotify
+                        
+                        this.player.pauseVideo();
+                        /*let iframe = document.getElementById('spotify');
+                        let doc = (<HTMLIFrameElement>iframe).contentDocument 
+                        let playbutton = doc.getElementById("play-button");
+                        playbutton.click();*/
+                        this.playSpotify(trackUri);
+                        break;
+                    case 3://mp3
 
-                    this.player.pauseVideo();
-                    this.pauseSpotify();
-                    let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-                    if(audio)
-                    {
-                        audio.play();
-                    }
-                    break;
-                default:
-                    break;
+                        this.player.pauseVideo();
+                        this.pauseSpotify();
+                        let audio = (<HTMLAudioElement>document.getElementById("audio1"));
+                        if(audio)
+                        {
+                            audio.play();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            
             }
-        
+            
+            this.st.delTimer('1sec');
+            this.st.newTimer('1sec', 1);
+            this.timerId = this.st.subscribe('1sec', e => this.callback());
+            
+            this.disableProgressUpdate = false;
         }
-        
-        this.st.delTimer('1sec');
-        this.st.newTimer('1sec', 1);
-        this.timerId = this.st.subscribe('1sec', e => this.callback());
-        
-        this.disableProgressUpdate = false;
     }
     pause()
     {
-        this.isplaying = false;
-        if(this.track != null)
+        if(this.playerService.track)
         {
-            switch (this.track.type) {
-                case 1://youtube
-                    
-                    this.player.pauseVideo();
-                    break;
-                case 2://spotify
-                    
-                    /*let iframe = document.getElementById('spotify');
-                    let doc = (<HTMLIFrameElement>iframe).contentDocument 
-                    let playbutton = doc.getElementById("play-button");
-                    playbutton.click();*/
-                    this.pauseSpotify();
-                    break;
-                case 3://mp3
-                    
-                    let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-                    if(audio)
-                        audio.pause();
-                    break;
-                default:
-                    break;
+            this.isplaying = false;
+            if(this.track != null)
+            {
+                switch (this.track.type) {
+                    case 1://youtube
+                        
+                        this.player.pauseVideo();
+                        break;
+                    case 2://spotify
+                        
+                        /*let iframe = document.getElementById('spotify');
+                        let doc = (<HTMLIFrameElement>iframe).contentDocument 
+                        let playbutton = doc.getElementById("play-button");
+                        playbutton.click();*/
+                        this.pauseSpotify();
+                        break;
+                    case 3://mp3
+                        
+                        let audio = (<HTMLAudioElement>document.getElementById("audio1"));
+                        if(audio)
+                            audio.pause();
+                        break;
+                    default:
+                        break;
+                }
+            
             }
-        
+            this.st.delTimer('1sec');
         }
-        this.st.delTimer('1sec');
     }
     audioloaded()
     {

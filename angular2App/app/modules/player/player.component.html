@@ -6,9 +6,10 @@
                 <div class="row">
 
                     <div class="row">
-                        <div class="checkbox shuffle pull-left">
-                            <label (click)="shuffleChanged()"><input [(ngModel)]="shuffle" type="checkbox" >Shuffle</label>
-                        </div>
+                        <span id="checkbox" class="pull-left">
+                            <input (click)="shuffleChanged()" [(ngModel)]="shuffle" id="checkbox-element" type="checkbox"/>  
+                            <i class="glyphicon glyphicon-random"></i>
+                        </span>
                         <div class="buttons">
                             <a id="previous" (click)="previous()" class="control-button previous glyphicon glyphicon-step-backward"></a>
                             <a id="play" *ngIf="isplaying == false" (click)="play()" class="control-button glyphicon glyphicon-play"></a>
