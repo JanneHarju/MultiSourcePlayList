@@ -62,7 +62,7 @@ export class SearchlistComponent implements OnInit {
         page: 1
         };
         console.log("joojoo");
-        bandcamp.search(params, (error: any, searchResults: any) => {
+        bandcamp.search(params, function(error: any, searchResults: any) {
             console.log("weeee")
             if (error)
             {
