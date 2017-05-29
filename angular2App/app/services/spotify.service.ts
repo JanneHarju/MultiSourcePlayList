@@ -192,7 +192,8 @@ export class SpotifyService {
         return this.api({
         method: 'get',
         url: `/search`,
-        search: options
+        search: options,
+        headers: this.getHeaders()
         }).map(res => res.json().tracks.items as SpotifyTrack[]);
     }
 

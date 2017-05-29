@@ -20,19 +20,28 @@
                 </div>
                 <table class="tracks row">
                     <thead>
+                        <th></th>
                         <th>ARTIST</th>
+                        <th>ALBUM</th>
                         <th>TRACK</th>
                         <th></th>
                     </thead>
                     <tbody>
                         <tr *ngFor="let track of spotifyTracks">
-                            <td class="tdArtist" (click)="onSpotifySelect(track.track)">
+                            <td class="tdPlay">
+                                <a (click)="onSpotifySelect(track.track)" class="play-button glyphicon glyphicon-play-circle"></a>
+                            </td>
+                            <td class="tdArtist">
                                 <div *ngIf="track.track">
                                     {{track.track.artists[0].name}}
                                 </div>
                             </td>
-                            <td class="tdTrack" (click)="onSpotifySelect(track.track)">
-
+                            <td class="tdAlbum" >
+                                <div *ngIf="track.track">
+                                    {{track.track.album.name}}
+                                </div>
+                            </td>
+                            <td class="tdTrack">
                                 <div *ngIf="track.track">
                                     {{track.track.name}}
                                 </div>

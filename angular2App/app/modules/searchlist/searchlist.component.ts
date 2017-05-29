@@ -50,16 +50,16 @@ export class SearchlistComponent implements OnInit {
         
         this.route.params.subscribe((params: Params) => this.query = params['id']);
 
-        this.spotifyService.search(this.query,"track")
+        this.route.params.subscribe((params: Params) => this.spotifyService.search(params['id'],"track")
             .subscribe((tracklist: SpotifyTrack[]) => 
             {
                 this.spotifyTracks = tracklist;
-            });
-        this.youtubeApiService.search(this.query)
+            }));
+        this.route.params.subscribe((params: Params) => this.youtubeApiService.search(params['id'])
             .subscribe((youtubeVideos: YoutubeVideo[]) => 
             {
                 this.youtubeVideos = youtubeVideos;
-            });
+            }));
         /*var params = {
             query: this.query,
             page: 1
@@ -84,8 +84,8 @@ export class SearchlistComponent implements OnInit {
             console.error(err);
         });*/
         //this.bandcampSearch(this.query);
-        /*this.playlistService.getUsersPlaylists()
-            .then((playlists : Playlist[])=> this.playlists = playlists);*/
+        this.playlistService.getUsersPlaylists()
+            .then((playlists : Playlist[])=> this.playlists = playlists);
 
      }
      bcsearch()

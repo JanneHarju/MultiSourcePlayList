@@ -5,16 +5,24 @@
                 Spotify Search result for:  {{query}}
                 <table class="tracks">
                     <thead>
+                        <th></th>
                         <th>ARTIST</th>
+                        <th>ALBUM</th>
                         <th>TRACK</th>
                         <th></th>
                     </thead>
                     <tbody>
                         <tr *ngFor="let track of spotifyTracks">
-                            <td class="tdArtist" (click)="onSpotifySelect(track)">
+                            <td class="tdPlay">
+                                <a (click)="onSpotifySelect(track)" class="play-button glyphicon glyphicon-play-circle"></a>
+                            </td>
+                            <td class="stdArtist" >
                                 {{track.artists[0].name}}
                             </td>
-                            <td class="tdTrack" (click)="onSpotifySelect(track)">
+                            <td class="stdAlbum" >
+                                {{track.album.name}}
+                            </td>
+                            <td class="stdTrack">
                                 {{track.name}}
                             </td>
                             <td class="pull-right">
@@ -38,16 +46,20 @@
                 Youtube Search result for:  {{query}}
                 <table class="tracks">
                     <thead>
+                        <th></th>
                         <th>Channel name</th>
                         <th>Video name</th>
                         <th></th>
                     </thead>
                     <tbody>
                         <tr *ngFor="let video of youtubeVideos">
-                            <td class="tdArtist" (click)="onYoutubeSelect(video)">
+                            <td class="tdPlay">
+                                <a (click)="onYoutubeSelect(video)" class="play-button glyphicon glyphicon-play-circle"></a>
+                            </td>
+                            <td class="tdArtist">
                                 {{video.snippet.channelTitle}}
                             </td>
-                            <td class="tdTrack" (click)="onYoutubeSelect(video)">
+                            <td class="tdTrack" >
                                 {{video.snippet.title}}
                             </td>
                             <td class="pull-right">
