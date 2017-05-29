@@ -9,7 +9,20 @@ import { Playlist } from '../../models/playlist'
 import { Track } from '../../models/track'
 import { TrackService }         from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
+import { BandcampService, BandcampOptions } from '../..//services/bandcamp.service';
+import { Observable } from 'rxjs';
+import 'rxjs/add/operator/toPromise';
+
+//var bandcamp = require('../../../../../node_modules/bandcamp-scraper/lib/index.js');
+//var bandcamp = require('../../../../node_modules/bandcamp-scraper/lib/index');
 var bandcamp = require('bandcamp-scraper');
+
+/*var req         = require("tinyreq"),
+    urlHelper   = require('url'),
+    htmlParser  = require('../../../../node_modules/bandcamp-scraper/lib/htmlParser.js'),
+    utils       = require('../../../../node_modules/bandcamp-scraper/lib/utils.js');
+declare function search(params: any, cb: any) : Observable<any>;*/
+
 @Component({
     selector: 'my-searchlist',
     templateUrl: 'searchlist.component.html',
@@ -27,6 +40,7 @@ export class SearchlistComponent implements OnInit {
         private youtubeApiService: YoutubeAPIService,
         private playlistService: PlaylistService,
         private trackService: TrackService,
+        private bandcampService: BandcampService,
         private playerService: PlayerService
         ) { }
 
@@ -36,34 +50,67 @@ export class SearchlistComponent implements OnInit {
         
         this.route.params.subscribe((params: Params) => this.query = params['id']);
 
-        this.route.params
-            .switchMap((params: Params) => this.spotifyService.search(params['id'],"track"))
+        this.spotifyService.search(this.query,"track")
             .subscribe((tracklist: SpotifyTrack[]) => 
             {
                 this.spotifyTracks = tracklist;
             });
-        this.route.params
-            .switchMap((params: Params) => this.youtubeApiService.search(params['id']))
+        this.youtubeApiService.search(this.query)
             .subscribe((youtubeVideos: YoutubeVideo[]) => 
             {
                 this.youtubeVideos = youtubeVideos;
             });
-            this.route.params
-            .subscribe((params: Params) => this.bandcampSearch(params['id']));
+        /*var params = {
+            query: this.query,
+            page: 1
+        };
 
-        this.playlistService.getUsersPlaylists()
-            .then((playlists : Playlist[])=> this.playlists = playlists);
+        this.doBandcampCall(params).then(res =>
+        {
+            console.log(res);
+        })
+        .catch(err =>
+        {
+            console.error(err);
+        });*/
 
+
+        /*this.bandcampService.doBandcampCall(params).then(ret=>
+        {
+            console.log(ret);
+        })
+        .catch(err =>
+        {
+            console.error(err);
+        });*/
+        //this.bandcampSearch(this.query);
+        /*this.playlistService.getUsersPlaylists()
+            .then((playlists : Playlist[])=> this.playlists = playlists);*/
+
+     }
+     bcsearch()
+     {
+        var params : BandcampOptions = {
+            page: 1,
+            q: this.query
+        };
+        this.bandcampService.doBandcampCall(params).then(ret=>
+        {
+            console.log(ret);
+        })
+        .catch(err =>
+        {
+            console.error(err);
+        });
      }
      bandcampSearch(q: string)
      {
-         var params = {
-        query: q,
-        page: 1
+        var params = {
+            query: q,
+            page: 1
         };
-        console.log("joojoo");
-        bandcamp.search(params, function(error: any, searchResults: any) {
-            console.log("weeee")
+
+        bandcamp.search(params, (error: string, searchResults: string) => {
             if (error)
             {
                 console.log(error);
@@ -74,6 +121,15 @@ export class SearchlistComponent implements OnInit {
             }
         });
      }
+     doBandcampCall(q: Object) {
+        return new Promise(function(resolve, reject) {
+            bandcamp.search(q, function(err:any, result:any) {
+                if (err) return reject(err);
+                resolve(result);
+            });
+        });
+     }
+     
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
         let newTrack: Track = new Track();

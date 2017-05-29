@@ -13,7 +13,7 @@ using System;
         public static SymmetricSecurityKey Key { get; } = new SymmetricSecurityKey(KeyHelper.GenerateKey());
         public static SigningCredentials SigningCredentials { get; } = new SigningCredentials(Key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature);
 
-        public static TimeSpan ExpiresSpan { get; } = TimeSpan.FromMinutes(40);
+        public static TimeSpan ExpiresSpan { get; } = TimeSpan.FromHours(12);
         public static string TokenType { get; } = "Bearer"; 
     }
    

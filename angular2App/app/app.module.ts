@@ -32,6 +32,7 @@ import { SpotifyService } from './services/spotify.service';
 import { YoutubeAPIService } from './services/youtubeapi.service';
 import { MusixMatchAPIService } from './services/musixmatch.service';
 import { PlayerService } from './services/player.service';
+import { BandcampService } from './services/bandcamp.service';
 import { AuthService } from "./services/auth.service";
 import { AppComponent }  from './app.component';
 import { SimpleTimer } from 'ng2-simple-timer';
@@ -70,6 +71,7 @@ import './rxjs-extensions';
     PlaylistService,
     PlayerService,
     AuthService,
+    BandcampService,
     SpotifyService,
     {
         provide: "SpotifyConfig",

@@ -13,7 +13,7 @@ import { SimpleTimer } from 'ng2-simple-timer';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-SpotifyPlayStatus
+
 export interface SpotifyConfig {
   clientId: string,
   redirectUri: string,
