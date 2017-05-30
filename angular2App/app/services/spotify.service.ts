@@ -8,6 +8,8 @@ import { SpotifyTracklist } from '../models/spotifytracklist';
 import { SpotifyPlaylist } from '../models/spotifyplaylist';
 import { SpotifyPlaylistInfo } from '../models/spotifyplaylistinfo';
 import { SpotifyPlayStatus } from '../models/spotifyPlayStatus';
+import { SpotifyAlbum } from '../models/spotifyalbum';
+import { SpotifyArtist } from '../models/spotifyartist';
 import { Subject } from 'rxjs/Subject';
 import { SimpleTimer } from 'ng2-simple-timer';
 import 'rxjs/add/operator/toPromise';
@@ -193,7 +195,7 @@ export class SpotifyService {
         method: 'get',
         url: `/search`,
         search: options,
-        headers: this.getHeaders()
+        headers: this.getHeaders(true)
         }).map(res => res.json().tracks.items as SpotifyTrack[]);
     }
 
@@ -232,12 +234,102 @@ export class SpotifyService {
         .toPromise()
         .then(res => 
         {
+            console.log(res);
             return res.json() as SpotifyTracklist;
         })
         .catch(this.handlePromiseError);
         
     }
-
+    getArtist(artistId: string, options?: SpotifyOptions) {
+        this.tempPlaylist = [];
+        options = options || {};
+        
+        return this.api({
+            method: 'get',
+            url: '/artists/'+artistId,
+            search: options,
+            headers: this.getHeaders(true)
+        })
+        .toPromise()
+        .then(res => 
+        {
+            return res.json() as SpotifyArtist;
+        })
+        .catch(this.handlePromiseError);
+        
+    }
+    getArtistsAlbum(artistId: string, options?: SpotifyOptions) {
+        this.tempPlaylist = [];
+        options = options || {};
+        options.album_type = "album";
+        options.limit = 50;
+        return this.api({
+            method: 'get',
+            url: '/artists/'+artistId+'/albums',
+            search: options,
+            headers: this.getHeaders(true)
+        })
+        .toPromise()
+        .then(res => 
+        {
+            return res.json().items as SpotifyAlbum[];
+        })
+        .catch(this.handlePromiseError);
+        
+    }
+    getArtistsTopTracks(artistId: string, options?: SpotifyOptions) {
+        this.tempPlaylist = [];
+        options = options || {};
+        return this.api({
+            method: 'get',
+            url: '/artists/'+artistId+'/top-tracks',
+            search: options,
+            headers: this.getHeaders(true)
+        })
+        .toPromise()
+        .then(res => 
+        {
+            return res.json().tracks as SpotifyTrack[];
+        })
+        .catch(this.handlePromiseError);
+        
+    }
+    getAlbumTracks(albumId: string, options?: SpotifyOptions) {
+        this.tempPlaylist = [];
+        options = options || {};
+        
+        return this.api({
+            method: 'get',
+            url: '/albums/'+albumId+'/tracks',
+            search: options,
+            headers: this.getHeaders(true)
+        })
+        .toPromise()
+        .then(res => 
+        {
+            return res.json().items as SpotifyTrack[];
+        })
+        .catch(this.handlePromiseError);
+        
+    }
+    getAlbum(albumId: string, options?: SpotifyOptions) {
+        this.tempPlaylist = [];
+        options = options || {};
+        
+        return this.api({
+            method: 'get',
+            url: '/albums/'+albumId,
+            search: options,
+            headers: this.getHeaders(true)
+        })
+        .toPromise()
+        .then(res => 
+        {
+            return res.json() as SpotifyAlbum;
+        })
+        .catch(this.handlePromiseError);
+        
+    }
     getPlaylistInfo(playlistId: string, ownerId:string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};

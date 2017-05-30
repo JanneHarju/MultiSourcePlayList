@@ -58,6 +58,16 @@ export class PlaylistService {
             .then(() => Playlist)
             .catch(this.handleError);
     }
+    shuffle(Playlist: Playlist): Promise<Playlist> {
+
+        let headers = this.authService.initAuthHeaders();
+        const url = this.PlaylistsUrl + "/Shuffle/"+Playlist.id;
+        return this.http
+            .put(url, Playlist, {headers: headers})
+            .toPromise()
+            .then(() => Playlist)
+            .catch(this.handleError);
+    }
     create(name: string): Promise<Playlist> {
         const tmpPlaylist = new Playlist();
         tmpPlaylist.name = name;

@@ -59,6 +59,8 @@ namespace PlayList.Controllers
         [Authorize("Bearer")]
         public void Put(int id, [FromBody]Track value)
         {
+            Playlist pl = _multiSourcePlaylistRepository.AttachPlaylist(value.playlist.id);
+            value.playlist = pl;
             _multiSourcePlaylistRepository.PutTrack(id,value);
         }
 
@@ -70,14 +72,13 @@ namespace PlayList.Controllers
             if(values != null && values.Any())
             {
                 long playlistId = values[0].playlist.id;
-                _multiSourcePlaylistRepository.DeleteTracksByPlaylistId(playlistId);
                 int order = 0;
                 Playlist pl = _multiSourcePlaylistRepository.AttachPlaylist(playlistId);
                 foreach(Track track in values)
                 {
                     track.playlist = pl;
                     track.order = order;
-                    _multiSourcePlaylistRepository.PostTrack(track);
+                    _multiSourcePlaylistRepository.PutTrack(track.id,track);
                     ++order;
                 }
             }

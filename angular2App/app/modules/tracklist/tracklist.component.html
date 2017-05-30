@@ -15,7 +15,7 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let track of tracklist; let i = index" (click)="onSelect(track)"
-                            [class.selected]="track === selectedTrack" 
+                            [class.activetrack]="track == currentTrack" 
                             class="list-group-item tablerow" dnd-sortable [sortableIndex]="i">
                             
                             <td class="tablerowdata">

@@ -122,9 +122,7 @@ namespace PlayList.Repositories
         }
         public void PutTrack(long id, [FromBody] Track track)
         {
-            Playlist myPlaylist = new Playlist { id = track.playlist.id };
-            _context.Playlists.Attach(myPlaylist);
-            track.playlist = myPlaylist;
+            
             _context.Tracks.Update(track);
             _context.SaveChanges();
         }

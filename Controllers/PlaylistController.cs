@@ -60,6 +60,34 @@ namespace PlayList.Controllers
         {
             _multiSourcePlaylistRepository.PutPlaylist(id,value);
         }
+
+        [HttpPut("Shuffle/{id}")]
+        [Authorize("Bearer")]
+        public void Shuffle(int id)
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
+            _logger.LogCritical("täällä");
+            var values = _multiSourcePlaylistRepository.GetUsersPlaylistTracks(id,userId);
+            _logger.LogCritical(values.Count.ToString());
+            var random = new Random();
+            if(values != null && values.Any())
+            {
+                values.ForEach(track => 
+                {
+                    track.order = random.Next( values.Count*2);
+                });
+                var orderedList = values.OrderBy(x=>x.order);
+                long playlistId = values[0].playlist.id;
+                int order = 0;
+                foreach(Track track in orderedList)
+                {
+                    track.order = order;
+                    _multiSourcePlaylistRepository.PutTrack(track.id,track);
+                    ++order;
+                }
+            }
+        }
         // POST api/values
         [HttpPost]
         [Authorize("Bearer")]

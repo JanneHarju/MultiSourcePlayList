@@ -9,6 +9,7 @@ import { Playlist } from '../../models/playlist'
 import { Track } from '../../models/track'
 import { SpotifyPlaylistTrack } from '../../models/spotifyplaylisttrack'
 import { SpotifyPlaylistInfo } from '../../models/spotifyplaylistinfo';
+import { SpotifyAlbum } from '../../models/spotifyalbum';
 import { SpotifyTracklist } from '../../models/spotifytracklist';
 import { TrackService }         from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
@@ -16,13 +17,16 @@ import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 
 @Component({
-    selector: 'my-spotifyplaylist',
-    templateUrl: 'spotifyplaylist.component.html',
-    styles: [ require('./spotifyplaylist.component.less') ],
+    selector: 'my-spotifyalbum',
+    templateUrl: 'spotifyalbum.component.html',
+    styles: [ require('./spotifyalbum.component.less') ],
 })
 
-export class SpotifyPlaylistComponent implements OnInit {
-    spotifyTracks : SpotifyPlaylistTrack[] = [];
+export class SpotifyAlbumComponent implements OnInit {
+    spotifyTracks : SpotifyTrack[] = [];
+    spotifyAlbum : SpotifyAlbum = new SpotifyAlbum();
+    albumDuration: number = 0;
+    trackCount: number = 0;;
     playlists: Playlist[] = [];
     playlistInfo: SpotifyPlaylistInfo = new SpotifyPlaylistInfo();
     query: string = "";
@@ -43,46 +47,27 @@ export class SpotifyPlaylistComponent implements OnInit {
         
         this.route.params.subscribe((params: Params) => this.query = params['id']);
         //bring here ownerId as well playlist id
-        let limit = 100;
+        let limit = 50;
         this.spotifyTracks  = [];
         
         this.route.params
-            .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'],params['id2'],
+            .switchMap((params: Params) => this.spotifyService.getAlbum(params['id'],
                 {
                     limit: limit
                 }))
-            .subscribe((tracklist: SpotifyTracklist) => 
+            .subscribe((album: SpotifyAlbum) => 
             {
+
+                console.log(album);
                 this.spotifyTracks  = [];
                 
-                this.spotifyTracks = this.spotifyTracks.concat(tracklist.items.filter(tra => !tra.is_local && tra.track));
+                this.spotifyTracks = album.tracks.items;
                 this.selectCurrentTrack(this.playerService.track);
-                let promises = [],
-                total = tracklist.total,
-                offset = tracklist.offset;
-                while(total > limit + offset)
-                {
-                    this.route.params
-                    .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'],params['id2'],
-                        {
-                            limit: limit,
-                            offset: offset + limit
-                        }))
-                    .subscribe((innerResult: SpotifyTracklist) => 
-                    {
-                        this.spotifyTracks = this.spotifyTracks.concat(innerResult.items.filter(tra => !tra.is_local && tra.track));
-                        this.selectCurrentTrack(this.playerService.track);
-                    });
-                    offset += limit;
-                }
+                this.spotifyAlbum = album;
+                
+                album.tracks.items.forEach(track =>this.albumDuration = this.albumDuration + track.duration_ms);
+                this.trackCount = album.tracks.items.length;
             });
-        this.route.params
-            .switchMap((params: Params) => this.spotifyService.getPlaylistInfo(params['id'],params['id2']))
-            .subscribe((playlistInfo: SpotifyPlaylistInfo) => 
-            {
-                this.playlistInfo = playlistInfo;
-            });
-        
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
         {
             this.selectCurrentTrack(track);
@@ -92,10 +77,10 @@ export class SpotifyPlaylistComponent implements OnInit {
      }
      selectCurrentTrack(track: Track)
      {
-        let temptrack = this.spotifyTracks.find(x=>x.track.uri == track.address);
+        let temptrack = this.spotifyTracks.find(x=>x.uri == track.address);
             if(temptrack)
             {
-                this.selectedTrack = temptrack.track;
+                this.selectedTrack = temptrack;
                 //this doesn't work because of two divs which have own scrollbars.
                 //This scrolls only left one not the right one.
                 /*var element = document.getElementsByClassName("active")[0];
@@ -124,8 +109,8 @@ export class SpotifyPlaylistComponent implements OnInit {
         {
 
             let newTrack: Track = new Track();
-            newTrack.address = st.track.uri;
-            newTrack.name = st.track.artists[0].name +" - "+ st.track.name;
+            newTrack.address = st.uri;
+            newTrack.name = st.artists[0].name +" - "+ st.name;
             newTrack.type = 2;
             newTrack.playlist = playlist;
             trackList.push(newTrack);
@@ -145,8 +130,8 @@ export class SpotifyPlaylistComponent implements OnInit {
         {
 
             let newTrack: Track = new Track();
-            newTrack.address = st.track.uri;
-            newTrack.name = st.track.artists[0].name +" - "+ st.track.name;
+            newTrack.address = st.uri;
+            newTrack.name = st.artists[0].name +" - "+ st.name;
             newTrack.type = 2;
             newTrack.playlist = newPlaylist;
             newTrack.order = order;

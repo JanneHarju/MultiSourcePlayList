@@ -11,6 +11,7 @@ import { TrackService }         from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { BandcampService, BandcampOptions } from '../..//services/bandcamp.service';
 import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 
 //var bandcamp = require('../../../../../node_modules/bandcamp-scraper/lib/index.js');
@@ -34,6 +35,9 @@ export class SearchlistComponent implements OnInit {
     youtubeVideos : YoutubeVideo[] = [];
     playlists: Playlist[] = [];
     query: string = "";
+    selectedSpotifyTrack: SpotifyTrack = new SpotifyTrack();
+    selectedYoutubeVideo: YoutubeVideo = new YoutubeVideo();
+    subscriptionTrack: Subscription;
     constructor(
         private route: ActivatedRoute,
         private spotifyService: SpotifyService,
@@ -54,12 +58,18 @@ export class SearchlistComponent implements OnInit {
             .subscribe((tracklist: SpotifyTrack[]) => 
             {
                 this.spotifyTracks = tracklist;
+                this.selectCurrentTrack(this.playerService.track);
             }));
         this.route.params.subscribe((params: Params) => this.youtubeApiService.search(params['id'])
             .subscribe((youtubeVideos: YoutubeVideo[]) => 
             {
                 this.youtubeVideos = youtubeVideos;
+                this.selectCurrentTrack(this.playerService.track);
             }));
+        this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
+        {
+            this.selectCurrentTrack(track);
+        });
         /*var params = {
             query: this.query,
             page: 1
@@ -129,7 +139,34 @@ export class SearchlistComponent implements OnInit {
             });
         });
      }
-     
+     selectCurrentTrack(track: Track)
+     {
+        let temptrack = this.spotifyTracks.find(x=>x.uri == track.address);
+        if(temptrack)
+        {
+            this.selectedSpotifyTrack = temptrack;
+            this.selectedYoutubeVideo = null;
+            //this doesn't work because of two divs which have own scrollbars.
+            //This scrolls only left one not the right one.
+            /*var element = document.getElementsByClassName("active")[0];
+            if(element)
+                element.scrollIntoView()*/
+        }
+        else
+        {
+            let tempvideo = this.youtubeVideos.find(x=>x.id.videoId == track.address);
+            if(tempvideo)
+            {
+                this.selectedYoutubeVideo = tempvideo;
+                this.selectedSpotifyTrack = null;
+                //this doesn't work because of two divs which have own scrollbars.
+                //This scrolls only left one not the right one.
+                /*var element = document.getElementsByClassName("active")[0];
+                if(element)
+                    element.scrollIntoView()*/
+            }
+        }
+     }
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
         let newTrack: Track = new Track();

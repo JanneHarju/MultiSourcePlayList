@@ -24,6 +24,7 @@ export class PlaylistComponent implements OnInit {
     selectedPlaylist: Playlist = new Playlist();
     renametarget : Playlist = new Playlist();
     removetarget : Playlist = new Playlist();
+    shuffletarget : Playlist = new Playlist();
     subscriptionAuthenticationComplited : Subscription;
     subscriptionAppAuthenticationComplited : Subscription;
     
@@ -90,7 +91,7 @@ export class PlaylistComponent implements OnInit {
                 {
                     selectedPlaylist = this.playlists.find(x=>x.order<this.removetarget.order);
                 }
-                this.router.navigate(['/tracklist', selectedPlaylist.id]);
+                this.router.navigate(['/main/tracklist', selectedPlaylist.id]);
             }
             this.playlists.splice(this.playlists.findIndex(pl=>pl.id == this.removetarget.id),1);
         });
@@ -104,6 +105,17 @@ export class PlaylistComponent implements OnInit {
         this.renametarget.name = newName;
         this.playlistService.update(this.renametarget).then(plaa =>
         {
+        });
+    }
+    setShuffleTarget(playlist: Playlist)
+    {
+        this.shuffletarget = playlist;
+    }
+    shuffle()
+    {
+        this.playlistService.shuffle(this.shuffletarget).then(plaa =>
+        {
+            this.router.navigate(['/main/tracklist', this.shuffletarget.id]);
         });
     }
 }

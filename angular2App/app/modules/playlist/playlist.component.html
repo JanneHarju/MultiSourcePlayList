@@ -12,6 +12,7 @@
                     {{playlist.name}}
                     </a>
                     <div class="pull-right btn-group buttongroup" role="group">
+                        <button class="editbuttons btn btn-warning glyphicon glyphicon-random" (click)="shuffleConfirmationModal.open(); setShuffleTarget(playlist); $event.stopPropagation()"></button>
                         <button class="editbuttons btn btn-info glyphicon glyphicon-pencil" (click)="newPlaylistName.value = ''; editModal.open(); setRenameTarget(playlist); $event.stopPropagation()"></button>
                         <button class="editbuttons btn btn-danger glyphicon glyphicon-remove" (click)="removeConfirmationModal.open(); setDeleteTarget(playlist); $event.stopPropagation()"></button>
                                     
@@ -67,7 +68,20 @@
     </modal-footer>
 </modal>
 
-<!--Playlist remove confirmation modal-->
+ <!--Playlist shuffle confirmation modal-->
+ <modal #shuffleConfirmationModal modalClass="modal-md">
+    <modal-header>
+        <h1>Are you sure you want to shuffle: {{shuffletarget.name}} ?
+            You cannot undo this.
+        </h1>
+    </modal-header>
+    <modal-footer>
+        <button class="btn btn-primary confirmbutton" (click)="shuffleConfirmationModal.close(); shuffle()">Yes</button>
+        <button class="btn btn-primary" (click)="shuffleConfirmationModal.close()">No</button>
+    </modal-footer>
+</modal>
+
+<!-- add new Playlist modal-->
  <modal #addNewPlaylistModal modalClass="modal-sm">
     <modal-header>
         <h1>Create a new playlist</h1>

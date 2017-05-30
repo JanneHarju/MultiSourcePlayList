@@ -5,6 +5,8 @@ import { TracklistComponent } from './modules/tracklist/tracklist.component';
 import { SearchlistComponent } from './modules/searchlist/searchlist.component';
 import { MainComponent } from './modules/main/main.component';
 import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplaylist.component';
+import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.component';
+import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { LoginComponent } from './modules/login/login.component';
 import { AuthService} from './services/auth.service';
@@ -12,14 +14,16 @@ import { AuthService} from './services/auth.service';
 import { PopupComponent} from './modules/shared/popup/popup.component';
 
 const routes: Routes = [
-    { path: "", redirectTo: "main", pathMatch: "full" },
+    { path: "", redirectTo: "login", pathMatch: "full" },
     //{ path: 'playlist',  component: PlaylistComponent },SearchlistComponent
     { path: 'login',  component: LoginComponent },
     { path: 'main',  component: MainComponent, canActivate: [ AuthService],
     children: [
         { path: 'tracklist/:id',  component: TracklistComponent, canActivate: [ AuthService]},
         { path: 'searchlist/:id',  component: SearchlistComponent, canActivate: [ AuthService] },
-        { path: 'spotifylist/:id/:id2',  component: SpotifyPlaylistComponent, canActivate: [ AuthService] }
+        { path: 'spotifylist/:id/:id2',  component: SpotifyPlaylistComponent, canActivate: [ AuthService] },
+        { path: 'spotifyalbum/:id',  component: SpotifyAlbumComponent, canActivate: [ AuthService] },
+        { path: 'spotifyartist/:id',  component: SpotifyArtistComponent, canActivate: [ AuthService] }
     ]},
     { path: '**', redirectTo: "main", }
     //{ path: 'addtrackpopup', component: AddTrackPopupComponent, outlet: 'popup' }

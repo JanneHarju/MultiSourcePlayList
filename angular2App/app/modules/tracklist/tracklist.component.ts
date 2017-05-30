@@ -7,6 +7,7 @@ import { Track } from '../../models/track';
 import { MusixMatchLyric } from '../../models/musixmatchlyric';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'my-tracklist',
@@ -34,6 +35,8 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     lyric: string = "";
     lyricHeader: string = "";
     lyricImageUrl: string = "";
+    currentTrack: Track = new Track();
+    subscriptionTrack: Subscription;
     addTrack()
     {
         this.router.navigate([{ outlets: { popup: 'addtrackpopup' }}]);
@@ -48,14 +51,27 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                 {
                     this.selectedTrack = tracklist[0];
                     this.playerService.setTrackList(this.tracklist);
+                    this.selectCurrentTrack(this.playerService.track);
                     //this.playerService.setTrack(this.selectedTrack);
                 }
             });
+        this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
+        {
+            this.selectCurrentTrack(track);
+        });
      }
      ngOnDestroy(): void
-    {
+     {
         this.st.delTimer('5sec');
-    }
+     }
+     selectCurrentTrack(track: Track)
+     {
+        let temptrack = this.tracklist.find(x=>x.address == track.address);
+            if(temptrack)
+            {
+                this.currentTrack = temptrack;
+            }
+     }
      ngAfterViewInit() {
 
      }

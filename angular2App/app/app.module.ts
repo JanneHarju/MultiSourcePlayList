@@ -18,6 +18,8 @@ import { TracklistComponent } from './modules/tracklist/tracklist.component';
 import { SearchComponent } from './modules/search/search.component';
 import { SearchlistComponent } from './modules/searchlist/searchlist.component';
 import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplaylist.component';
+import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.component';
+import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { NavbarComponent } from './modules/navbar/navbar.component';
 import { LoginComponent } from './modules/login/login.component';
@@ -58,6 +60,8 @@ import './rxjs-extensions';
     SearchComponent,
     SearchlistComponent,
     SpotifyPlaylistComponent,
+    SpotifyAlbumComponent,
+    SpotifyArtistComponent,
     PopupComponent,
     AddTrackPopupComponent,
     NavbarComponent,

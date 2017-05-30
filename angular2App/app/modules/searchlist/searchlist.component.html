@@ -6,24 +6,28 @@
                 <table class="tracks">
                     <thead>
                         <th></th>
+                        <th>TRACK</th>
                         <th>ARTIST</th>
                         <th>ALBUM</th>
-                        <th>TRACK</th>
                         <th></th>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let track of spotifyTracks">
+                        <tr *ngFor="let track of spotifyTracks" class="track" [class.active]="track == selectedSpotifyTrack">
                             <td class="tdPlay">
                                 <a (click)="onSpotifySelect(track)" class="play-button glyphicon glyphicon-play-circle"></a>
                             </td>
-                            <td class="stdArtist" >
-                                {{track.artists[0].name}}
-                            </td>
-                            <td class="stdAlbum" >
-                                {{track.album.name}}
-                            </td>
-                            <td class="stdTrack">
+                            <td class="stdTrack" (dblclick)="onSpotifySelect(track)">
                                 {{track.name}}
+                            </td>
+                            <td class="stdArtist" (dblclick)="onSpotifySelect(track)">
+                                <a [routerLink]="['/main/spotifyartist', track.artists[0].id]">
+                                {{track.artists[0].name}}
+                                </a>
+                            </td>
+                            <td class="stdAlbum" (dblclick)="onSpotifySelect(track)">
+                                <a [routerLink]="['/main/spotifyalbum', track.album.id]">
+                                {{track.album.name}}
+                                </a>
                             </td>
                             <td class="pull-right">
                                 <div class="dropup">
@@ -39,7 +43,6 @@
                                     </ul>
                                 </div>
                             </td>
-
                         </tr>
                     </tbody>
                 </table>
@@ -47,20 +50,20 @@
                 <table class="tracks">
                     <thead>
                         <th></th>
-                        <th>Channel name</th>
                         <th>Video name</th>
+                        <th>Channel name</th>
                         <th></th>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let video of youtubeVideos">
+                        <tr *ngFor="let video of youtubeVideos" class="track" [class.active]="video == selectedYoutubeVideo">
                             <td class="tdPlay">
                                 <a (click)="onYoutubeSelect(video)" class="play-button glyphicon glyphicon-play-circle"></a>
                             </td>
-                            <td class="tdArtist">
-                                {{video.snippet.channelTitle}}
-                            </td>
-                            <td class="tdTrack" >
+                            <td class="tdTrack" (dblclick)="onYoutubeSelect(video)" >
                                 {{video.snippet.title}}
+                            </td>
+                            <td class="tdArtist" (dblclick)="onYoutubeSelect(video)">
+                                {{video.snippet.channelTitle}}
                             </td>
                             <td class="pull-right">
                                 <div class="dropup">
