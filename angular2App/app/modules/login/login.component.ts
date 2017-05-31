@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
 
     private loginUser: User;
     private register: boolean;
+    rememberMe: boolean = false;
     //private postStream: Subscription;
 
     constructor(
@@ -24,9 +25,15 @@ export class LoginComponent implements OnInit {
     {
         this.loginUser = new User();
         this.register = false;
+        let longtermToken = localStorage.getItem(this.authService.tokeyKey)
+        if(longtermToken)
+        {
+            sessionStorage.setItem(this.authService.tokeyKey, longtermToken);
+            this.router.navigate(['main']);
+        }
     }
     login() {
-        this.authService.login(this.loginUser).then(
+        this.authService.login(this.rememberMe, this.loginUser).then(
             result => {
                 if (result.State == 1) {
                     this.router.navigate(["/main"]);
@@ -38,7 +45,7 @@ export class LoginComponent implements OnInit {
     }
     registerUser()
     {
-        this.authService.register(this.loginUser).then(
+        this.authService.register(this.rememberMe, this.loginUser).then(
             result => {
                 if (result.State == 1) {
                     this.router.navigate(["/main"]);

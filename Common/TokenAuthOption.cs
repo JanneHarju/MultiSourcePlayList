@@ -14,6 +14,11 @@ using System;
         public static SigningCredentials SigningCredentials { get; } = new SigningCredentials(Key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature);
 
         public static TimeSpan ExpiresSpan { get; } = TimeSpan.FromHours(12);
+        public static TimeSpan ExtendedExpiresSpan { get; } = TimeSpan.FromDays(365*10);
+        public static TimeSpan GetExpriseSpan(bool rememberme)
+        {
+            return rememberme ? ExtendedExpiresSpan : ExpiresSpan;
+        }
         public static string TokenType { get; } = "Bearer"; 
     }
    

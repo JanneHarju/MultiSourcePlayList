@@ -11,8 +11,8 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class AuthService implements CanActivate {
-    private tokeyKey = "token";
-
+    public tokeyKey = "token";
+    rememberme: boolean = false;
     private subjectAuthenticationComplited = new Subject<boolean>();
     constructor(private http: Http, private router: Router) { }
 
@@ -24,15 +24,19 @@ export class AuthService implements CanActivate {
             return false;
         }
     }
-
-    public login(user: User) {
+    
+    public login(rememberme:boolean, user: User) {
         let header = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: header });
-
-        return this.http.put("/api/tokenauth/Login", user, options).toPromise().then(
+        this.rememberme = rememberme;
+        return this.http.put("/api/tokenauth/Login/"+rememberme, user, options).toPromise().then(
             res => {
                 let result = res.json();
                 if (result.State == 1 && result.Data && result.Data.accessToken) {
+                    if(this.rememberme)
+                    {
+                        localStorage.setItem(this.tokeyKey, result.Data.accessToken);
+                    }
                     sessionStorage.setItem(this.tokeyKey, result.Data.accessToken);
                     this.setAuthenticationComplited(true);
                 }
@@ -45,14 +49,19 @@ export class AuthService implements CanActivate {
         ).catch(this.handleError);
     }
 
-    public register(user: User) {
+    public register(rememberme:boolean,user: User) {
         let header = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: header });
+        this.rememberme = rememberme;
 
-        return this.http.post("/api/tokenauth/Register", user, options).toPromise().then(
+        return this.http.post("/api/tokenauth/Register/"+rememberme, user, options).toPromise().then(
             res => {
                 let result = res.json();
                 if (result.State == 1 && result.Data && result.Data.accessToken) {
+                    if(this.rememberme)
+                    {
+                        localStorage.setItem(this.tokeyKey, result.Data.accessToken);
+                    }
                     sessionStorage.setItem(this.tokeyKey, result.Data.accessToken);
                     this.setAuthenticationComplited(true);
                 }

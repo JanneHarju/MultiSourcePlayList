@@ -29,24 +29,22 @@ namespace PlayList
             _multiSourcePlaylistRepository = multiSourcePlaylistRepository;
             _logger = loggerFactory.CreateLogger("TokenAuthController");  
         }
-        [HttpPut("Login")]
+        [HttpPut("Login/{rememberme}")]
         [AllowAnonymous]
-        public IActionResult Login([FromBody]User user)
+        public IActionResult Login(bool rememberme, [FromBody]User user)
         {
-            PasswordHasher<User> haser = new PasswordHasher<User>();
-            //string hashedPW = haser.HashPassword(user,user.Password);
-            //_logger.LogCritical("plaa"+hashedPW);
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
             User existUser = _multiSourcePlaylistRepository
                 .GetAllUsers()
                 .FirstOrDefault(u => 
                     u.Username == user.Username
-                    && haser.VerifyHashedPassword(user,u.Password, user.Password) == PasswordVerificationResult.Success );
+                    && hasher.VerifyHashedPassword(user,u.Password, user.Password) == PasswordVerificationResult.Success );
 
             if (existUser != null)
             {
 
                 var requestAt = DateTime.Now;
-                var expiresIn = requestAt + TokenAuthOption.ExpiresSpan;
+                var expiresIn = requestAt + TokenAuthOption.GetExpriseSpan(rememberme);
                 var token = GenerateToken(existUser, expiresIn);
 
                 return Json(new RequestResult
@@ -55,7 +53,7 @@ namespace PlayList
                     Data = new
                     {
                         requertAt = requestAt,
-                        expiresIn = TokenAuthOption.ExpiresSpan.TotalSeconds,
+                        expiresIn = TokenAuthOption.GetExpriseSpan(rememberme).TotalSeconds,
                         tokeyType = TokenAuthOption.TokenType,
                         accessToken = token
                     }
@@ -70,17 +68,17 @@ namespace PlayList
                 });
             }
         }
-        [HttpPost("Register")]
+        [HttpPost("Register/{rememberme}")]
         [AllowAnonymous]
-        public IActionResult Register([FromBody]User user)
+        public IActionResult Register(bool rememberme, [FromBody]User user)
         {
             User existUser = _multiSourcePlaylistRepository.GetAllUsers().FirstOrDefault(u => u.Username == user.Username);
 
             if (existUser == null)
             {
 
-                PasswordHasher<User> haser = new PasswordHasher<User>();
-                string hashedPW = haser.HashPassword(user,user.Password);
+                PasswordHasher<User> hasher = new PasswordHasher<User>();
+                string hashedPW = hasher.HashPassword(user,user.Password);
                 user.Password = hashedPW;
                 _multiSourcePlaylistRepository.PostUser(user);
 
@@ -89,7 +87,7 @@ namespace PlayList
                 if(newUser != null)
                 {
                     var requestAt = DateTime.Now;
-                    var expiresIn = requestAt + TokenAuthOption.ExpiresSpan;
+                    var expiresIn = requestAt + TokenAuthOption.GetExpriseSpan(rememberme);
                     var token = GenerateToken(newUser, expiresIn);
 
                     return Json(new RequestResult
@@ -98,7 +96,7 @@ namespace PlayList
                         Data = new
                         {
                             requertAt = requestAt,
-                            expiresIn = TokenAuthOption.ExpiresSpan.TotalSeconds,
+                            expiresIn = TokenAuthOption.GetExpriseSpan(rememberme).TotalSeconds,
                             tokeyType = TokenAuthOption.TokenType,
                             accessToken = token
                         }

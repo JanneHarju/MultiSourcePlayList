@@ -14,11 +14,11 @@
         <a *ngIf="register == false" (click)="registerState()">Register</a>
 
         <a *ngIf="register" (click)="loginState()">Login</a>
-        <!--<div class="checkbox">
+        <div class="checkbox">
             <label>
-            <input type="checkbox" value="remember-me"> Remember me
+                <input type="checkbox" [(ngModel)]="rememberMe" name="rememberme"> Remember me
             </label>
-        </div>-->
+        </div>
         <button *ngIf="register == false" (click)="login()" class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
         <button *ngIf="register" (click)="registerUser()" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
     </form>

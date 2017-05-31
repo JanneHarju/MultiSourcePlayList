@@ -75,7 +75,10 @@ export class NavbarComponent implements OnInit {
             });
         
     }
-    
+    forgetMe()
+    {
+        localStorage.removeItem(this.authService.tokeyKey);
+    }
     search(q: string): void {
         //naigoidaan tässä
         this.router.navigate(['main/searchlist', q]);
