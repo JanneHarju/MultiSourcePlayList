@@ -16,7 +16,9 @@
         <a *ngIf="register" (click)="loginState()">Login</a>
         <div class="checkbox">
             <label>
-                <input type="checkbox" [(ngModel)]="rememberMe" name="rememberme"> Remember me
+                <input type="checkbox" [(ngModel)]="rememberMe" name="rememberme">
+                <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                 Remember me
             </label>
         </div>
         <button *ngIf="register == false" (click)="login()" class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
