@@ -9,17 +9,18 @@
                         <h4 >{{track.name}}</h4>
                     </div>
                 </a>--><!--style.background-color="{{track.type | colorpipe}}">-->
+                <my-fileupload (loadComplited)="loadComplited($event)" [currentPlaylist]="currrentPlaylist" ></my-fileupload>
                 <table class="tracks list-group" dnd-sortable-container (dragend)="orderedTrack()" [sortableData]="tracklist">
                     <thead>
                         <th></th>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let track of tracklist; let i = index" (click)="onSelect(track)"
-                            [class.activetrack]="track == currentTrack" 
-                            class="list-group-item tablerow" dnd-sortable [sortableIndex]="i">
+                        <tr *ngFor="let track of tracklist; let i = index" 
+                                [class.activetrack]="track == currentTrack" 
+                                class="list-group-item tablerow" dnd-sortable [sortableIndex]="i">
                             
-                            <td class="tablerowdata">
-                                <div class="col-sm-1 logos">
+                            <td class="tablerowdata" (click)="$event.dropdown || $event.addTrackToPlaylistclicked || onSelect(track)" >
+                                <div class="col-sm-1 logos" >
                                     <img *ngIf="track.type == 1" src="assets/YouTube-social-squircle_red_128px.png" width="30" align="left">
                                     <img *ngIf="track.type == 2" src="assets/Spotify_Logo_RGB_Green.png" width="30" align="left">
                                     <img *ngIf="track.type == 3" src="assets/128px-MP3_logo_white.png" width="30" align="left">
@@ -29,8 +30,21 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="pull-right btn-group" role="group">
-                                        <button class="trackbuttons btn btn-info glyphicon glyphicon-align-center" (click)="myModal.open(); $event.stopPropagation(); lyrics(track)"></button>
-                                        <button class="trackbuttons btn btn-danger glyphicon glyphicon-remove" (click)="delete(track); $event.stopPropagation()"></button>
+                                        <button type="button" class="trackbuttons btn btn-info glyphicon glyphicon-align-center" (click)="myModal.open(); $event.stopPropagation(); lyrics(track)"></button>
+                                        
+                                        <div class="btn-group" role="group" >
+                                            <button class="btn btn-default dropdown-toggle trackbuttons" (click)="$event.dropdown = true" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
+                                                <li *ngFor="let playlist of playlists">
+                                                    <a (click)="$event.addTrackToPlaylistclicked = true; addTrackToPlaylist(playlist, track)">
+                                                        {{playlist.name}}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <button type="button" class="trackbuttons btn btn-danger glyphicon glyphicon-remove" (click)="delete(track); $event.stopPropagation()"></button>
                                     </div>
                                 </div>
                             </td>

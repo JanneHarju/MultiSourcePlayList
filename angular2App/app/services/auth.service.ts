@@ -109,7 +109,7 @@ export class AuthService implements CanActivate {
             .catch(this.handleError);
     }
 
-    private getLocalToken(): string {
+    public getLocalToken(): string {
            return sessionStorage.getItem(this.tokeyKey);
     }
 

@@ -1,0 +1,7 @@
+<div class="drop-container" ngFileDrop (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
+  <h3>Drag & Drop mp3-file here or</h3>
+  <label class="btn btn-default btn-file">
+    Browse <input accept=".mp3" type="file" ngFileSelect (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple style="display: none;">
+  </label>
+  
+</div>

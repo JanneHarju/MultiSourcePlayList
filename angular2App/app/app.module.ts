@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { YoutubePlayerModule } from 'ng2-youtube-player';
 import { DndModule } from 'ng2-dnd';
 
+import { NgUploaderModule } from 'ngx-uploader';
 import { ModalModule } from "ng2-modal";
 
 import { PlayerComponent } from './modules/player/player.component';
@@ -20,6 +21,7 @@ import { SearchlistComponent } from './modules/searchlist/searchlist.component';
 import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplaylist.component';
 import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.component';
 import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
+import { FileUploadComponent } from './modules/fileupload/fileupload.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { NavbarComponent } from './modules/navbar/navbar.component';
 import { LoginComponent } from './modules/login/login.component';
@@ -49,7 +51,8 @@ import './rxjs-extensions';
     HttpModule,
     AppRoutingModule,
     YoutubePlayerModule,
-    ModalModule
+    ModalModule,
+    NgUploaderModule
   ],
   declarations: [
     AppComponent,
@@ -66,6 +69,7 @@ import './rxjs-extensions';
     AddTrackPopupComponent,
     NavbarComponent,
     LoginComponent,
+    FileUploadComponent,
     SafePipe,
     ColorPipe,
     DisplayTimePipe

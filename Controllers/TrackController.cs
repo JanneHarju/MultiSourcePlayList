@@ -106,7 +106,7 @@ namespace PlayList.Controllers
             Track someTrack = values[0];
             var allTracks = _multiSourcePlaylistRepository.GetAllTracks();
             int lastOrder = 0;
-            _logger.LogCritical("PÖÖÖÖÖÖÖ "+ JsonConvert.SerializeObject(someTrack));
+            //_logger.LogCritical("PÖÖÖÖÖÖÖ "+ JsonConvert.SerializeObject(someTrack));
             List<Track> temp = new List<Track>();
             if(allTracks != null)
                 temp = allTracks.Where(y=>y.playlist.id==someTrack.playlist.id).ToList();

@@ -41,4 +41,8 @@ wwwroot/app.*.css
 wwwroot/app.*.css.map
 wwwroot/dist/*
 wwwroot/assets/*
+wwwroot/*
 wwwroot/*.*
+
+wwwroot/*/*
+Migrations

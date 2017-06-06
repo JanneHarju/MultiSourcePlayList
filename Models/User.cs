@@ -14,6 +14,7 @@ namespace PlayList.Models
 
         public string Fname {get;set;}
         public string Lname {get;set;}
+        public string FileFolder{get;set;}
         public ICollection<Playlist> Playlists { get; set; }
     
     }

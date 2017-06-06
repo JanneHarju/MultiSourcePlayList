@@ -54,6 +54,10 @@ module.exports = {
             '/api/tokenauth/*': {
             target: 'http://localhost:5000',
             secure: false
+            },
+            '/api/fileupload/*': {
+            target: 'http://localhost:5000',
+            secure: false
             }
         }
     },

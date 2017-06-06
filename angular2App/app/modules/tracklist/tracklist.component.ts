@@ -2,8 +2,10 @@ import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Renderer,OnDes
 import { ActivatedRoute, Params } from '@angular/router';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
+import { PlaylistService } from '../../services/playlist.service';
 import { MusixMatchAPIService } from '../../services/musixmatch.service';
 import { Track } from '../../models/track';
+import { Playlist } from '../../models/playlist';
 import { MusixMatchLyric } from '../../models/musixmatchlyric';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { Router } from '@angular/router';
@@ -15,15 +17,7 @@ import { Subscription } from 'rxjs/Subscription';
     styles: [ require('./tracklist.component.less') ],
 })
 export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
-    constructor(
-    private trackService: TrackService,
-    private playerService: PlayerService,
-    private musixmatchService: MusixMatchAPIService,
-    private route: ActivatedRoute,
-    private renderer: Renderer,
-    private st: SimpleTimer,
-    private el: ElementRef,
-    private router: Router) { }
+
     timerId: string;
     tracklist: Track[] = [];
     selectedTrack: Track = new Track();
@@ -36,7 +30,20 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     lyricHeader: string = "";
     lyricImageUrl: string = "";
     currentTrack: Track = new Track();
+    currrentPlaylist: Playlist = new Playlist();
     subscriptionTrack: Subscription;
+    playlists: Playlist[] = [];
+
+    constructor(
+    private trackService: TrackService,
+    private playerService: PlayerService,
+    private playlistService: PlaylistService,
+    private musixmatchService: MusixMatchAPIService,
+    private route: ActivatedRoute,
+    private renderer: Renderer,
+    private st: SimpleTimer,
+    private el: ElementRef,
+    private router: Router) { }
     addTrack()
     {
         this.router.navigate([{ outlets: { popup: 'addtrackpopup' }}]);
@@ -55,10 +62,24 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                     //this.playerService.setTrack(this.selectedTrack);
                 }
             });
+         this.route.params
+            .switchMap((params: Params) => this.playlistService.getPlaylist(+params['id']))
+            .subscribe((playlist: Playlist) => 
+            {
+                this.currrentPlaylist = playlist;
+            });
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
         {
             this.selectCurrentTrack(track);
         });
+
+        this.playlistService.getUsersPlaylists()
+            .then((playlists : Playlist[])=> 
+            {
+                this.playlists = playlists;
+
+                this.playlists = this.playlists.filter(h => h.id !== this.currrentPlaylist.id);
+            });
      }
      ngOnDestroy(): void
      {
@@ -121,5 +142,23 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             .then(() => {
                 this.ngOnInit();
             });
+    }
+    loadComplited(e: any)
+    {
+        this.ngOnInit();
+    }
+    addTrackToPlaylist(playlist: Playlist, track: Track)
+    {
+        let trc = new Track();
+        trc.address = track.address;
+        trc.name = track.name;
+        trc.playlist = playlist;
+        trc.type = track.type;
+        let trackList: Track[] = [];
+        trackList.push(trc);
+        this.trackService.createMany(trackList).then(ret =>
+        {
+
+        });
     }
 }

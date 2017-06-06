@@ -9,7 +9,9 @@ using System.Security.Principal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
 using PlayList.Models;
+using System.IO;
 using PlayList.Repositories;
 using Microsoft.Extensions.Logging;
 
@@ -22,10 +24,14 @@ namespace PlayList
     {
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
         private readonly ILogger _logger;
-        public TokenAuthController(IMultiSourcePlaylistRepository multiSourcePlaylistRepository,
-                ILoggerFactory loggerFactory)
+        private readonly IHostingEnvironment _environment;
+        public TokenAuthController(
+            IHostingEnvironment environment,
+            IMultiSourcePlaylistRepository multiSourcePlaylistRepository,
+            ILoggerFactory loggerFactory)
         :base()
         {
+            _environment = environment;
             _multiSourcePlaylistRepository = multiSourcePlaylistRepository;
             _logger = loggerFactory.CreateLogger("TokenAuthController");  
         }
@@ -79,7 +85,12 @@ namespace PlayList
 
                 PasswordHasher<User> hasher = new PasswordHasher<User>();
                 string hashedPW = hasher.HashPassword(user,user.Password);
+                var userfileFolder = Guid.NewGuid().ToString();
+                var uploads = Path.Combine(_environment.WebRootPath,
+                "uploads", userfileFolder);
+                Directory.CreateDirectory(uploads);
                 user.Password = hashedPW;
+                user.FileFolder = userfileFolder;
                 _multiSourcePlaylistRepository.PostUser(user);
 
                 User newUser = _multiSourcePlaylistRepository.GetAllUsers().FirstOrDefault(u => u.Username == user.Username);
