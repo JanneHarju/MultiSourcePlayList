@@ -42,6 +42,18 @@ export class PlayerService {
     {
         this.tracklist = tracklist;
     }
+    setCurrentTrackOrder()
+    {
+        if(this.track && this.tracklist)
+        {
+            var newTrack = this.tracklist.find(t=> t.id == this.track.id);
+            if(newTrack)
+            {
+                var currentTrackNewOrder = newTrack.order;
+                this.track.order = currentTrackNewOrder;
+            }
+        }
+    }
     chooseNextTrack()
     {
         if(!this.shuffle)

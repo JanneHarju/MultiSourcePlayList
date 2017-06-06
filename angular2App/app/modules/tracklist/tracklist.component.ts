@@ -59,6 +59,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.selectedTrack = tracklist[0];
                     this.playerService.setTrackList(this.tracklist);
                     this.selectCurrentTrack(this.playerService.track);
+                    this.playerService.setCurrentTrackOrder();
                     //this.playerService.setTrack(this.selectedTrack);
                 }
             });
