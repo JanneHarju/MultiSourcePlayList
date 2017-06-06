@@ -146,23 +146,27 @@ namespace PlayList.Controllers
         [Authorize("Bearer")]
         public void Delete(int id)
         {
-            
-            var address = _multiSourcePlaylistRepository.GetTrack(id).address;
+            var track = _multiSourcePlaylistRepository.GetTrack(id);
+            var address = track.address;
+            var type = track.type;
             _multiSourcePlaylistRepository.DeleteTrack(id);
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
             var user = _multiSourcePlaylistRepository.GetUser(userId);
             var mp3type = 3;
-            if(!_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
+            if(type == mp3type)
             {
-                var filePath = Path.Combine(
-                    _environment.WebRootPath,
-                    "uploads",
-                    user.FileFolder,
-                    address);
-                
-                _logger.LogCritical(filePath);
-                System.IO.File.Delete(filePath);
+                if(!_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
+                {
+                    var filePath = Path.Combine(
+                        _environment.WebRootPath,
+                        "uploads",
+                        user.FileFolder,
+                        address);
+                    
+                    _logger.LogCritical(filePath);
+                    System.IO.File.Delete(filePath);
+                }
             }
         }
         
