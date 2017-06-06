@@ -31,6 +31,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     shuffle: boolean = false;
     disableProgressUpdate: boolean = false;
     isplaying: boolean = false;
+
+    localFilePath: string = "api/audio/";
     ngOnInit(): void 
     {
         //this.setProgress(0);
@@ -214,7 +216,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.st.delTimer('1sec');
         }
     }
-    audioloaded()
+    /*audioloaded()
     {
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
         //this.trackName = audio.audioTracks.length.toString();//[0].label + " " + audio.audioTracks[0].kind;
@@ -224,15 +226,19 @@ export class PlayerComponent implements OnInit, OnDestroy {
         //audio.audioTracks[0].label;
         audio.play();
         //this.trackName = audio.audioTracks.toString();//[0].label + " " + audio.audioTracks[0].kind;
+    }*/
+    localFileAddress(track: Track) : string
+    {
+        return this.localFilePath + track.id;
     }
-    /*loadedmeadata()
+    loadedmeadata()
     {
         
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
         
         
-        this.duration = audio.duration;
-    }*/
+        this.duration = audio.duration*1000;
+    }
     onAudioEnded()
     {
         //Call service here to choose next track

@@ -8,7 +8,9 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using System;
+using System.IO;
 
 namespace PlayList.Controllers
 {
@@ -18,10 +20,14 @@ namespace PlayList.Controllers
     {
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
         private readonly ILogger _logger;
-        public PlaylistController(IMultiSourcePlaylistRepository multiSourcePlaylistRepository
+        private readonly IHostingEnvironment _environment;
+        public PlaylistController(
+            IHostingEnvironment environment,
+            IMultiSourcePlaylistRepository multiSourcePlaylistRepository
             ,ILoggerFactory loggerFactory)
          : base()
         {
+            _environment = environment;
             _multiSourcePlaylistRepository = multiSourcePlaylistRepository;
             _logger = loggerFactory.CreateLogger("PlaylistController");  
         }
@@ -114,6 +120,33 @@ namespace PlayList.Controllers
         [Authorize("Bearer")]
         public void Delete(int id)
         {
+
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
+            var user = _multiSourcePlaylistRepository.GetUser(userId);
+            var tracks = _multiSourcePlaylistRepository.GetUsersPlaylistTracks(id,userId);
+            var mp3type = 3;
+            foreach (var track in tracks)
+            {
+                if(track.type == mp3type)
+                {
+                    var address = track.address;
+                    _multiSourcePlaylistRepository.DeleteTrack(track.id);
+                
+                    if(!_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
+                    {
+                        var filePath = Path.Combine(
+                            _environment.WebRootPath,
+                            "uploads",
+                            user.FileFolder,
+                            address);
+                        
+                        _logger.LogCritical(filePath);
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+            }
+            
             _multiSourcePlaylistRepository.DeletePlaylist(id);
         }
     }

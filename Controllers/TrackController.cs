@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using System.Security.Claims;
 using System;
+using System.IO;
 
 namespace PlayList.Controllers
 {
@@ -21,10 +23,14 @@ namespace PlayList.Controllers
 
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
         private readonly ILogger _logger;
-        public TrackController(IMultiSourcePlaylistRepository multiSourcePlaylistRepository,
-                ILoggerFactory loggerFactory)
+        private readonly IHostingEnvironment _environment;
+        public TrackController(
+            IHostingEnvironment environment,
+            IMultiSourcePlaylistRepository multiSourcePlaylistRepository,
+            ILoggerFactory loggerFactory)
          : base()
         {
+            _environment = environment;
             _multiSourcePlaylistRepository = multiSourcePlaylistRepository;
             _logger = loggerFactory.CreateLogger("TrackController");  
         }
@@ -140,7 +146,24 @@ namespace PlayList.Controllers
         [Authorize("Bearer")]
         public void Delete(int id)
         {
+            
+            var address = _multiSourcePlaylistRepository.GetTrack(id).address;
             _multiSourcePlaylistRepository.DeleteTrack(id);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
+            var user = _multiSourcePlaylistRepository.GetUser(userId);
+            var mp3type = 3;
+            if(!_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
+            {
+                var filePath = Path.Combine(
+                    _environment.WebRootPath,
+                    "uploads",
+                    user.FileFolder,
+                    address);
+                
+                _logger.LogCritical(filePath);
+                System.IO.File.Delete(filePath);
+            }
         }
         
     }

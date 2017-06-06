@@ -41,6 +41,7 @@ export class FileUploadComponent implements OnInit {
                 type: 'uploadAll',
                 url: '/api/fileupload/'+this.currentPlaylist.id,
                 method: 'POST',
+                fieldName: 'files',
                 headers: { 'Authorization': 'Bearer '+ token},
                 concurrency: 1 // set sequential uploading of files with concurrency 1
             };
@@ -78,6 +79,7 @@ export class FileUploadComponent implements OnInit {
         const event: UploadInput = {
             type: 'uploadAll',
             url: '/api/fileupload/'+this.currentPlaylist.id,
+            fieldName: 'files',
             method: 'POST',
             headers: { 'Authorization': 'Bearer '+ token},
             concurrency: 1 // set sequential uploading of files with concurrency 1

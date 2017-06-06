@@ -46,6 +46,21 @@ namespace PlayList.Repositories
             return _context.Tracks.First(x=>x.id == id);
         }
 
+        public User GetTrackOwner(long id)
+        {
+            return _context.Tracks
+                .Include(t=>t.playlist)
+                .ThenInclude(p=>p.owner)
+                .Where(tr=>tr.id == id).Select(t=>t.playlist.owner).FirstOrDefault();
+        }
+
+        public List<Track> GetTracksByTypeAndAddress(int type, string address, long owner)
+        {
+            return _context.Tracks
+                .Include(t=>t.playlist)
+                .ThenInclude(p=>p.owner)
+                .Where(tr=>tr.type == type && tr.address == address && tr.playlist.owner.Id == owner).ToList();
+        }
         public List<Track> GetAllTracks()
         {
             _logger.LogCritical("Getting a the existing records");

@@ -58,6 +58,10 @@ module.exports = {
             '/api/fileupload/*': {
             target: 'http://localhost:5000',
             secure: false
+            },
+            '/api/audio/*': {
+            target: 'http://localhost:5000',
+            secure: false
             }
         }
     },

@@ -35,7 +35,7 @@ namespace PlayList.Controllers
         }
         [HttpPost("{id}")]
         [Authorize("Bearer")]
-        public async Task<string> FileUpload(long id, IFormFile file)
+        public async Task<string> FileUpload(long id, IFormFile[] files)
         {
             _logger.LogCritical(_environment.WebRootPath);
             
@@ -66,37 +66,43 @@ namespace PlayList.Controllers
                 lastOrder = temp.OrderByDescending(x => x.order).FirstOrDefault().order + 1;
             }
             
-            _logger.LogCritical(uploads);
             //@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)
-            try {
-                if (file.Length > 0) {
-                    using(var fileStream = new FileStream(Path.Combine(
-                        uploads,
-                        file.FileName), FileMode.Create)) {
-                        await file.CopyToAsync(fileStream);
+            
+            foreach(var file in files)
+            {
+                try {
+                    if (files.Length > 0)
+                    {
+                        using(var fileStream = new FileStream(Path.Combine(
+                            uploads,
+                            file.FileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                                //fileStream.Flush();
+                            }
                     }
+                    string fp = Path.Combine(
+                        uploads,
+                        file.FileName);
+                    Track fileTrack = new Track();
+                    /*crit: FileUploadController[0]
+                    [1]       /Users/paiviharju/Documents/Jannen kansio/MultiSourcePlayList/wwwroot
+                    [1] crit: FileUploadController[0]
+                    [1]       
+                    [1] crit: FileUploadController[0]
+                    [1]       1*/
+                    fileTrack.address = file.FileName;
+                    fileTrack.playlist = playlist;
+                    fileTrack.type = 3;
+                    fileTrack.order = lastOrder;
+                    fileTrack.name = getTrackName(fp);//hanki bändi ja kappale mp3 tiedoston metasta
+                    _multiSourcePlaylistRepository.PostTrack(fileTrack);
+
+                } catch {
+                    return null;
                 }
-                _logger.LogCritical("filenimi");
-                string fp = Path.Combine(
-                    uploads,
-                    file.FileName);
-                Track fileTrack = new Track();
-                /*crit: FileUploadController[0]
-                [1]       /Users/paiviharju/Documents/Jannen kansio/MultiSourcePlayList/wwwroot
-                [1] crit: FileUploadController[0]
-                [1]       
-                [1] crit: FileUploadController[0]
-                [1]       1*/
-                fileTrack.address = baseUrl + filePath + "/" + file.FileName;
-                fileTrack.playlist = playlist;
-                fileTrack.type = 3;
-                fileTrack.order = lastOrder;
-                fileTrack.name = getTrackName(fp);//hanki bändi ja kappale mp3 tiedoston metasta
-                _multiSourcePlaylistRepository.PostTrack(fileTrack);
-                return "File was Uploaded";
-            } catch {
-                return null;
             }
+            return "File was Uploaded";
         }
         private string getTrackName(string file)
         {
