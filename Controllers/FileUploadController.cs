@@ -37,7 +37,7 @@ namespace PlayList.Controllers
         [Authorize("Bearer")]
         public async Task<string> FileUpload(long id, IFormFile[] files)
         {
-            _logger.LogCritical(_environment.WebRootPath);
+            _logger.LogCritical(_environment.ContentRootPath);
             
             _logger.LogCritical(UriHelper.GetDisplayUrl(Request));
             _logger.LogCritical(id.ToString());
@@ -49,11 +49,11 @@ namespace PlayList.Controllers
                 "uploads",
                 user.FileFolder);
             var uploads = Path.Combine(
-                _environment.WebRootPath,
+                _environment.ContentRootPath,
                 filePath);
-            string url = UriHelper.GetDisplayUrl(Request);//http://localhost:8080/api/fileupload/1
-            var urlParts = url.Split(new[] { "api/fileupload" }, StringSplitOptions.None);
-            var baseUrl = urlParts[0];
+            //string url = UriHelper.GetDisplayUrl(Request);//http://localhost:8080/api/fileupload/1
+            //var urlParts = url.Split(new[] { "api/fileupload" }, StringSplitOptions.None);
+            //var baseUrl = urlParts[0];
             var playlist = _multiSourcePlaylistRepository.GetPlaylist(id);
 
             var allTracks = _multiSourcePlaylistRepository.GetAllTracks();

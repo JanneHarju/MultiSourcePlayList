@@ -86,7 +86,7 @@ namespace PlayList
                 PasswordHasher<User> hasher = new PasswordHasher<User>();
                 string hashedPW = hasher.HashPassword(user,user.Password);
                 var userfileFolder = Guid.NewGuid().ToString();
-                var uploads = Path.Combine(_environment.WebRootPath,
+                var uploads = Path.Combine(_environment.ContentRootPath,
                 "uploads", userfileFolder);
                 Directory.CreateDirectory(uploads);
                 user.Password = hashedPW;

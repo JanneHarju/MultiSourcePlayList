@@ -145,7 +145,26 @@ namespace PlayList
                 CookieName = "access_token"
             });
             #endregion
-            
+            var angularRoutes = new[] {
+                 "/login",
+                 "/main",
+                 "/main/tracklist",
+                 "/main/searchlist",
+                 "/main/spotifylist",
+                 "/main/spotifyalbum",
+                 "/main/spotifyartist"
+            };
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.HasValue && null != angularRoutes.FirstOrDefault(
+                    (ar) => context.Request.Path.Value.StartsWith(ar, StringComparison.OrdinalIgnoreCase)))
+                {
+                    context.Request.Path = new PathString("/");
+                }
+
+                await next();
+            });
+
             app.UseCors("AllowAllOrigins");
 
             app.UseDefaultFiles();

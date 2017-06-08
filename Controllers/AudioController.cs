@@ -48,8 +48,10 @@ namespace PlayList.Controllers
             var user = _multiSourcePlaylistRepository.GetUser(userId);
             var track = _multiSourcePlaylistRepository.GetTrack(id);
             _logger.LogCritical(JsonConvert.SerializeObject(track));
+            _logger.LogCritical(_environment.WebRootPath);
+            _logger.LogCritical(_environment.ContentRootPath);
             var filePath = Path.Combine(
-                _environment.WebRootPath,
+                _environment.ContentRootPath,
                 "uploads",
                 user.FileFolder,
                 track.address);
