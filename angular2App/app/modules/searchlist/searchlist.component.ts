@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params }   from '@angular/router';
+import { ActivatedRoute, Params, Router }   from '@angular/router';
 import { SpotifyService } from '../../services/spotify.service';
 import { YoutubeAPIService } from '../../services/youtubeapi.service';
 import { SpotifyTrack } from '../../models/spotifytrack';
 import { YoutubeVideo } from '../../models/youtubeVideo';
 import { PlaylistService} from '../../services/playlist.service';
+import { AuthService } from '../../services/auth.service';
 import { Playlist } from '../../models/playlist'
 import { Track } from '../../models/track'
 import { TrackService }         from '../../services/track.service';
@@ -38,9 +39,14 @@ export class SearchlistComponent implements OnInit {
     selectedSpotifyTrack: SpotifyTrack = new SpotifyTrack();
     selectedYoutubeVideo: YoutubeVideo = new YoutubeVideo();
     subscriptionTrack: Subscription;
+    subscriptionPlaylistsModified: Subscription;
+    tempSpotifyPlaylistId: number = -4;
+    tempYoutubePlaylistId: number = -5;
     constructor(
         private route: ActivatedRoute,
+        private router: Router,
         private spotifyService: SpotifyService,
+        private authService: AuthService,
         private youtubeApiService: YoutubeAPIService,
         private playlistService: PlaylistService,
         private trackService: TrackService,
@@ -94,9 +100,29 @@ export class SearchlistComponent implements OnInit {
             console.error(err);
         });*/
         //this.bandcampSearch(this.query);
-        this.playlistService.getUsersPlaylists()
-            .then((playlists : Playlist[])=> this.playlists = playlists);
-
+        this.getUsersPlaylists();
+        this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated =>
+        {
+            this.getUsersPlaylists();
+        });
+     }
+     getUsersPlaylists()
+     {
+         this.playlistService.getUsersPlaylists()
+            .then((playlists : Playlist[])=> 
+            {
+                this.playlists = playlists;
+            })
+            .catch(err =>
+            {
+                console.log("Some error occured" + err);
+                if(err.status == 401)
+                {
+                    console.log("Unauthorized");
+                    this.authService.clearLoginToken();
+                    this.router.navigate(['login']);
+                }
+            });
      }
      bcsearch()
      {
@@ -144,26 +170,32 @@ export class SearchlistComponent implements OnInit {
         let temptrack = this.spotifyTracks.find(x=>x.uri == track.address);
         if(temptrack)
         {
-            this.selectedSpotifyTrack = temptrack;
-            this.selectedYoutubeVideo = null;
-            //this doesn't work because of two divs which have own scrollbars.
-            //This scrolls only left one not the right one.
-            /*var element = document.getElementsByClassName("active")[0];
-            if(element)
-                element.scrollIntoView()*/
+            if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempSpotifyPlaylistId))
+            {
+                this.selectedSpotifyTrack = temptrack;
+                this.selectedYoutubeVideo = null;
+                //this doesn't work because of two divs which have own scrollbars.
+                //This scrolls only left one not the right one.
+                /*var element = document.getElementsByClassName("active")[0];
+                if(element)
+                    element.scrollIntoView()*/
+            }
         }
         else
         {
             let tempvideo = this.youtubeVideos.find(x=>x.id.videoId == track.address);
             if(tempvideo)
             {
-                this.selectedYoutubeVideo = tempvideo;
-                this.selectedSpotifyTrack = null;
-                //this doesn't work because of two divs which have own scrollbars.
-                //This scrolls only left one not the right one.
-                /*var element = document.getElementsByClassName("active")[0];
-                if(element)
-                    element.scrollIntoView()*/
+                if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempYoutubePlaylistId))
+                {
+                    this.selectedYoutubeVideo = tempvideo;
+                    this.selectedSpotifyTrack = null;
+                    //this doesn't work because of two divs which have own scrollbars.
+                    //This scrolls only left one not the right one.
+                    /*var element = document.getElementsByClassName("active")[0];
+                    if(element)
+                        element.scrollIntoView()*/
+                }
             }
         }
      }
@@ -205,7 +237,8 @@ export class SearchlistComponent implements OnInit {
         let trackList: Track[] = [];
         let order: number = 0;
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = 99999;
+        newPlaylist.id = this.tempSpotifyPlaylistId;
+        newPlaylist.name = "Spotify Search :"+this.query;
         this.spotifyTracks.forEach(st =>
         {
 
@@ -228,7 +261,8 @@ export class SearchlistComponent implements OnInit {
         let trackList: Track[] = [];
         let order: number = 0;
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = 99999;
+        newPlaylist.id = this.tempYoutubePlaylistId;
+        newPlaylist.name = "Youtube Search :"+this.query;
         this.youtubeVideos.forEach(ytv =>
         {
 

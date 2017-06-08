@@ -8,7 +8,7 @@
             <h3> Local playlist: </h3>
             <div *ngIf="playlists.length > 0">
                 <div *ngFor="let playlist of playlists" class="pldiv">
-                    <a (click)="selectPlaylist(playlist)" [routerLink]="['/main/tracklist', playlist.id]" routerLinkActive="active">
+                    <a *ngIf="playlist" (click)="selectPlaylist(playlist)" [routerLink]="['/main/tracklist', playlist.id]" routerLinkActive="active">
                     {{playlist.name}}
                     </a>
                     <div class="pull-right btn-group buttongroup" role="group">

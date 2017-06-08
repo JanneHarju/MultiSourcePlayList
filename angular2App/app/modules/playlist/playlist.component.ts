@@ -59,6 +59,16 @@ export class PlaylistComponent implements OnInit {
             .then((playlists : Playlist[])=> 
             {
                 this.playlists = playlists;
+            })
+            .catch(err =>
+            {
+                console.log("Some error occured" + err);
+                if(err.status == 401)
+                {
+                    console.log("Unauthorized");
+                    this.authService.clearLoginToken();
+                    this.router.navigate(['login']);
+                }
             });
         this.spotifyService.getUsersPlaylist()
                 .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);

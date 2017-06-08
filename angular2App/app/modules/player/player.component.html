@@ -2,7 +2,9 @@
     <div class="col-xs-12 col-sm-12 box">
         <div class="innerbox">
             <div class="box-style"> 
-
+                <div class="row playlistname" *ngIf="track && track.playlist">
+                    {{track.playlist.name}}
+                </div>
                 <div class="row">
 
                     <div class="row">
@@ -39,7 +41,7 @@
                     <iframe id="spotify" (load)="onLoad(this)" [src]="track.address | safe" width="300" height="1" frameborder="0" allowtransparency="true"></iframe>
                 </div>-->
                 <!--style="visibility: hidden"--><!--[currentTime]="15" [duration]="{{duration}}" [currentTime]="{{progress}}" (loadedmetadata)="loadedmeadata()"-->
-                    <audio height="40" *ngIf="track.type == 3" style="visibility: hidden"  (ended)="onAudioEnded()" (loadedmetadata)="loadedmeadata()" id="audio1" [src]="localFileAddress(track) | safe" controls="" autoplay>
+                    <audio (error)="error()" height="40" *ngIf="track.type == 3" style="visibility: hidden"  (ended)="onAudioEnded()" (loadedmetadata)="loadedmeadata()" id="audio1" [src]="localFileAddress(track) | safe" controls="" autoplay>
                     </audio>
                 <div>
                     {{track.name}}

@@ -71,19 +71,27 @@ namespace PlayList.Controllers
             foreach(var file in files)
             {
                 try {
-                    if (files.Length > 0)
-                    {
-                        using(var fileStream = new FileStream(Path.Combine(
+                    var filename = file.FileName;
+                    var fullpath = Path.Combine(
                             uploads,
-                            file.FileName), FileMode.Create))
+                            filename);
+                    if(!System.IO.File.Exists(fullpath))
+                    {
+                        if (file.Length > 0)
+                        {
+                            using(var fileStream = new FileStream(fullpath, FileMode.Create))
                             {
+                                
                                 await file.CopyToAsync(fileStream);
-                                //fileStream.Flush();
+                                fileStream.Flush();
+                                fileStream.Dispose();
+                                
                             }
+                        }
                     }
                     string fp = Path.Combine(
                         uploads,
-                        file.FileName);
+                        filename);
                     Track fileTrack = new Track();
                     /*crit: FileUploadController[0]
                     [1]       /Users/paiviharju/Documents/Jannen kansio/MultiSourcePlayList/wwwroot
@@ -91,7 +99,7 @@ namespace PlayList.Controllers
                     [1]       
                     [1] crit: FileUploadController[0]
                     [1]       1*/
-                    fileTrack.address = file.FileName;
+                    fileTrack.address = filename;
                     fileTrack.playlist = playlist;
                     fileTrack.type = 3;
                     fileTrack.order = lastOrder;
@@ -109,12 +117,14 @@ namespace PlayList.Controllers
             string trackname= "";
             //var fileStream = await (StorageFile)file.OpenStreamForReadAsync();
             _logger.LogCritical("filenimi" + file);
-
-            var tagFile = TagLib.File.Create(new LocalFileAbstraction(file, true));
+            var tempFile = new LocalFileAbstraction(file, false);
+            var tagFile = TagLib.File.Create(tempFile);
 
             var tags = tagFile.GetTag(TagTypes.Id3v2);
             var artist = tagFile.Tag.Performers[0];
             var title = tagFile.Tag.Title;
+            tagFile.Dispose();
+            tempFile.CloseStream(tempFile.ReadStream);
             _logger.LogCritical(artist);
             _logger.LogCritical(title);
             trackname = artist +" - "+title;

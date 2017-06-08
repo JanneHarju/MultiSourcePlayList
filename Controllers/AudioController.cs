@@ -35,16 +35,17 @@ namespace PlayList.Controllers
         //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
 
         [HttpGet("{id}")]
-        //[Authorize("Bearer")]
+        [Authorize]
         public IActionResult Get(int id)
         {
             _logger.LogCritical(id.ToString());
-            //var claimsIdentity = User.Identity as ClaimsIdentity;
+            
+            var claimsIdentity = User.Identity as ClaimsIdentity;
             //_logger.LogCritical()
-            //var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
-            var user = _multiSourcePlaylistRepository.GetTrackOwner(id);
-            _logger.LogCritical(JsonConvert.SerializeObject(user));
-            //var user = _multiSourcePlaylistRepository.GetUser(userId);
+            var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
+            //var user = _multiSourcePlaylistRepository.GetTrackOwner(id);
+            //_logger.LogCritical(JsonConvert.SerializeObject(user));
+            var user = _multiSourcePlaylistRepository.GetUser(userId);
             var track = _multiSourcePlaylistRepository.GetTrack(id);
             _logger.LogCritical(JsonConvert.SerializeObject(track));
             var filePath = Path.Combine(

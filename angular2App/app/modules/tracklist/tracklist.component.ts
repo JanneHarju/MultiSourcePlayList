@@ -3,6 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { PlaylistService } from '../../services/playlist.service';
+import { AuthService } from '../../services/auth.service';
 import { MusixMatchAPIService } from '../../services/musixmatch.service';
 import { Track } from '../../models/track';
 import { Playlist } from '../../models/playlist';
@@ -20,7 +21,6 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
 
     timerId: string;
     tracklist: Track[] = [];
-    selectedTrack: Track = new Track();
     notFirstTime: boolean = false;
     trackName: string;
     private id: string = 'yz8i6A6BTiA';
@@ -32,6 +32,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     currentTrack: Track = new Track();
     currrentPlaylist: Playlist = new Playlist();
     subscriptionTrack: Subscription;
+    subscriptionPlaylistsModified: Subscription;
     playlists: Playlist[] = [];
 
     constructor(
@@ -39,31 +40,16 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     private playerService: PlayerService,
     private playlistService: PlaylistService,
     private musixmatchService: MusixMatchAPIService,
+    private authService: AuthService,
     private route: ActivatedRoute,
     private renderer: Renderer,
     private st: SimpleTimer,
     private el: ElementRef,
     private router: Router) { }
-    addTrack()
-    {
-        this.router.navigate([{ outlets: { popup: 'addtrackpopup' }}]);
-    }
+
     ngOnInit() {
+        this.getPlaylistTracks();
         this.route.params
-            .switchMap((params: Params) => this.trackService.getPlaylistTracks(+params['id']))
-            .subscribe((tracklist: Track[]) => 
-            {
-                this.tracklist = tracklist;
-                if(this.tracklist.length > 0)
-                {
-                    this.selectedTrack = tracklist[0];
-                    this.playerService.setTrackList(this.tracklist);
-                    this.selectCurrentTrack(this.playerService.track);
-                    this.playerService.setCurrentTrackOrder();
-                    //this.playerService.setTrack(this.selectedTrack);
-                }
-            });
-         this.route.params
             .switchMap((params: Params) => this.playlistService.getPlaylist(+params['id']))
             .subscribe((playlist: Playlist) => 
             {
@@ -74,12 +60,47 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             this.selectCurrentTrack(track);
         });
 
-        this.playlistService.getUsersPlaylists()
+        this.getUsersPlaylists();
+        this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated =>
+        {
+            this.getUsersPlaylists();
+        });
+     }
+     getPlaylistTracks()
+     {
+        this.route.params
+            .switchMap((params: Params) => this.trackService.getPlaylistTracks(+params['id']))
+            .subscribe((tracklist: Track[]) => 
+            {
+                this.tracklist = tracklist;
+                if(this.tracklist.length > 0)
+                {
+                    if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tracklist[0].playlist.id))
+                    {
+                        this.playerService.setTrackList(this.tracklist);
+                        this.selectCurrentTrack(this.playerService.track);
+                        this.playerService.setCurrentTrackOrder();
+                    }
+                }
+            });
+     }
+     getUsersPlaylists()
+     {
+         this.playlistService.getUsersPlaylists()
             .then((playlists : Playlist[])=> 
             {
                 this.playlists = playlists;
-
                 this.playlists = this.playlists.filter(h => h.id !== this.currrentPlaylist.id);
+            })
+            .catch(err =>
+            {
+                console.log("Some error occured" + err);
+                if(err.status == 401)
+                {
+                    console.log("Unauthorized");
+                    this.authService.clearLoginToken();
+                    this.router.navigate(['login']);
+                }
             });
      }
      ngOnDestroy(): void
@@ -88,25 +109,24 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      }
      selectCurrentTrack(track: Track)
      {
-        let temptrack = this.tracklist.find(x=>x.address == track.address);
+         if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tracklist[0].playlist.id))
+         {
+            let temptrack = this.tracklist.find(x=>x.address == track.address);
             if(temptrack)
             {
                 this.currentTrack = temptrack;
             }
+         }
      }
      ngAfterViewInit() {
 
      }
      onSelect(track: Track): void {
-        this.selectedTrack = track;
-        this.playerService.setTrack(this.selectedTrack);
+
+        this.playerService.setTrackList(this.tracklist);
+        this.currentTrack = track;
+        this.playerService.setTrack(this.currentTrack);
         
-    }
-    
-    audioloaded()
-    {
-        let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-        audio.play();
     }
     
     delete(track: Track)
@@ -115,7 +135,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             .delete(track.id)
             .then(() => {
                 this.tracklist = this.tracklist.filter(h => h !== track);
-                if (this.selectedTrack === track) { this.selectedTrack = null; }
+                if (this.currentTrack === track) { this.currentTrack = null; }
                 this.ngOnInit();
             });
     }
@@ -141,7 +161,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         this.trackService
             .updatePlaylistOrder(this.tracklist)
             .then(() => {
-                this.ngOnInit();
+                this.getPlaylistTracks();
             });
     }
     loadComplited(e: any)

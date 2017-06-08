@@ -90,4 +90,10 @@ export class PlayerService {
         this.random = Math.floor(Math.random() * this.tracklist.length);
         this.setTrack(this.tracklist[this.random]);
     }
+    isCurrentlyPlayingTrackThisPlaylistTrack(playlistId: number): boolean
+    {
+        return (this.track && 
+                this.track.playlist && 
+                this.track.playlist.id == playlistId)
+    }
 }

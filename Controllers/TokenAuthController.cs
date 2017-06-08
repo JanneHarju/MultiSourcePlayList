@@ -142,6 +142,8 @@ namespace PlayList
             );
             HttpContext.Authentication.SignInAsync("Bearer",
                 new ClaimsPrincipal(identity));
+            HttpContext.Authentication.SignInAsync("Cookie",
+                new ClaimsPrincipal(identity));
             var securityToken = handler.CreateToken(new SecurityTokenDescriptor
             {
                 Issuer = TokenAuthOption.Issuer,

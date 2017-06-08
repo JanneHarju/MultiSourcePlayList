@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs/Subscription';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { SpotifyPlayStatus } from '../../models/spotifyPlayStatus';
+import { AuthService } from "../../services/auth.service";
 
 @Component({
     selector: 'my-player',
@@ -33,6 +34,17 @@ export class PlayerComponent implements OnInit, OnDestroy {
     isplaying: boolean = false;
 
     localFilePath: string = "api/audio/";
+
+    constructor(
+        private infoService: TrackService,
+        private playerService: PlayerService,
+        private spotifyService: SpotifyService,
+        private authService: AuthService,
+        private router: Router,
+        private location: Location,
+        private route: ActivatedRoute,
+        private st: SimpleTimer) { }
+    
     ngOnInit(): void 
     {
         //this.setProgress(0);
@@ -82,15 +94,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.subscriptionAuthenticationComplited.unsubscribe();
     }
 
-    constructor(
-        private infoService: TrackService,
-        private playerService: PlayerService,
-        private spotifyService: SpotifyService,
-        private router: Router,
-        private location: Location,
-        private route: ActivatedRoute,
-        private st: SimpleTimer) { }
-
     savePlayer (player: YT.Player) {
         this.player = player;
         }
@@ -118,7 +121,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
         if(this.playerService.track)
         {
-            if(this.progress < 1500)
+            if(this.progress < 2500)
             {
                 this.playerService.choosePreviousTrack();
             }
@@ -229,7 +232,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }*/
     localFileAddress(track: Track) : string
     {
-        return this.localFilePath + track.id;
+        let token = this.authService.getLocalToken();
+        return this.localFilePath + track.id + "?access_token="+token;
     }
     loadedmeadata()
     {
@@ -259,6 +263,18 @@ export class PlayerComponent implements OnInit, OnDestroy {
     changeprogress()
     {
         this.changeprogressTo(this.progress);
+    }
+    error()
+    {
+        let audio = (<HTMLAudioElement>document.getElementById("audio1"));
+        console.error(audio.error.code);//4
+        //console.error(audio.error.msExtendedCode);//undefined
+        //console.error(audio.error.MEDIA_ERR_ABORTED);//1
+        //console.error(audio.error.MEDIA_ERR_DECODE);//3
+        //console.error(audio.error.MEDIA_ERR_NETWORK);//2
+        //console.error(audio.error.MEDIA_ERR_SRC_NOT_SUPPORTED);//4
+        //console.error(audio.error.MS_MEDIA_ERR_ENCRYPTED);//undefined
+        alert("Some error occured when streaming mp3 file.");
     }
     changeprogressTo(seek: number)
     {

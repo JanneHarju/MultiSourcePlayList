@@ -50,6 +50,7 @@ namespace PlayList
                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
                     .RequireAuthenticatedUser().Build());
             });
+            
             /*services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<MultiSourcePlaylistContext>()
                 .AddDefaultTokenProviders();*/
@@ -115,42 +116,36 @@ namespace PlayList
                 });
             });
             #endregion
-
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                IssuerSigningKey = TokenAuthOption.Key,
+                ValidAudience = TokenAuthOption.Audience,
+                ValidIssuer = TokenAuthOption.Issuer,
+                // When receiving a token, check that we've signed it.
+                ValidateIssuerSigningKey = true,
+                // When receiving a token, check that it is still valid.
+                ValidateLifetime = true,
+                // This defines the maximum allowable clock skew - i.e. provides a tolerance on the token expiry time 
+                // when validating the lifetime. As we're creating the tokens locally and validating them on the same 
+                // machines which should have synchronised time, this can be set to zero. Where external tokens are
+                // used, some leeway here could be useful.
+                ClockSkew = TimeSpan.FromMinutes(0)
+            };
             #region UseJwtBearerAuthentication
             app.UseJwtBearerAuthentication(new JwtBearerOptions()
             {
-                TokenValidationParameters = new TokenValidationParameters()
-                {
-                    IssuerSigningKey = TokenAuthOption.Key,
-                    ValidAudience = TokenAuthOption.Audience,
-                    ValidIssuer = TokenAuthOption.Issuer,
-                    // When receiving a token, check that we've signed it.
-                    ValidateIssuerSigningKey = true,
-                    // When receiving a token, check that it is still valid.
-                    ValidateLifetime = true,
-                    // This defines the maximum allowable clock skew - i.e. provides a tolerance on the token expiry time 
-                    // when validating the lifetime. As we're creating the tokens locally and validating them on the same 
-                    // machines which should have synchronised time, this can be set to zero. Where external tokens are
-                    // used, some leeway here could be useful.
-                    ClockSkew = TimeSpan.FromMinutes(0)
-                }
+                AuthenticationScheme = "Bearer",
+                TokenValidationParameters = tokenValidationParameters
+            });
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                AuthenticationScheme = "Cookie",
+                CookieName = "access_token"
             });
             #endregion
-            var angularRoutes = new[] {
-                 "/track"
-             };
-
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.Path.HasValue && null != angularRoutes.FirstOrDefault(
-                    (ar) => context.Request.Path.Value.StartsWith(ar, StringComparison.OrdinalIgnoreCase)))
-                {
-                    context.Request.Path = new PathString("/");
-                }
-
-                await next();
-            });
-
+            
             app.UseCors("AllowAllOrigins");
 
             app.UseDefaultFiles();

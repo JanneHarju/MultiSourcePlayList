@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params }   from '@angular/router';
+import { ActivatedRoute, Params, Router }   from '@angular/router';
 import { SpotifyService, SpotifyOptions } from '../../services/spotify.service';
 import { YoutubeAPIService } from '../../services/youtubeapi.service';
 import { SpotifyTrack } from '../../models/spotifytrack';
 import { YoutubeVideo } from '../../models/youtubeVideo';
 import { PlaylistService} from '../../services/playlist.service';
+import { AuthService } from '../../services/auth.service';
 import { Playlist } from '../../models/playlist'
 import { Track } from '../../models/track'
 import { SpotifyPlaylistTrack } from '../../models/spotifyplaylisttrack'
@@ -32,11 +33,15 @@ export class SpotifyAlbumComponent implements OnInit {
     query: string = "";
     selectedTrack: SpotifyTrack = new SpotifyTrack();
     subscriptionTrack: Subscription;
+    subscriptionPlaylistsModified: Subscription;
+    tempLaylistId: number = -3;
     constructor(
         private route: ActivatedRoute,
+        private router: Router,
         private spotifyService: SpotifyService,
         private youtubeApiService: YoutubeAPIService,
         private playlistService: PlaylistService,
+        private authService: AuthService,
         private trackService: TrackService,
         private playerService: PlayerService
         ) { }
@@ -72,12 +77,35 @@ export class SpotifyAlbumComponent implements OnInit {
         {
             this.selectCurrentTrack(track);
         });
-        this.playlistService.getUsersPlaylists()
-            .then((playlists : Playlist[])=> this.playlists = playlists);
+        this.getUsersPlaylists();
+        this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated =>
+        {
+            this.getUsersPlaylists();
+        });
+     }
+     getUsersPlaylists()
+     {
+         this.playlistService.getUsersPlaylists()
+            .then((playlists : Playlist[])=> 
+            {
+                this.playlists = playlists;
+            })
+            .catch(err =>
+            {
+                console.log("Some error occured" + err);
+                if(err.status == 401)
+                {
+                    console.log("Unauthorized");
+                    this.authService.clearLoginToken();
+                    this.router.navigate(['login']);
+                }
+            });
      }
      selectCurrentTrack(track: Track)
      {
         let temptrack = this.spotifyTracks.find(x=>x.uri == track.address);
+        if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempLaylistId))
+        {
             if(temptrack)
             {
                 this.selectedTrack = temptrack;
@@ -87,6 +115,7 @@ export class SpotifyAlbumComponent implements OnInit {
                 if(element)
                     element.scrollIntoView()*/
             }
+        }
      }
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
@@ -125,7 +154,8 @@ export class SpotifyAlbumComponent implements OnInit {
         let trackList: Track[] = [];
         let order: number = 0;
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = 99999;
+        newPlaylist.id = this.tempLaylistId;
+        newPlaylist.name = this.spotifyAlbum.artists[0].name + " - " + this.spotifyAlbum.name;
         this.spotifyTracks.forEach(st =>
         {
 

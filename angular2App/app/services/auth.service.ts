@@ -93,10 +93,13 @@ export class AuthService implements CanActivate {
     }
 
     public checkLogin(): boolean {
-        let token = sessionStorage.getItem(this.tokeyKey);
+        let token = this.getLocalToken();
         return token != null;
     }
-
+    public clearLoginToken()
+    {
+        sessionStorage.removeItem(this.tokeyKey);
+    }
     public getUserInfo() {
         return this.authGet("/api/tokenauth");
     }
@@ -123,9 +126,14 @@ export class AuthService implements CanActivate {
     }
 
     private handleError(error: any) {
-        let errMsg = (error.message) ? error.message :
-            error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-        console.error(errMsg);
-        return Observable.throw(errMsg);
+        /*let errMsg = (error.message) ? error.message :
+            error.status ? `${error.status} - ${error.statusText}` : 'Server error';*/
+        console.error(error);
+        
+        if(error.status == 401)
+        {
+            this.clearLoginToken();
+        }
+        return Observable.throw(error);
     }
 }

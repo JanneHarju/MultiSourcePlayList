@@ -25,7 +25,7 @@ const routes: Routes = [
         { path: 'spotifyalbum/:id',  component: SpotifyAlbumComponent, canActivate: [ AuthService] },
         { path: 'spotifyartist/:id',  component: SpotifyArtistComponent, canActivate: [ AuthService] }
     ]},
-    { path: '**', redirectTo: "main", }
+    { path: '**', redirectTo: "login", }
     //{ path: 'addtrackpopup', component: AddTrackPopupComponent, outlet: 'popup' }
     //{ path: 'popup', component: PopupComponent, outlet: 'popup' },
     /**children: [{

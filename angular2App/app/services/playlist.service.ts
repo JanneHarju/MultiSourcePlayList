@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
+import { Router } from '@angular/router';
 import { Playlist } from '../models/playlist'
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs';
 import 'rxjs/add/operator/toPromise';
 import { AuthService } from './auth.service';
 
@@ -8,12 +11,21 @@ import { AuthService } from './auth.service';
 export class PlaylistService {
     private PlaylistsUrl = 'api/playlists';  // URL to web api
 
+    private playlistsModified = new Subject<boolean>();
     //private headers = new Headers({'Content-Type': 'application/json'});
     
     constructor(
         private http: Http,
-        private authService: AuthService) { }
-
+        private authService: AuthService,
+        private router: Router) { }
+    setPlaylistsModified(modified: boolean)
+    {
+        this.playlistsModified.next(modified);
+    }
+    getPlaylistsModified() : Observable<boolean>
+    {
+        return this.playlistsModified.asObservable();
+    }
     getPlaylists(): Promise<Playlist[]> {
 
         let headers = this.authService.initAuthHeaders();
@@ -44,8 +56,13 @@ export class PlaylistService {
             .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {
+        
         console.error('An error occurred', error); // for demo purposes only
-        return Promise.reject(error.message || error);
+        if(error.status == 401)
+        {
+            console.log("Unauthorized");
+        }
+        return Promise.reject(error);
     }
 
     update(Playlist: Playlist): Promise<Playlist> {
@@ -55,7 +72,11 @@ export class PlaylistService {
         return this.http
             .put(url, Playlist, {headers: headers})
             .toPromise()
-            .then(() => Playlist)
+            .then(() => 
+            {
+                this.setPlaylistsModified(true);
+                Playlist
+            })
             .catch(this.handleError);
     }
     shuffle(Playlist: Playlist): Promise<Playlist> {
@@ -76,7 +97,11 @@ export class PlaylistService {
         return this.http
             .post(this.PlaylistsUrl, tmpPlaylist, {headers: headers})
             .toPromise()
-            .then((res: Response) => res.json())
+            .then((res: Response) => 
+            {
+                this.setPlaylistsModified(true);
+                res.json();
+            })
             .catch(this.handleError);
     }
     delete(id: number): Promise<void> {
@@ -85,7 +110,11 @@ export class PlaylistService {
         const url = `${this.PlaylistsUrl}/${id}`;
         return this.http.delete(url, {headers: headers})
             .toPromise()
-            .then(() => null)
+            .then(() => 
+            {
+                this.setPlaylistsModified(true);
+                null;
+            })
             .catch(this.handleError);
     }
 }
