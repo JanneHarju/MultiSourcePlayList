@@ -105,7 +105,7 @@ namespace PlayList.Controllers
                     fileTrack.order = lastOrder;
                     fileTrack.name = getTrackName(fp);//hanki bändi ja kappale mp3 tiedoston metasta
                     _multiSourcePlaylistRepository.PostTrack(fileTrack);
-
+                    ++lastOrder;
                 } catch {
                     return null;
                 }
