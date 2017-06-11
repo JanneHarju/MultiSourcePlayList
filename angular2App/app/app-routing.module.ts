@@ -15,7 +15,6 @@ import { PopupComponent} from './modules/shared/popup/popup.component';
 
 const routes: Routes = [
     { path: "", redirectTo: "login", pathMatch: "full" },
-    //{ path: 'playlist',  component: PlaylistComponent },SearchlistComponent
     { path: 'login',  component: LoginComponent },
     { path: 'main',  component: MainComponent, canActivate: [ AuthService],
     children: [
@@ -25,12 +24,6 @@ const routes: Routes = [
         { path: 'spotifyalbum/:id',  component: SpotifyAlbumComponent, canActivate: [ AuthService] },
         { path: 'spotifyartist/:id',  component: SpotifyArtistComponent, canActivate: [ AuthService] }
     ]},
-    { path: '**', redirectTo: "login", }
-    //{ path: 'addtrackpopup', component: AddTrackPopupComponent, outlet: 'popup' }
-    //{ path: 'popup', component: PopupComponent, outlet: 'popup' },
-    /**children: [{
-           path: 'addtrackpopup', component: AddTrackPopupComponent, outlet: 'popup'
-      }]}, */
 ];
 
 @NgModule({

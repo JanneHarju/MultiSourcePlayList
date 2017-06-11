@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -145,7 +146,7 @@ namespace PlayList
                 CookieName = "access_token"
             });
             #endregion
-            var angularRoutes = new[] {
+            /*var angularRoutes = new[] {
                  "/login",
                  "/main",
                  "/main/tracklist",
@@ -156,14 +157,23 @@ namespace PlayList
             };
             app.Use(async (context, next) =>
             {
-                if (context.Request.Path.HasValue && null != angularRoutes.FirstOrDefault(
+                await next();
+
+                if (context.Response.StatusCode == 404 &&
+                    !Path.HasExtension(context.Request.Path.Value) &&
+                    !context.Request.Path.Value.StartsWith("/api/"))
+                {
+                    context.Request.Path = "/index.html";
+                    await next();
+                }
+                else if (context.Request.Path.HasValue && null != angularRoutes.FirstOrDefault(
                     (ar) => context.Request.Path.Value.StartsWith(ar, StringComparison.OrdinalIgnoreCase)))
                 {
                     context.Request.Path = new PathString("/");
                 }
 
                 await next();
-            });
+            });*/
 
             app.UseCors("AllowAllOrigins");
 

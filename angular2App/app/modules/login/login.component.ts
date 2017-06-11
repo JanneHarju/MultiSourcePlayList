@@ -29,7 +29,16 @@ export class LoginComponent implements OnInit {
         if(longtermToken)
         {
             sessionStorage.setItem(this.authService.tokeyKey, longtermToken);
-            this.router.navigate(['main']);
+            this.authService.getUserInfo().then(res =>
+            {
+                this.router.navigate(['main']);
+            })
+            .catch(err =>
+            {
+                this.authService.clearLoginToken();
+                localStorage.removeItem(this.authService.tokeyKey);
+            });
+
         }
     }
     login() {
