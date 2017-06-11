@@ -63,7 +63,7 @@ module.exports = {
             {
                 test: /\.scss$/,
                 exclude: /node_modules/,
-                loaders: ['to-string-loader', 'css-loader', 'sass-loader']
+                loaders: ['raw-loader', 'css-loader', 'sass-loader']
             },
             {
                 test: /\.html$/,
@@ -100,7 +100,14 @@ module.exports = {
             inject: 'body',
             template: 'angular2App/index.html'
         }),
-
+        new HtmlWebpackPlugin({
+            filename: 'callback.html',
+            inject: 'body',
+            template: 'angular2App/callback.html'
+        }),
+        new CopyWebpackPlugin([
+            { from: './angular2App/login.css', to: 'assets/', flatten: true }
+        ]),
         new CopyWebpackPlugin([
             { from: './angular2App/images/*.*', to: 'assets/', flatten: true }
         ])

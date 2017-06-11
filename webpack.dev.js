@@ -145,11 +145,6 @@ module.exports = {
             inject: 'body',
             template: 'angular2App/callback.html'
         }),
-        new HtmlWebpackPlugin({
-            filename: 'login.html',
-            inject: 'body',
-            template: 'angular2App/login.html'
-        }),
         new CopyWebpackPlugin([
             { from: './angular2App/login.css', to: 'assets/', flatten: true }
         ]),
