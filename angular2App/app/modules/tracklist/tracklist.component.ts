@@ -182,4 +182,8 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
 
         });
     }
+    addToQueue(track: Track)
+    {
+        this.playerService.addTrackToQueue(track);
+    }
 }

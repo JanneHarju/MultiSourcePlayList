@@ -85,7 +85,7 @@ import './rxjs-extensions';
         provide: "SpotifyConfig",
         useValue: {
             clientId: '5ab10cb4fa9045fca2b92fcd0a97545c',
-            redirectUri: 'http://localhost:5000/callback.html',
+            redirectUri: 'http://localhost:8080/callback.html',
             scope: ['user-read-private',
             'user-modify-playback-state'],
             // If you already have an authToken

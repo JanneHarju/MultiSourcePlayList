@@ -11,7 +11,9 @@ export class PlayerService {
 
     private subject = new Subject<Track>();
     track: Track = new Track();
+    lastOrder: number = -1;
     tracklist: Track[] = [];
+    queueTracklist: Track[] = [];
     random: number = 0;
     public shuffle: boolean;
     subscriptionTrackEnd: Subscription;
@@ -58,14 +60,29 @@ export class PlayerService {
     {
         if(!this.shuffle)
         {
-            let nextTracks = this.tracklist.filter(x=>x.order > this.track.order);
-            if(nextTracks != null && nextTracks.length > 0)
+            if(this.queueTracklist.length > 0)
             {
-                this.setTrack(nextTracks[0]);
+                if(this.tracklist.find(x=>x.id == this.track.id))
+                {
+                    this.lastOrder = this.track.order;
+                    console.log(this.lastOrder);
+                }
+                this.setTrack(this.queueTracklist.shift());
             }
             else
             {
-                this.setTrack(this.tracklist[0]);
+                console.log(this.lastOrder);
+                let order = this.lastOrder == -1 ? this.track.order : this.lastOrder;
+                let nextTracks = this.tracklist.filter(x=>x.order > order);
+                if(nextTracks != null && nextTracks.length > 0)
+                {
+                    this.setTrack(nextTracks[0]);
+                }
+                else
+                {
+                    this.setTrack(this.tracklist[0]);
+                }
+                this.lastOrder = -1;
             }
         }
         else
@@ -95,5 +112,9 @@ export class PlayerService {
         return (this.track && 
                 this.track.playlist && 
                 this.track.playlist.id == playlistId)
+    }
+    addTrackToQueue(track: Track)
+    {
+        this.queueTracklist.push(track);
     }
 }
