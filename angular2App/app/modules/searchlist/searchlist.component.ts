@@ -238,7 +238,7 @@ export class SearchlistComponent implements OnInit {
         let order: number = 0;
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.id = this.tempSpotifyPlaylistId;
-        newPlaylist.name = "Spotify Search :"+this.query;
+        newPlaylist.name = "Spotify Search : "+this.query;
         this.spotifyTracks.forEach(st =>
         {
 
@@ -262,7 +262,7 @@ export class SearchlistComponent implements OnInit {
         let order: number = 0;
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.id = this.tempYoutubePlaylistId;
-        newPlaylist.name = "Youtube Search :"+this.query;
+        newPlaylist.name = "Youtube Search : "+this.query;
         this.youtubeVideos.forEach(ytv =>
         {
 
@@ -284,7 +284,7 @@ export class SearchlistComponent implements OnInit {
     {
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.id = this.tempSpotifyPlaylistId;
-        newPlaylist.name = "Spotify Search :"+this.query;
+        newPlaylist.name = "Spotify Search : "+this.query;
         let newTrack: Track = new Track();
             newTrack.address = track.uri;
             newTrack.name = track.artists[0].name +" - "+ track.name;
@@ -297,7 +297,7 @@ export class SearchlistComponent implements OnInit {
     {
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.id = this.tempSpotifyPlaylistId;
-        newPlaylist.name = "YouTube Search :"+this.query;
+        newPlaylist.name = "YouTube Search : "+this.query;
         let newTrack: Track = new Track();
             newTrack.address = video.id.videoId;
             newTrack.name = video.snippet.title;

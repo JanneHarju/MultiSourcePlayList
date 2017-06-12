@@ -177,7 +177,7 @@ export class SpotifyAlbumComponent implements OnInit {
     {
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.id = this.tempPlaylistId;
-        newPlaylist.name = "Spotify :"+this.playlistInfo.name;
+        newPlaylist.name = "Spotify : "+this.playlistInfo.name;
         let newTrack: Track = new Track();
             newTrack.address = track.uri;
             newTrack.name = track.artists[0].name +" - "+ track.name;
