@@ -188,5 +188,17 @@ export class SpotifyPlaylistComponent implements OnInit {
         this.playerService.setTrack(tempTrack);
 
     }
-    
+    addToQueue(track: SpotifyTrack)
+    {
+        let newPlaylist: Playlist = new Playlist();
+        newPlaylist.id = this.tempPlaylistId;
+        newPlaylist.name = "Spotify :"+this.playlistInfo.name;
+        let newTrack: Track = new Track();
+            newTrack.address = track.uri;
+            newTrack.name = track.artists[0].name +" - "+ track.name;
+            newTrack.type = 2;
+            newTrack.playlist = newPlaylist;
+            newTrack.order = 0;
+        this.playerService.addTrackToQueue(newTrack);
+    }
 }

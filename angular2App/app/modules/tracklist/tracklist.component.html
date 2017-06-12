@@ -19,7 +19,7 @@
                                 [class.activetrack]="track == currentTrack" 
                                 class="list-group-item tablerow" dnd-sortable [sortableIndex]="i">
                             
-                            <td class="tablerowdata" (click)="$event.dropdown || $event.addTrackToPlaylistclicked || onSelect(track)" >
+                            <td class="tablerowdata" (click)="$event.dropdown || $event.addTrackToPlaylistclicked || $event.addTrackToQueueclicked || onSelect(track)" >
                                 <div class="col-sm-1 logos" >
                                     <img *ngIf="track.type == 1" src="assets/YouTube-social-squircle_red_128px.png" width="30" align="left">
                                     <img *ngIf="track.type == 2" src="assets/Spotify_Logo_RGB_Green.png" width="30" align="left">
@@ -31,12 +31,13 @@
                                 <div class="col-sm-3">
                                     <div class="pull-right btn-group" role="group">
                                         <button type="button" class="trackbuttons btn btn-info glyphicon glyphicon-align-center" (click)="myModal.open(); $event.stopPropagation(); lyrics(track)"></button>
-                                        <button type="button" class="trackbuttons btn btn-primary alignButton" (click)="$event.stopPropagation();addToQueue(track)">Q</button>
                                         <div class="btn-group" role="group" >
                                             <button class="btn btn-default dropdown-toggle trackbuttons alignButton" (click)="$event.dropdown = true" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
+                                                <li><a (click)="$event.addTrackToQueueclicked = true;addToQueue(track)">Add to queue</a></li>
+                                                <li role="separator" class="divider"></li>
                                                 <li *ngFor="let playlist of playlists">
                                                     <a (click)="$event.addTrackToPlaylistclicked = true; addTrackToPlaylist(playlist, track)">
                                                         {{playlist.name}}

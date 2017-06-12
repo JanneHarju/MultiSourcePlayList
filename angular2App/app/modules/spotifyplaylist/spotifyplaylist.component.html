@@ -56,6 +56,8 @@
                                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
+                                        <li><a (click)="addToQueue(track.track)">Add to queue</a></li>
+                                        <li role="separator" class="divider"></li>
                                         <li *ngFor="let playlist of playlists">
                                             <a (click)="addSpotifyTrackToPlaylist(playlist, track.track)">
                                                 {{playlist.name}}

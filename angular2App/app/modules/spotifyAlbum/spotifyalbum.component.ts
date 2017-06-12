@@ -34,7 +34,7 @@ export class SpotifyAlbumComponent implements OnInit {
     selectedTrack: SpotifyTrack = new SpotifyTrack();
     subscriptionTrack: Subscription;
     subscriptionPlaylistsModified: Subscription;
-    tempLaylistId: number = -3;
+    tempPlaylistId: number = -3;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -104,7 +104,7 @@ export class SpotifyAlbumComponent implements OnInit {
      selectCurrentTrack(track: Track)
      {
         let temptrack = this.spotifyTracks.find(x=>x.uri == track.address);
-        if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempLaylistId))
+        if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempPlaylistId))
         {
             if(temptrack)
             {
@@ -154,7 +154,7 @@ export class SpotifyAlbumComponent implements OnInit {
         let trackList: Track[] = [];
         let order: number = 0;
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = this.tempLaylistId;
+        newPlaylist.id = this.tempPlaylistId;
         newPlaylist.name = this.spotifyAlbum.artists[0].name + " - " + this.spotifyAlbum.name;
         this.spotifyTracks.forEach(st =>
         {
@@ -173,5 +173,17 @@ export class SpotifyAlbumComponent implements OnInit {
         this.playerService.setTrack(tempTrack);
 
     }
-    
+    addToQueue(track: SpotifyTrack)
+    {
+        let newPlaylist: Playlist = new Playlist();
+        newPlaylist.id = this.tempPlaylistId;
+        newPlaylist.name = "Spotify :"+this.playlistInfo.name;
+        let newTrack: Track = new Track();
+            newTrack.address = track.uri;
+            newTrack.name = track.artists[0].name +" - "+ track.name;
+            newTrack.type = 2;
+            newTrack.playlist = newPlaylist;
+            newTrack.order = 0;
+        this.playerService.addTrackToQueue(newTrack);
+    }
 }

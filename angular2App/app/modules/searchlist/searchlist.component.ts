@@ -280,4 +280,31 @@ export class SearchlistComponent implements OnInit {
         let tempTrack = trackList.find(tr => tr.address == video.id.videoId);
         this.playerService.setTrack(tempTrack);
     }
+    addSpotifyToQueue(track: SpotifyTrack)
+    {
+        let newPlaylist: Playlist = new Playlist();
+        newPlaylist.id = this.tempSpotifyPlaylistId;
+        newPlaylist.name = "Spotify Search :"+this.query;
+        let newTrack: Track = new Track();
+            newTrack.address = track.uri;
+            newTrack.name = track.artists[0].name +" - "+ track.name;
+            newTrack.type = 2;
+            newTrack.playlist = newPlaylist;
+            newTrack.order = 0;
+        this.playerService.addTrackToQueue(newTrack);
+    }
+    addYoutubeToQueue(video: YoutubeVideo)
+    {
+        let newPlaylist: Playlist = new Playlist();
+        newPlaylist.id = this.tempSpotifyPlaylistId;
+        newPlaylist.name = "YouTube Search :"+this.query;
+        let newTrack: Track = new Track();
+            newTrack.address = video.id.videoId;
+            newTrack.name = video.snippet.title;
+            newTrack.id = 99999;
+            newTrack.type = 1;
+            newTrack.playlist = newPlaylist;
+            newTrack.order = 0;
+        this.playerService.addTrackToQueue(newTrack);
+    }
 }
