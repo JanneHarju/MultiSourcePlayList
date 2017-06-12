@@ -38,25 +38,16 @@ namespace PlayList.Controllers
         [Authorize]
         public IActionResult Get(int id)
         {
-            _logger.LogCritical(id.ToString());
-            
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            //_logger.LogCritical()
             var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
-            //var user = _multiSourcePlaylistRepository.GetTrackOwner(id);
-            //_logger.LogCritical(JsonConvert.SerializeObject(user));
             var user = _multiSourcePlaylistRepository.GetUser(userId);
             var track = _multiSourcePlaylistRepository.GetTrack(id);
-            _logger.LogCritical(JsonConvert.SerializeObject(track));
-            _logger.LogCritical(_environment.WebRootPath);
-            _logger.LogCritical(_environment.ContentRootPath);
             var filePath = Path.Combine(
                 _environment.ContentRootPath,
                 "uploads",
                 user.FileFolder,
                 track.address);
             
-            _logger.LogCritical(filePath);
             var file = System.IO.File.ReadAllBytes(filePath);
             long fSize = file.Length;
             long startbyte = 0;

@@ -18,6 +18,9 @@ namespace PlayList.Repositories
         List<Track> GetUsersPlaylistTracks(long playlistId, long userId);
         List<Playlist> GetAllPlaylists();
         List<Playlist> GetUsersPlaylists(long userId);
+        long GetUsersPlaylistCount(long userId);
+        long GetUsersTrackCountByType(long userId, int type);
+        long GetUsersTrackCount(long userId);
         Playlist GetPlaylist(long id);
         User GetUser(long id);
         List<User> GetAllUsers();

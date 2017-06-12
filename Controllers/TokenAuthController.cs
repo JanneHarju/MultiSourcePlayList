@@ -160,14 +160,39 @@ namespace PlayList
         public IActionResult GetUserInfo()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
+            var Id = Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
+            var user = _multiSourcePlaylistRepository.GetUser(Id);
+            var filePath = Path.Combine(
+                _environment.ContentRootPath,
+                "uploads",
+                user.FileFolder);
+            var youTubeTrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,1);
+            var spotifyTrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,2);
+            var mp3TrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,3);
+            var trackCount = _multiSourcePlaylistRepository.GetUsersTrackCount(Id);
+            var playlistCount = _multiSourcePlaylistRepository.GetUsersPlaylistCount(Id);
 
-            var Id = claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value;
+            var directoryInfo = new DirectoryInfo(filePath);
+            var mp3fileAmount = directoryInfo.EnumerateFiles().Count();
+            var sizeInBytes = directoryInfo.EnumerateFiles().Sum(file=> file.Length);
+            var sizeInMb = sizeInBytes / 1048576;//1024*1024
+            var usersMaxDirectorySize = 1000;
             return Json(new RequestResult
             {
                 State = RequestState.Success,
                 Data = new { Id = Id,
                             UserName = claimsIdentity.Name,
-                            IsAuthenticated = claimsIdentity.IsAuthenticated }
+                            IsAuthenticated = claimsIdentity.IsAuthenticated,
+                            MaxDiscSpace = usersMaxDirectorySize,
+                            UsedDiscSpace = sizeInMb,
+                            FileAmount = mp3fileAmount,
+                            TrackCount = trackCount,
+                            SpotifyTrackCount = spotifyTrackCount,
+                            YoutubeTrackCount = youTubeTrackCount,
+                            Mp3TrackCount = mp3TrackCount,
+                            PlaylistCount = playlistCount,
+                            FirstName = user.Fname,
+                            LastName = user.Lname }
             });
         }
     }

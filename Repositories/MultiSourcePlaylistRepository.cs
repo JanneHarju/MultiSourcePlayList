@@ -80,6 +80,28 @@ namespace PlayList.Repositories
                 .ToList();
         }
 
+        public long GetUsersPlaylistCount(long userId)
+        {
+            return _context.Playlists
+                .Include(p=>p.owner)
+                .Where(x=>x.owner.Id == userId)
+                .Count();
+        }
+        public 
+        long GetUsersTrackCountByType(long userId, int type)
+        {
+            return _context.Tracks
+                .Include(y=>y.playlist)
+                .ThenInclude(t=>t.owner)
+                .Where(x=> x.playlist.owner.Id == userId && x.type == type).Count();
+        }
+        public long GetUsersTrackCount(long userId)
+        {
+            return _context.Tracks
+                .Include(y=>y.playlist)
+                .ThenInclude(t=>t.owner)
+                .Where(x=> x.playlist.owner.Id == userId).Count();
+        }
         public Playlist GetPlaylist(long id)
         {
             return _context.Playlists.First(x=>x.id == id);

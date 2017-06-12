@@ -1,14 +1,7 @@
 <div id="container">
     <div class="col-xs-12 col-sm-12 box">
         <div class="innerbox">
-            <div class="box-style"> 
-                <!--<button id="addbutton" class="btn btn-primary glyphicon glyphicon-plus" (click)="addTrack()"></button>-->
-                <!--<a *ngFor="let track of tracklist" (click)="onSelect(track)"
-                    [class.selected]="track === selectedTrack" >
-                    <div class="module track"  style.background-color="{{track.type | colorpipe}}">
-                        <h4 >{{track.name}}</h4>
-                    </div>
-                </a>--><!--style.background-color="{{track.type | colorpipe}}">-->
+            <div class="box-style">
                 <my-fileupload (loadComplited)="loadComplited($event)" [currentPlaylist]="currrentPlaylist" ></my-fileupload>
                 <table class="tracks list-group" dnd-sortable-container (dragend)="orderedTrack()" [sortableData]="tracklist">
                     <thead>

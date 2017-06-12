@@ -40,6 +40,11 @@ export class PlayerService {
     {
         return this.subject.asObservable();
     }
+    
+    getQueueTracks() : Track[]
+    {
+        return this.queueTracklist;
+    }
     setTrackList(tracklist : Track[])
     {
         this.tracklist = tracklist;
@@ -68,6 +73,7 @@ export class PlayerService {
                     console.log(this.lastOrder);
                 }
                 this.setTrack(this.queueTracklist.shift());
+                //this.setQueue(this.queueTracklist);
             }
             else
             {
@@ -116,5 +122,6 @@ export class PlayerService {
     addTrackToQueue(track: Track)
     {
         this.queueTracklist.push(track);
+        //this.setQueue(this.queueTracklist);
     }
 }

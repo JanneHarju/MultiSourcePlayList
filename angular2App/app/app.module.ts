@@ -25,6 +25,8 @@ import { FileUploadComponent } from './modules/fileupload/fileupload.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { NavbarComponent } from './modules/navbar/navbar.component';
 import { LoginComponent } from './modules/login/login.component';
+import { UserInfoComponent } from './modules/userinfo/userInfo.component';
+import { QueueComponent } from './modules/queue/queue.component';
 import { MainComponent} from './modules/main/main.component';
 import { SafePipe} from './modules/shared/safepipe';
 import { ColorPipe} from './modules/shared/colorpipe';
@@ -70,6 +72,8 @@ import './rxjs-extensions';
     NavbarComponent,
     LoginComponent,
     FileUploadComponent,
+    UserInfoComponent,
+    QueueComponent,
     SafePipe,
     ColorPipe,
     DisplayTimePipe

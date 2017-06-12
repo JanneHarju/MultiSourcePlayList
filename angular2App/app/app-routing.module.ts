@@ -9,6 +9,8 @@ import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.compo
 import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
 import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { LoginComponent } from './modules/login/login.component';
+import { UserInfoComponent } from './modules/userinfo/userInfo.component';
+import { QueueComponent } from './modules/queue/queue.component';
 import { AuthService} from './services/auth.service';
 
 import { PopupComponent} from './modules/shared/popup/popup.component';
@@ -22,7 +24,9 @@ const routes: Routes = [
         { path: 'searchlist/:id',  component: SearchlistComponent, canActivate: [ AuthService] },
         { path: 'spotifylist/:id/:id2',  component: SpotifyPlaylistComponent, canActivate: [ AuthService] },
         { path: 'spotifyalbum/:id',  component: SpotifyAlbumComponent, canActivate: [ AuthService] },
-        { path: 'spotifyartist/:id',  component: SpotifyArtistComponent, canActivate: [ AuthService] }
+        { path: 'spotifyartist/:id',  component: SpotifyArtistComponent, canActivate: [ AuthService] },
+        { path: 'userinfo',  component: UserInfoComponent, canActivate: [ AuthService] },
+        { path: 'queue',  component: QueueComponent, canActivate: [ AuthService] }
     ]},
 ];
 
