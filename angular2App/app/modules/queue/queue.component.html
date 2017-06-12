@@ -2,6 +2,7 @@
     <div class="col-xs-12 col-sm-12 box">
         <div class="innerbox">
             <div class="box-style">
+                <h1>Queue</h1>
                 <div *ngIf="tracklist.length == 0">Queue is empty</div>
                 <table class="tracks list-group" dnd-sortable-container (dragend)="orderedTrack()" [sortableData]="tracklist">
                     <thead>

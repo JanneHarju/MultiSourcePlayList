@@ -63,20 +63,21 @@ export class PlayerService {
     }
     chooseNextTrack()
     {
-        if(!this.shuffle)
+        if(this.queueTracklist.length > 0)
         {
-            if(this.queueTracklist.length > 0)
+            if(this.tracklist.find(x=>x.id == this.track.id))
             {
-                if(this.tracklist.find(x=>x.id == this.track.id))
-                {
-                    this.lastOrder = this.track.order;
-                    console.log(this.lastOrder);
-                }
-                this.setTrack(this.queueTracklist.shift());
-                //this.setQueue(this.queueTracklist);
+                this.lastOrder = this.track.order;
+                console.log(this.lastOrder);
             }
-            else
+            this.setTrack(this.queueTracklist.shift());
+            //this.setQueue(this.queueTracklist);
+        }
+        else
+        {
+            if(!this.shuffle)
             {
+            
                 console.log(this.lastOrder);
                 let order = this.lastOrder == -1 ? this.track.order : this.lastOrder;
                 let nextTracks = this.tracklist.filter(x=>x.order > order);
@@ -89,11 +90,12 @@ export class PlayerService {
                     this.setTrack(this.tracklist[0]);
                 }
                 this.lastOrder = -1;
+            
             }
-        }
-        else
-        {
-            this.chooseNextRandomTrack();
+            else
+            {
+                this.chooseNextRandomTrack();
+            }
         }
     }
     choosePreviousTrack()
