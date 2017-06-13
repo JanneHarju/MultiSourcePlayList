@@ -12,16 +12,16 @@
                     {{playlist.name}}
                     </a>
                     <div class="pull-right btn-group buttongroup" role="group">
-                        <button class="editbuttons btn btn-warning glyphicon glyphicon-random" (click)="shuffleConfirmationModal.open(); setShuffleTarget(playlist); $event.stopPropagation()"></button>
-                        <button class="editbuttons btn btn-info glyphicon glyphicon-pencil" (click)="newPlaylistName.value = ''; editModal.open(); setRenameTarget(playlist); $event.stopPropagation()"></button>
-                        <button class="editbuttons btn btn-danger glyphicon glyphicon-remove" (click)="removeConfirmationModal.open(); setDeleteTarget(playlist); $event.stopPropagation()"></button>
+                        <button class="editbuttons btn btn-warning glyphicon glyphicon-random" data-toggle="tooltip" title="Shuffle whole playlist" (click)="shuffleConfirmationModal.open(); setShuffleTarget(playlist); $event.stopPropagation()"></button>
+                        <button class="editbuttons btn btn-info glyphicon glyphicon-pencil" data-toggle="tooltip" title="Rename playlist" (click)="newPlaylistName.value = ''; editModal.open(); setRenameTarget(playlist); $event.stopPropagation()"></button>
+                        <button class="editbuttons btn btn-danger glyphicon glyphicon-remove" data-toggle="tooltip" title="Remove playlist" (click)="removeConfirmationModal.open(); setDeleteTarget(playlist); $event.stopPropagation()"></button>
                                     
                     </div>
                             <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
                     
                 </div>
             </div>
-            <button class="addButton btn btn-primary glyphicon glyphicon-plus pull-left" (click)="addNewPlaylistModal.open()"></button>
+            <button class="addButton btn btn-primary glyphicon glyphicon-plus pull-left" (click)="addNewPlaylistModal.open()" data-toggle="tooltip" title="Add new playlist"></button>
         </div>
         <div *ngIf="spotifyplaylists.length > 0" class="grid grid-pad" >
             <h3> Spotify playlists: </h3>

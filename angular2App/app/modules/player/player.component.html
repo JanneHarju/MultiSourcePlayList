@@ -2,7 +2,7 @@
     <div class="col-xs-12 col-sm-12 box">
         <div class="innerbox">
             <div class="box-style">
-                <a id="queue" [routerLink]="['/main/queue']" class="queue pull-right control-button glyphicon glyphicon-th-list"></a>
+                <a id="queue" [routerLink]="['/main/queue']" data-toggle="tooltip" title="Queue" class="queue pull-right control-button glyphicon glyphicon-th-list"></a>
                 <div class="row playlistname" >
                     <div *ngIf="track && track.playlist">
                         {{track.playlist.name}}
@@ -11,21 +11,21 @@
                 <div class="row">
                     <div class="row">
                         <span id="checkbox" class="pull-left">
-                            <input (click)="shuffleChanged()" [(ngModel)]="shuffle" id="checkbox-element" type="checkbox"/>  
+                            <input (click)="shuffleChanged()" data-toggle="tooltip" title="Shuffle" [(ngModel)]="shuffle" id="checkbox-element" type="checkbox"/>  
                             <i class="glyphicon glyphicon-random"></i>
                         </span>
                         <div>
-                            <a id="previous" (click)="previous()" class="control-button previous glyphicon glyphicon-step-backward"></a>
-                            <a id="play" *ngIf="isplaying == false" (click)="play()" class="control-button glyphicon glyphicon-play"></a>
-                            <a id="pause" *ngIf="isplaying == true" (click)="pause()" class="control-button glyphicon glyphicon-pause"></a>
-                            <a id="next" (click)="next()" class="control-button glyphicon glyphicon-step-forward"></a>
+                            <a id="previous" (click)="previous()" data-toggle="tooltip" title="Previous" class="control-button previous glyphicon glyphicon-step-backward"></a>
+                            <a id="play" *ngIf="isplaying == false" (click)="play()" data-toggle="tooltip" title="Play" class="control-button glyphicon glyphicon-play"></a>
+                            <a id="pause" *ngIf="isplaying == true" (click)="pause()" data-toggle="tooltip" title="Pause" class="control-button glyphicon glyphicon-pause"></a>
+                            <a id="next" (click)="next()" data-toggle="tooltip" title="Next" class="control-button glyphicon glyphicon-step-forward"></a>
                         </div>
                     </div>
                     <div class="row seekcontrols">
 						<div class="progress">{{ progress | displaytime }}</div>
 						<div class="duration">{{ duration | displaytime }}</div>
 						<div class="slider">
-							<input type="range" [(ngModel)]="progress" (change)="changeprogress()" min="0" max="{{duration}}" (mousedown)=mouseDown() />
+							<input type="range" [(ngModel)]="progress" data-toggle="tooltip" title="Seek" (change)="changeprogress()" min="0" max="{{duration}}" (mousedown)=mouseDown() />
 						</div>
 					</div>
                 </div>
