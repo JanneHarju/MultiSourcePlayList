@@ -51,6 +51,7 @@ namespace PlayList.Controllers
             var uploads = Path.Combine(
                 _environment.ContentRootPath,
                 filePath);
+            
             //string url = UriHelper.GetDisplayUrl(Request);//http://localhost:8080/api/fileupload/1
             //var urlParts = url.Split(new[] { "api/fileupload" }, StringSplitOptions.None);
             //var baseUrl = urlParts[0];
@@ -71,41 +72,49 @@ namespace PlayList.Controllers
             foreach(var file in files)
             {
                 try {
-                    var filename = file.FileName;
-                    var fullpath = Path.Combine(
-                            uploads,
-                            filename);
-                    if(!System.IO.File.Exists(fullpath))
+                    
+                    if(isThereDiscSpace(uploads,file))
                     {
-                        if (file.Length > 0)
+                        var filename = file.FileName;
+                        var fullpath = Path.Combine(
+                                uploads,
+                                filename);
+                        if(!System.IO.File.Exists(fullpath))
                         {
-                            using(var fileStream = new FileStream(fullpath, FileMode.Create))
+                            if (file.Length > 0)
                             {
-                                
-                                await file.CopyToAsync(fileStream);
-                                fileStream.Flush();
-                                fileStream.Dispose();
-                                
+                                using(var fileStream = new FileStream(fullpath, FileMode.Create))
+                                {
+                                    
+                                    await file.CopyToAsync(fileStream);
+                                    fileStream.Flush();
+                                    fileStream.Dispose();
+                                    
+                                }
                             }
                         }
+                        string fp = Path.Combine(
+                            uploads,
+                            filename);
+                        Track fileTrack = new Track();
+                        /*crit: FileUploadController[0]
+                        [1]       /Users/paiviharju/Documents/Jannen kansio/MultiSourcePlayList/wwwroot
+                        [1] crit: FileUploadController[0]
+                        [1]       
+                        [1] crit: FileUploadController[0]
+                        [1]       1*/
+                        fileTrack.address = filename;
+                        fileTrack.playlist = playlist;
+                        fileTrack.type = 3;
+                        fileTrack.order = lastOrder;
+                        fileTrack.name = getTrackName(fp);//hanki bändi ja kappale mp3 tiedoston metasta
+                        _multiSourcePlaylistRepository.PostTrack(fileTrack);
+                        ++lastOrder;
                     }
-                    string fp = Path.Combine(
-                        uploads,
-                        filename);
-                    Track fileTrack = new Track();
-                    /*crit: FileUploadController[0]
-                    [1]       /Users/paiviharju/Documents/Jannen kansio/MultiSourcePlayList/wwwroot
-                    [1] crit: FileUploadController[0]
-                    [1]       
-                    [1] crit: FileUploadController[0]
-                    [1]       1*/
-                    fileTrack.address = filename;
-                    fileTrack.playlist = playlist;
-                    fileTrack.type = 3;
-                    fileTrack.order = lastOrder;
-                    fileTrack.name = getTrackName(fp);//hanki bändi ja kappale mp3 tiedoston metasta
-                    _multiSourcePlaylistRepository.PostTrack(fileTrack);
-                    ++lastOrder;
+                    else
+                    {
+                        return "NO_DISC_SPACE";
+                    }
                 } catch {
                     return null;
                 }
@@ -129,6 +138,14 @@ namespace PlayList.Controllers
             _logger.LogCritical(title);
             trackname = artist +" - "+title;
             return trackname;
+        }
+        private bool isThereDiscSpace(string path, IFormFile file)
+        {
+            var directoryInfo = new DirectoryInfo(path);
+            var sizeInBytes = directoryInfo.EnumerateFiles().Sum(fil=> fil.Length);
+            var totalSizeInBytes = sizeInBytes + file.Length;
+            var sizeInMb = totalSizeInBytes / 1048576;
+            return sizeInMb < 1000;
         }
     }
     public class LocalFileAbstraction : TagLib.File.IFileAbstraction

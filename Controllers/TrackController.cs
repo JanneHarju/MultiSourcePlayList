@@ -159,7 +159,7 @@ namespace PlayList.Controllers
                 if(!_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
                 {
                     var filePath = Path.Combine(
-                        _environment.WebRootPath,
+                        _environment.ContentRootPath,
                         "uploads",
                         user.FileFolder,
                         address);
