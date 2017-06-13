@@ -11,10 +11,14 @@
         </div>
     </div>
     <div id='body-content' class="col-sm-8 col-xs-12">
-        <router-outlet></router-outlet>
-        <router-outlet name="popup"></router-outlet>
-        <!--<router-outlet [@routerTransition]="void">
-            <my-info></my-info>
-        </router-outlet>-->
+        <div id="container">
+            <div class="col-xs-12 col-sm-12 box">
+                <div class="innerbox">
+                    <div class="box-style">
+                         <router-outlet></router-outlet>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -7,7 +7,6 @@ import { MainComponent } from './modules/main/main.component';
 import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplaylist.component';
 import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.component';
 import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
-import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { LoginComponent } from './modules/login/login.component';
 import { UserInfoComponent } from './modules/userinfo/userInfo.component';
 import { QueueComponent } from './modules/queue/queue.component';

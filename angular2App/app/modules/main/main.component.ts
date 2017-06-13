@@ -5,7 +5,7 @@ import { SpotifyService } from '../../services/spotify.service';
 @Component({
   selector: 'my-main',
   templateUrl: 'main.component.html',
-  styles: [require('./main.component.css') ],
+  styles: [require('./main.component.less') ],
 })
 export class MainComponent implements OnInit
 {

@@ -1,29 +1,9 @@
 
-
-@background: #000000;
-@box-back-color: #242021;
-@lw-yellow: #DBB64C;
 @box-small-margin: 15px;
-@box-big-margin: 2 * @box-small-margin;
-@number-font-size: 6em; 
-@table-number-font-size: 4.5em;
-
-
-h2 {
-    width: 100%;
-    float: left;
-    color: @lw-yellow;
-    font-size: 3rem;
-    text-transform: uppercase;
-    margin: 0;
-    text-align: center;
-    padding: 15px 15px 0px 15px;
-    font-weight: 600;
-}
 
 #container {
     overflow: hidden;
-    background-color: @background;
+    height: 100%;
 }
 
 .box-row {
@@ -36,37 +16,21 @@ h2 {
 }
 
 .box-style {
-    height: 100%;
-    background-color: @box-back-color;
-    border-radius: 10px;
-    padding: 20px;
-    color: #FFFFFF;
     font-size: 2em;
-    text-align: center;
-    margin-left: 10px;
-}
-
-.box-content {
-    height: 100%;
     width: 100%;
-    font-size: @number-font-size;
-    left: 0%;
-    position:absolute; 
-    top:50%;
-    margin-top: -0.6em;
 }
-
 
 .innerbox {
     height: 100%;
-    padding: @box-small-margin @box-small-margin 0 @box-small-margin;
+    width: 100%;
+    padding-top: @box-small-margin;
 }
 #checkbox{
   display:inline-block;
-  margin-left: 30px;
   border-radius:2px;
   position:relative;
   cursor:pointer;
+  margin-left: 30px;
 }
 
 #checkbox-element{
@@ -151,4 +115,8 @@ h2 {
 .floating
 {
     float: left;
+}
+.buttons
+{
+    user-select: none;
 }

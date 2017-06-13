@@ -60,7 +60,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             this.selectCurrentTrack(track);
         });
 
-        this.getUsersPlaylists();
+        this.getUsersPlaylistsasync();
         this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated =>
         {
             this.getUsersPlaylists();
@@ -102,6 +102,17 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.router.navigate(['login']);
                 }
             });
+     }
+     getUsersPlaylistsasync()
+     {
+         this.route.params
+            .switchMap((params: Params) =>
+                this.playlistService.getUsersPlaylists())
+                .subscribe((playlists : Playlist[])=> 
+                {
+                    this.playlists = playlists;
+                    this.playlists = this.playlists.filter(h => h.id !== this.currrentPlaylist.id);
+                });
      }
      ngOnDestroy(): void
      {

@@ -1,9 +1,5 @@
  <div class="innerbox">
-     <div class="box-style"> 
-         <!--<div>
-            <button class="btn btn-primary glyphicon glyphicon-log-in" (click)="loginToSpotify()"></button>
-            <button class="btn btn-primary glyphicon glyphicon-log-out" (click)="logoutFromSpotify()"></button>
-        </div>-->
+     <div class="box-style">
         <div class="grid grid-pad" >
             <h3> Local playlist: </h3>
             <div *ngIf="playlists.length > 0">
@@ -17,8 +13,6 @@
                         <button class="editbuttons btn btn-danger glyphicon glyphicon-remove" data-toggle="tooltip" title="Remove playlist" (click)="removeConfirmationModal.open(); setDeleteTarget(playlist); $event.stopPropagation()"></button>
                                     
                     </div>
-                            <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
-                    
                 </div>
             </div>
             <button class="addButton btn btn-primary glyphicon glyphicon-plus pull-left" (click)="addNewPlaylistModal.open()" data-toggle="tooltip" title="Add new playlist"></button>
@@ -28,18 +22,9 @@
             <a *ngFor="let playlist of spotifyplaylists"  [routerLink]="['/main/spotifylist', playlist.id, playlist.owner.id]" routerLinkActive="active" >
                 <div class="module track">
                     <h4 >{{playlist.name}}</h4>
-                    <!--<button class="delete" (click)="delete(hero); $event.stopPropagation()">x</button>-->
                 </div>
             </a>
         </div>
-        <!--<ul class="playlists">
-            <li *ngFor="let playlist of playlists" (click)="onSelect(playlist)"
-                [class.selected]="playlist === selectedPlaylist">
-                <span>{{playlist.name}}</span>
-                <button class="delete"
-                (click)="delete(playlist); $event.stopPropagation()">x</button>
-            </li>
-        </ul>-->
      </div>
  </div>
  <!--Playlist name edit modal-->

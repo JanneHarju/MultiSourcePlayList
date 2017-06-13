@@ -1,67 +1,62 @@
-<div id="container">
-    <div class="col-xs-12 col-sm-12 box">
-        <div class="innerbox">
-            <div class="box-style"> 
-                <div class="row">
-                    <img class="pull-left artisimage" [src]="spotifyArtist.images[1].url" *ngIf="spotifyArtist.images" height="150" width="150"/>
-                    <div class="artisinfo" *ngIf="spotifyArtist">
-                        Artist: {{spotifyArtist.name}}
-                    </div>
-                </div>
-                Albums:
-                <div class="container albums" *ngIf="spotifyAlbums">
-                    <div *ngFor="let album of spotifyAlbums" [routerLink]="['/main/spotifyalbum', album.id]" class="album col-sm-3 col-xs-6">
-                        <img class="pull-left albumimage" [src]="album.images[1].url" height="150" width="150"/>
-                        {{album.name}}
-                    </div>
-                </div>
-                Top tracks:
-                <table class="tracks row">
-                    <thead>
-                        <th></th>
-                        <th>TRACK</th>
-                        <th>ALBUM</th>
-                        <th><span class="glyphicon glyphicon-time" aria-hidden="true"></span></th>
-                        <th></th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let track of spotifyTracks" class="track" [class.active]="track == selectedTrack">
-                            <td class="tdPlay">
-                                <a (click)="onSpotifySelect(track)" class="play-button glyphicon glyphicon-play-circle"></a>
-                            </td>
-                            <td class="tdTrack" (dblclick)="onSpotifySelect(track)">
-                                {{track.name}}
-                            </td>
-                            <td class="tdAlbum" (dblclick)="onSpotifySelect(track)">
-                                <a [routerLink]="['/main/spotifyalbum', track.album.id]">
-                                {{track.album.name}}
-                                </a>
-                            </td>
-                            <td class="tdDuration" (dblclick)="onSpotifySelect(track)">
-                                {{track.duration_ms | displaytime}}
-                            </td>
-                            <td class="pull-right">
-                                <div class="dropup" data-toggle="tooltip" title="Add track to playlist or to queue">
-                                    <button class="btn btn-default dropdown-toggle addplaylist" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
-                                        <li><a (click)="addToQueue(track)">Add to queue</a></li>
-                                        <li role="separator" class="divider"></li>
-                                        <li *ngFor="let playlist of playlists">
-                                            <a (click)="addSpotifyTrackToPlaylist(playlist, track)">
-                                                {{playlist.name}}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-
-                        </tr>
-                    </tbody>
-                </table>
-                
-            </div>
-        </div>
+<div class="row">
+    <img class="pull-left artisimage" [src]="spotifyArtist.images[1].url" *ngIf="spotifyArtist.images" height="150" width="150"/>
+    <div class="artisinfo" *ngIf="spotifyArtist">
+        Artist: {{spotifyArtist.name}}
     </div>
 </div>
+<div>
+    Albums:
+</div>
+<div class="container albums" *ngIf="spotifyAlbums">
+    <div *ngFor="let album of spotifyAlbums" [routerLink]="['/main/spotifyalbum', album.id]" class="album col-sm-3 col-xs-6">
+        <img class="pull-left albumimage" [src]="album.images[1].url" height="150" width="150"/>
+        {{album.name}}
+    </div>
+</div>
+<div>
+    Top tracks:
+</div>
+<table class="tracks row">
+    <thead>
+        <th></th>
+        <th>TRACK</th>
+        <th>ALBUM</th>
+        <th><span class="glyphicon glyphicon-time" aria-hidden="true"></span></th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let track of spotifyTracks" class="track" [class.active]="track == selectedTrack">
+            <td class="tdPlay">
+                <a (click)="onSpotifySelect(track)" class="play-button glyphicon glyphicon-play-circle"></a>
+            </td>
+            <td class="tdTrack" (dblclick)="onSpotifySelect(track)">
+                {{track.name}}
+            </td>
+            <td class="tdAlbum" (dblclick)="onSpotifySelect(track)">
+                <a [routerLink]="['/main/spotifyalbum', track.album.id]">
+                {{track.album.name}}
+                </a>
+            </td>
+            <td class="tdDuration" (dblclick)="onSpotifySelect(track)">
+                {{track.duration_ms | displaytime}}
+            </td>
+            <td class="pull-right">
+                <div class="dropup" data-toggle="tooltip" title="Add track to playlist or to queue">
+                    <button class="btn btn-default dropdown-toggle addplaylist" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
+                        <li><a (click)="addToQueue(track)">Add to queue</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li *ngFor="let playlist of playlists">
+                            <a (click)="addSpotifyTrackToPlaylist(playlist, track)">
+                                {{playlist.name}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+
+        </tr>
+    </tbody>
+</table>

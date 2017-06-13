@@ -28,13 +28,10 @@ export class QueueComponent implements OnInit {
             this.tracklist.splice(index, 1);
         }
     }
-    orderedTrack()
-    {
-        //update queue order
-    }
+    
     onSelect(track: Track): void {
 
-        //onko järkevää
+        //Maybe select track to play
         /*this.playerService.setTrackList(this.tracklist);
         this.playerService.setTrack(track);*/
         

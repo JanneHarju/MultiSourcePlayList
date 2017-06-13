@@ -111,7 +111,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     
     next()
     {
-        if(this.playerService.track)
+        if(this.track.address)
         {
             this.playerService.chooseNextTrack();
         }
@@ -119,7 +119,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     previous()
     {
 
-        if(this.playerService.track)
+        if(this.track.address)
         {
             if(this.progress < 2500)
             {
@@ -135,7 +135,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     
     play(trackUri?: string)
     {
-        if(this.playerService.track)
+        if(this.track.address)
         {
             this.isplaying = true;
             this.disableProgressUpdate = true;
@@ -187,7 +187,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     pause()
     {
-        if(this.playerService.track)
+        if(this.track.address)
         {
             this.isplaying = false;
             if(this.track != null)

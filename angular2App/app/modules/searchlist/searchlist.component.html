@@ -1,92 +1,84 @@
-<div id="container">
-    <div class="col-xs-12 col-sm-12 box">
-        <div class="innerbox">
-            <div class="box-style"> 
-                Spotify Search result for:  {{query}}
-                <table class="tracks">
-                    <thead>
-                        <th></th>
-                        <th>TRACK</th>
-                        <th>ARTIST</th>
-                        <th>ALBUM</th>
-                        <th></th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let track of spotifyTracks" class="track" [class.active]="track == selectedSpotifyTrack">
-                            <td class="tdPlay">
-                                <a (click)="onSpotifySelect(track)" class="play-button glyphicon glyphicon-play-circle"></a>
-                            </td>
-                            <td class="stdTrack" (dblclick)="onSpotifySelect(track)">
-                                {{track.name}}
-                            </td>
-                            <td class="stdArtist" (dblclick)="onSpotifySelect(track)">
-                                <a [routerLink]="['/main/spotifyartist', track.artists[0].id]">
-                                {{track.artists[0].name}}
-                                </a>
-                            </td>
-                            <td class="stdAlbum" (dblclick)="onSpotifySelect(track)">
-                                <a [routerLink]="['/main/spotifyalbum', track.album.id]">
-                                {{track.album.name}}
-                                </a>
-                            </td>
-                            <td class="pull-right" data-toggle="tooltip" title="Add track to playlist or to queue">
-                                <div class="dropdown">
-                                    <button class="btn btn-primary dropdown-toggle addplaylist" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
-                                        <li><a (click)="addSpotifyToQueue(track)">Add to queue</a></li>
-                                        <li role="separator" class="divider"></li>
-                                        <li *ngFor="let playlist of playlists">
-                                            <a (click)="addSpotifyTrackToPlaylist(playlist, track)">
-                                                {{playlist.name}}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                Youtube Search result for:  {{query}}
-                <table class="tracks">
-                    <thead>
-                        <th></th>
-                        <th>Video name</th>
-                        <th>Channel name</th>
-                        <th></th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let video of youtubeVideos" class="track" [class.active]="video == selectedYoutubeVideo">
-                            <td class="tdPlay">
-                                <a (click)="onYoutubeSelect(video)" class="play-button glyphicon glyphicon-play-circle"></a>
-                            </td>
-                            <td class="tdTrack" (dblclick)="onYoutubeSelect(video)" >
-                                {{video.snippet.title}}
-                            </td>
-                            <td class="tdArtist" (dblclick)="onYoutubeSelect(video)">
-                                {{video.snippet.channelTitle}}
-                            </td>
-                            <td class="pull-right">
-                                <div class="dropup" data-toggle="tooltip" title="Add video to playlist or to queue">
-                                    <button class="btn btn-primary dropdown-toggle addplaylist" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
-                                        <li><a (click)="addYoutubeToQueue(video)">Add to queue</a></li>
-                                        <li role="separator" class="divider"></li>
-                                        <li *ngFor="let playlist of playlists">
-                                            <a (click)="addVideoToPlaylist(playlist, video)">
-                                                {{playlist.name}}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+Spotify Search result for:  {{query}}
+<table class="tracks">
+    <thead>
+        <th></th>
+        <th>TRACK</th>
+        <th>ARTIST</th>
+        <th>ALBUM</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let track of spotifyTracks" class="track" [class.active]="track == selectedSpotifyTrack">
+            <td class="tdPlay">
+                <a (click)="onSpotifySelect(track)" class="play-button glyphicon glyphicon-play-circle"></a>
+            </td>
+            <td class="stdTrack" (dblclick)="onSpotifySelect(track)">
+                {{track.name}}
+            </td>
+            <td class="stdArtist" (dblclick)="onSpotifySelect(track)">
+                <a [routerLink]="['/main/spotifyartist', track.artists[0].id]">
+                {{track.artists[0].name}}
+                </a>
+            </td>
+            <td class="stdAlbum" (dblclick)="onSpotifySelect(track)">
+                <a [routerLink]="['/main/spotifyalbum', track.album.id]">
+                {{track.album.name}}
+                </a>
+            </td>
+            <td class="pull-right" data-toggle="tooltip" title="Add track to playlist or to queue">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle addplaylist" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
+                        <li><a (click)="addSpotifyToQueue(track)">Add to queue</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li *ngFor="let playlist of playlists">
+                            <a (click)="addSpotifyTrackToPlaylist(playlist, track)">
+                                {{playlist.name}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+Youtube Search result for:  {{query}}
+<table class="tracks">
+    <thead>
+        <th></th>
+        <th>Video name</th>
+        <th>Channel name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let video of youtubeVideos" class="track" [class.active]="video == selectedYoutubeVideo">
+            <td class="tdPlay">
+                <a (click)="onYoutubeSelect(video)" class="play-button glyphicon glyphicon-play-circle"></a>
+            </td>
+            <td class="tdTrack" (dblclick)="onYoutubeSelect(video)" >
+                {{video.snippet.title}}
+            </td>
+            <td class="tdArtist" (dblclick)="onYoutubeSelect(video)">
+                {{video.snippet.channelTitle}}
+            </td>
+            <td class="pull-right">
+                <div class="dropup" data-toggle="tooltip" title="Add video to playlist or to queue">
+                    <button class="btn btn-primary dropdown-toggle addplaylist" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
+                        <li><a (click)="addYoutubeToQueue(video)">Add to queue</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li *ngFor="let playlist of playlists">
+                            <a (click)="addVideoToPlaylist(playlist, video)">
+                                {{playlist.name}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -56,8 +56,11 @@ export class SpotifyService {
 
         config.apiBase = 'https://api.spotify.com/v1';
     }
-
+    trackEnd: boolean = false;
     timerId: string;
+    currentTrackUri: string;
+    lastCurrentTrackUri: string;
+    lastProgress: number;
     currentUser: SpotifyUser;
     playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
     tempPlaylist: SpotifyPlaylistTrack[] = [];
@@ -69,13 +72,18 @@ export class SpotifyService {
     {
         this.checkPlayerState().subscribe(playState => 
         {
-            if(playState.progress_ms == 0 && this.playStatus.is_playing && !playState.is_playing )
+            if(playState.progress_ms == 0 &&
+                this.playStatus.is_playing &&
+                !playState.is_playing &&
+                this.lastCurrentTrackUri == this.currentTrackUri )
             {
+                
                 this.st.delTimer('spotify');
                 this.setTrackEnd(true);
                 //kappale loppui. onko tämä tilanne aukoton?
             }
             this.setPlayStatus(playState);
+            this.lastCurrentTrackUri = this.currentTrackUri;
         });
     }
     setAuthenticationComplited(status: string)
@@ -100,7 +108,8 @@ export class SpotifyService {
     }
     setTrackEnd(trackEnd: boolean)
     {
-        this.subjectTrackEnded.next(trackEnd);
+        this.trackEnd = trackEnd;
+        this.subjectTrackEnded.next(this.trackEnd);
     }
     getTrackEnd() : Observable<boolean>
     {
@@ -115,6 +124,7 @@ export class SpotifyService {
     //if Spotify result is something like no rights i.e. then login. Don't login at start if you already have working token.
     play(trackUri?: string, options?: SpotifyOptions) {
         options = options || {};
+        this.currentTrackUri = trackUri;
         this.playStatus.is_playing = true;
         this.setPlayStatus(this.playStatus);
         this.setTrackEnd(false);
@@ -149,7 +159,7 @@ export class SpotifyService {
     pause(options?: SpotifyOptions) {
         options = options || {};
         
-        this.playStatus.is_playing = true;
+        this.playStatus.is_playing = false;
         this.setPlayStatus(this.playStatus);
         this.st.delTimer('spotify');
         return this.api({

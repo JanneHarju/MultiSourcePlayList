@@ -22,7 +22,6 @@ import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplayl
 import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.component';
 import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
 import { FileUploadComponent } from './modules/fileupload/fileupload.component';
-import { AddTrackPopupComponent } from './modules/addtrackpopup/addtrackpopup.component';
 import { NavbarComponent } from './modules/navbar/navbar.component';
 import { LoginComponent } from './modules/login/login.component';
 import { UserInfoComponent } from './modules/userinfo/userInfo.component';
@@ -68,7 +67,6 @@ import './rxjs-extensions';
     SpotifyAlbumComponent,
     SpotifyArtistComponent,
     PopupComponent,
-    AddTrackPopupComponent,
     NavbarComponent,
     LoginComponent,
     FileUploadComponent,

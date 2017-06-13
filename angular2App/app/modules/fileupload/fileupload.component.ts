@@ -43,7 +43,7 @@ export class FileUploadComponent implements OnInit {
                 method: 'POST',
                 fieldName: 'files',
                 headers: { 'Authorization': 'Bearer '+ token},
-                concurrency: 0 // set sequential uploading of files with concurrency 1
+                concurrency: 1 // set sequential uploading of files with concurrency 1
             };
             this.uploadInput.emit(event);
         } else if (output.type === 'addedToQueue') {
@@ -86,7 +86,7 @@ export class FileUploadComponent implements OnInit {
             fieldName: 'files',
             method: 'POST',
             headers: { 'Authorization': 'Bearer '+ token},
-            concurrency: 0 // set sequential uploading of files with concurrency 1
+            concurrency: 1 // set sequential uploading of files with concurrency 1
         }
 
         this.uploadInput.emit(event);
