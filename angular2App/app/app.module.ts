@@ -11,7 +11,7 @@ import { YoutubePlayerModule } from 'ng2-youtube-player';
 import { DndModule } from 'ng2-dnd';
 
 import { NgUploaderModule } from 'ngx-uploader';
-import { ModalModule } from "ng2-modal";
+import { ModalModule } from "ngx-modal";
 
 import { PlayerComponent } from './modules/player/player.component';
 import { PlaylistComponent } from './modules/playlist/playlist.component';
