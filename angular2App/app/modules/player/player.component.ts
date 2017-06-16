@@ -54,7 +54,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         {
             this.track = track;
             if(this.track)
-                this.play(this.track.address);
+                this.play(this.track.Address);
         });
 
         this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
@@ -111,7 +111,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     
     next()
     {
-        if(this.track.address)
+        if(this.track.Address)
         {
             this.playerService.chooseNextTrack();
         }
@@ -119,7 +119,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     previous()
     {
 
-        if(this.track.address)
+        if(this.track.Address)
         {
             if(this.progress < 2500)
             {
@@ -135,13 +135,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
     
     play(trackUri?: string)
     {
-        if(this.track.address)
+        if(this.track.Address)
         {
             this.isplaying = true;
             this.disableProgressUpdate = true;
             if(this.track != null)
             {
-                switch (this.track.type) {
+                switch (this.track.Type) {
                     case 1://youtube
                         this.pauseSpotify();
                         if(this.player)
@@ -187,12 +187,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     pause()
     {
-        if(this.track.address)
+        if(this.track.Address)
         {
             this.isplaying = false;
             if(this.track != null)
             {
-                switch (this.track.type) {
+                switch (this.track.Type) {
                     case 1://youtube
                         
                         this.player.pauseVideo();
@@ -233,7 +233,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     localFileAddress(track: Track) : string
     {
         let token = this.authService.getLocalToken();
-        return this.localFilePath + track.id + "?access_token="+token;
+        return this.localFilePath + track.Id + "?access_token="+token;
     }
     loadedmeadata()
     {
@@ -278,18 +278,18 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     changeprogressTo(seek: number)
     {
-        if(this.track.type == 1)//youtube
+        if(this.track.Type == 1)//youtube
         {
             this.player.seekTo(seek/1000, true);
         }
-        else if(this.track.type == 2)//spotify
+        else if(this.track.Type == 2)//spotify
         {
             this.spotifyService.seek({position_ms: seek}).subscribe(res =>
             {
                 //Onnistui
             });
         }
-        else if(this.track.type == 3)//mp3
+        else if(this.track.Type == 3)//mp3
         {
             let audio = (<HTMLAudioElement>document.getElementById("audio1"));
             audio.currentTime = seek/1000;
@@ -303,14 +303,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     callback()
     {
-        if(this.track.type == 1)
+        if(this.track.Type == 1)
         {
             this.setProgress(this.player.getCurrentTime()*1000);
         }
-        else if(this.track.type == 3)
+        else if(this.track.Type == 3)
         {
             let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-            this.setProgress(audio.currentTime * 1000);
+            if(audio)
+                this.setProgress(audio.currentTime * 1000);
         }
         //this.progress+=1000;
     }

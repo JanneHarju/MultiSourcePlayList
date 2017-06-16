@@ -1,6 +1,9 @@
 {
-    "Production": {
+    "Development": {
         "SqliteConnectionString": "Data Source=//Users//paiviharju//Documents//Database//MSPL.sqlite"
+    },
+    "Production": {
+        "SqlServerConnectionString": "Data Source=tcp:mspl.database.windows.net,1433;Initial Catalog=MSPL;User Id=JanneHarju@mspl.database.windows.net;Password=Rikalantie69;"
     }
 } 
 

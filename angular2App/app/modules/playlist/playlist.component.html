@@ -4,8 +4,8 @@
             <h3> Local playlist: </h3>
             <div *ngIf="playlists.length > 0">
                 <div *ngFor="let playlist of playlists" class="pldiv">
-                    <a *ngIf="playlist" (click)="selectPlaylist(playlist)" [routerLink]="['/main/tracklist', playlist.id]" routerLinkActive="active">
-                    {{playlist.name}}
+                    <a *ngIf="playlist" (click)="selectPlaylist(playlist)" [routerLink]="['/main/tracklist', playlist.Id]" routerLinkActive="active">
+                    {{playlist.Name}}
                     </a>
                     <div class="pull-right btn-group buttongroup" role="group">
                         <button class="editbuttons btn btn-warning glyphicon glyphicon-random" data-toggle="tooltip" title="Shuffle whole playlist" (click)="shuffleConfirmationModal.open(); setShuffleTarget(playlist); $event.stopPropagation()"></button>
@@ -30,7 +30,7 @@
  <!--Playlist name edit modal-->
  <modal #editModal modalClass="modal-sm">
     <modal-header>
-        <h1>New name for: {{renametarget.name}}</h1>
+        <h1>New name for: {{renametarget.Name}}</h1>
     </modal-header>
     <modal-content>
         <input class="form-control" (keyup.enter)="editModal.close(); rename(renamePlaylistName.value)" ng-focus="true" #renamePlaylistName />
@@ -45,7 +45,7 @@
  <!--Playlist remove confirmation modal-->
  <modal #removeConfirmationModal modalClass="modal-md">
     <modal-header>
-        <h1>Are you sure you want to remove: {{removetarget.name}} ?</h1>
+        <h1>Are you sure you want to remove: {{removetarget.Name}} ?</h1>
     </modal-header>
     <modal-footer>
         <button class="btn btn-primary confirmbutton" (click)="removeConfirmationModal.close(); delete()">Yes</button>
@@ -56,7 +56,7 @@
  <!--Playlist shuffle confirmation modal-->
  <modal #shuffleConfirmationModal modalClass="modal-md">
     <modal-header>
-        <h1>Are you sure you want to shuffle: {{shuffletarget.name}} ?
+        <h1>Are you sure you want to shuffle: {{shuffletarget.Name}} ?
             You cannot undo this.
         </h1>
     </modal-header>

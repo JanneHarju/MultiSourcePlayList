@@ -91,6 +91,7 @@ namespace PlayList
                 Directory.CreateDirectory(uploads);
                 user.Password = hashedPW;
                 user.FileFolder = userfileFolder;
+                _logger.LogCritical(JsonConvert.SerializeObject(user));
                 _multiSourcePlaylistRepository.PostUser(user);
 
                 User newUser = _multiSourcePlaylistRepository.GetAllUsers().FirstOrDefault(u => u.Username == user.Username);

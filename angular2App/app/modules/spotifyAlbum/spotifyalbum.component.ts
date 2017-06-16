@@ -103,7 +103,7 @@ export class SpotifyAlbumComponent implements OnInit {
      }
      selectCurrentTrack(track: Track)
      {
-        let temptrack = this.spotifyTracks.find(x=>x.uri == track.address);
+        let temptrack = this.spotifyTracks.find(x=>x.uri == track.Address);
         if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempPlaylistId))
         {
             if(temptrack)
@@ -121,10 +121,10 @@ export class SpotifyAlbumComponent implements OnInit {
      {
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
-        newTrack.address = track.uri;
-        newTrack.name = track.artists[0].name +" - "+ track.name;
-        newTrack.type = 2;
-        newTrack.playlist = playlist;
+        newTrack.Address = track.uri;
+        newTrack.Name = track.artists[0].name +" - "+ track.name;
+        newTrack.Type = 2;
+        newTrack.Playlist = playlist;
         trackList.push(newTrack);
         this.trackService.createMany(trackList).then(ret =>
         {
@@ -138,10 +138,10 @@ export class SpotifyAlbumComponent implements OnInit {
         {
 
             let newTrack: Track = new Track();
-            newTrack.address = st.uri;
-            newTrack.name = st.artists[0].name +" - "+ st.name;
-            newTrack.type = 2;
-            newTrack.playlist = playlist;
+            newTrack.Address = st.uri;
+            newTrack.Name = st.artists[0].name +" - "+ st.name;
+            newTrack.Type = 2;
+            newTrack.Playlist = playlist;
             trackList.push(newTrack);
         });
         this.trackService.createMany(trackList).then(ret =>
@@ -154,36 +154,36 @@ export class SpotifyAlbumComponent implements OnInit {
         let trackList: Track[] = [];
         let order: number = 0;
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = this.tempPlaylistId;
-        newPlaylist.name = this.spotifyAlbum.artists[0].name + " - " + this.spotifyAlbum.name;
+        newPlaylist.Id = this.tempPlaylistId;
+        newPlaylist.Name = this.spotifyAlbum.artists[0].name + " - " + this.spotifyAlbum.name;
         this.spotifyTracks.forEach(st =>
         {
 
             let newTrack: Track = new Track();
-            newTrack.address = st.uri;
-            newTrack.name = st.artists[0].name +" - "+ st.name;
-            newTrack.type = 2;
-            newTrack.playlist = newPlaylist;
-            newTrack.order = order;
+            newTrack.Address = st.uri;
+            newTrack.Name = st.artists[0].name +" - "+ st.name;
+            newTrack.Type = 2;
+            newTrack.Playlist = newPlaylist;
+            newTrack.Order = order;
             ++order;
             trackList.push(newTrack);
         });
         this.playerService.setTrackList(trackList);
-        let tempTrack = trackList.find(tr => tr.address == track.uri);
+        let tempTrack = trackList.find(tr => tr.Address == track.uri);
         this.playerService.setTrack(tempTrack);
 
     }
     addToQueue(track: SpotifyTrack)
     {
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = this.tempPlaylistId;
-        newPlaylist.name = "Spotify : "+this.playlistInfo.name;
+        newPlaylist.Id = this.tempPlaylistId;
+        newPlaylist.Name = "Spotify : "+this.playlistInfo.name;
         let newTrack: Track = new Track();
-            newTrack.address = track.uri;
-            newTrack.name = track.artists[0].name +" - "+ track.name;
-            newTrack.type = 2;
-            newTrack.playlist = newPlaylist;
-            newTrack.order = 0;
+            newTrack.Address = track.uri;
+            newTrack.Name = track.artists[0].name +" - "+ track.name;
+            newTrack.Type = 2;
+            newTrack.Playlist = newPlaylist;
+            newTrack.Order = 0;
         this.playerService.addTrackToQueue(newTrack);
     }
 }

@@ -68,7 +68,7 @@ export class PlaylistService {
     update(Playlist: Playlist): Promise<Playlist> {
 
         let headers = this.authService.initAuthHeaders();
-        const url = `${this.PlaylistsUrl}/${Playlist.id}`;
+        const url = `${this.PlaylistsUrl}/${Playlist.Id}`;
         return this.http
             .put(url, Playlist, {headers: headers})
             .toPromise()
@@ -82,7 +82,7 @@ export class PlaylistService {
     shuffle(Playlist: Playlist): Promise<Playlist> {
 
         let headers = this.authService.initAuthHeaders();
-        const url = this.PlaylistsUrl + "/Shuffle/"+Playlist.id;
+        const url = this.PlaylistsUrl + "/Shuffle/"+Playlist.Id;
         return this.http
             .put(url, Playlist, {headers: headers})
             .toPromise()
@@ -91,7 +91,7 @@ export class PlaylistService {
     }
     create(name: string): Promise<Playlist> {
         const tmpPlaylist = new Playlist();
-        tmpPlaylist.name = name;
+        tmpPlaylist.Name = name;
         let headers = this.authService.initAuthHeaders();
         //tmpHero.name = name;
         return this.http

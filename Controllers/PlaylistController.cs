@@ -56,7 +56,7 @@ namespace PlayList.Controllers
             var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
             _logger.LogCritical("UserId"+userId.ToString());
             var usersPlaylists = _multiSourcePlaylistRepository.GetUsersPlaylists(userId);
-            usersPlaylists.ForEach(x=>x.owner=null);
+            usersPlaylists.ForEach(x=>x.Owner=null);
             return usersPlaylists;
         }
         // PUT api/values/5
@@ -81,15 +81,15 @@ namespace PlayList.Controllers
             {
                 values.ForEach(track => 
                 {
-                    track.order = random.Next( values.Count*2);
+                    track.Order = random.Next( values.Count*2);
                 });
-                var orderedList = values.OrderBy(x=>x.order);
-                long playlistId = values[0].playlist.id;
+                var orderedList = values.OrderBy(x=>x.Order);
+                long playlistId = values[0].Playlist.Id;
                 int order = 0;
                 foreach(Track track in orderedList)
                 {
-                    track.order = order;
-                    _multiSourcePlaylistRepository.PutTrack(track.id,track);
+                    track.Order = order;
+                    _multiSourcePlaylistRepository.PutTrack(track.Id,track);
                     ++order;
                 }
             }
@@ -104,14 +104,14 @@ namespace PlayList.Controllers
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
             var user = _multiSourcePlaylistRepository.GetUser(userId);
-            value.owner = user;
+            value.Owner = user;
             int lastOrder = 0;
-            var lastPlaylist = allPlaylists.OrderByDescending(x => x.order).FirstOrDefault();
+            var lastPlaylist = allPlaylists.OrderByDescending(x => x.Order).FirstOrDefault();
             if(lastPlaylist != null)
             {
-                lastOrder = lastPlaylist.order +1;
+                lastOrder = lastPlaylist.Order +1;
             }
-            value.order = lastOrder;
+            value.Order = lastOrder;
             _multiSourcePlaylistRepository.PostPlaylist(value);
             return value;
         }
@@ -128,10 +128,10 @@ namespace PlayList.Controllers
             var mp3type = 3;
             foreach (var track in tracks)
             {
-                if(track.type == mp3type)
+                if(track.Type == mp3type)
                 {
-                    var address = track.address;
-                    _multiSourcePlaylistRepository.DeleteTrack(track.id);
+                    var address = track.Address;
+                    _multiSourcePlaylistRepository.DeleteTrack(track.Id);
                 
                     if(!_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
                     {

@@ -18,19 +18,19 @@ namespace PlayList.Repositories
         }
         public void DeleteTrack(long id)
         {
-            var entity = _context.Tracks.First(t => t.id == id);
+            var entity = _context.Tracks.First(t => t.Id == id);
             _context.Tracks.Remove(entity);
             _context.SaveChanges();
         }
 
         public void DeleteTracksByPlaylistId(long id)
         {
-            _context.Tracks.RemoveRange(_context.Tracks.Where(track=>track.playlist.id==id));
+            _context.Tracks.RemoveRange(_context.Tracks.Where(track=>track.Playlist.Id==id));
             _context.SaveChanges();
         }
         public void DeletePlaylist(long id)
         {
-            var entity = _context.Playlists.First(t => t.id == id);
+            var entity = _context.Playlists.First(t => t.Id == id);
             _context.Playlists.Remove(entity);
             _context.SaveChanges();
         }
@@ -43,29 +43,29 @@ namespace PlayList.Repositories
         }
         public Track GetTrack(long id)
         {
-            return _context.Tracks.First(x=>x.id == id);
+            return _context.Tracks.First(x=>x.Id == id);
         }
 
         public User GetTrackOwner(long id)
         {
             return _context.Tracks
-                .Include(t=>t.playlist)
-                .ThenInclude(p=>p.owner)
-                .Where(tr=>tr.id == id).Select(t=>t.playlist.owner).FirstOrDefault();
+                .Include(t=>t.Playlist)
+                .ThenInclude(p=>p.Owner)
+                .Where(tr=>tr.Id == id).Select(t=>t.Playlist.Owner).FirstOrDefault();
         }
 
         public List<Track> GetTracksByTypeAndAddress(int type, string address, long owner)
         {
             return _context.Tracks
-                .Include(t=>t.playlist)
-                .ThenInclude(p=>p.owner)
-                .Where(tr=>tr.type == type && tr.address == address && tr.playlist.owner.Id == owner).ToList();
+                .Include(t=>t.Playlist)
+                .ThenInclude(p=>p.Owner)
+                .Where(tr=>tr.Type == type && tr.Address == address && tr.Playlist.Owner.Id == owner).ToList();
         }
         public List<Track> GetAllTracks()
         {
             _logger.LogCritical("Getting a the existing records");
             return _context.Tracks
-                .Include(y=>y.playlist)
+                .Include(y=>y.Playlist)
                 .ToList();
         }
         //public List<Track> GetUsersPlaylistTracks(long playlistId, long userId)
@@ -73,53 +73,53 @@ namespace PlayList.Repositories
         {
             _logger.LogCritical("Getting a the existing record" + playlistId);
             return _context.Tracks
-                .Include(y=>y.playlist)
-                .ThenInclude(t=>t.owner)
-                .Where(x=>x.playlist.id == playlistId && x.playlist.owner.Id == userId)
-                .OrderBy(x=>x.order)
+                .Include(y=>y.Playlist)
+                .ThenInclude(t=>t.Owner)
+                .Where(x=>x.Playlist.Id == playlistId && x.Playlist.Owner.Id == userId)
+                .OrderBy(x=>x.Order)
                 .ToList();
         }
 
         public long GetUsersPlaylistCount(long userId)
         {
             return _context.Playlists
-                .Include(p=>p.owner)
-                .Where(x=>x.owner.Id == userId)
+                .Include(p=>p.Owner)
+                .Where(x=>x.Owner.Id == userId)
                 .Count();
         }
         public 
         long GetUsersTrackCountByType(long userId, int type)
         {
             return _context.Tracks
-                .Include(y=>y.playlist)
-                .ThenInclude(t=>t.owner)
-                .Where(x=> x.playlist.owner.Id == userId && x.type == type).Count();
+                .Include(y=>y.Playlist)
+                .ThenInclude(t=>t.Owner)
+                .Where(x=> x.Playlist.Owner.Id == userId && x.Type == type).Count();
         }
         public long GetUsersTrackCount(long userId)
         {
             return _context.Tracks
-                .Include(y=>y.playlist)
-                .ThenInclude(t=>t.owner)
-                .Where(x=> x.playlist.owner.Id == userId).Count();
+                .Include(y=>y.Playlist)
+                .ThenInclude(t=>t.Owner)
+                .Where(x=> x.Playlist.Owner.Id == userId).Count();
         }
         public Playlist GetPlaylist(long id)
         {
-            return _context.Playlists.First(x=>x.id == id);
+            return _context.Playlists.First(x=>x.Id == id);
         }
         public List<Playlist> GetAllPlaylists()
         {
             _logger.LogCritical("Getting a the existing records");
             return _context.Playlists
-                .OrderBy(x=>x.order)
+                .OrderBy(x=>x.Order)
                 .ToList();
         }
 
         public List<Playlist> GetUsersPlaylists(long userId)
         {
             return _context.Playlists
-                .Include(x=>x.owner)
-                .Where(x=>x.owner.Id == userId)
-                .OrderBy(x=>x.order)
+                .Include(x=>x.Owner)
+                .Where(x=>x.Owner.Id == userId)
+                .OrderBy(x=>x.Order)
                 .ToList();
         }
         public User GetUser(long id)
@@ -153,7 +153,7 @@ namespace PlayList.Repositories
         }
         public Playlist AttachPlaylist(long playlist)
         {
-            Playlist myPlaylist = new Playlist { id = playlist };
+            Playlist myPlaylist = new Playlist { Id = playlist };
             _context.Playlists.Attach(myPlaylist);
             return myPlaylist;
         }

@@ -1,11 +1,15 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
 namespace PlayList.Models
 {
     public class Track {
-            public long id { get; set; }
-            public string address { get; set; } 
-            public int order { get; set; } 
-            public int type { get; set; } 
-            public string name { get; set; }
-            public Playlist playlist { get; set; }
+
+        public long Id { get; set; }
+        public string Address { get; set; } 
+        public int Order { get; set; } 
+        public int Type { get; set; } 
+        public string Name { get; set; }
+        public Playlist Playlist { get; set; }
     }
 }

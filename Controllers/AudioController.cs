@@ -46,7 +46,7 @@ namespace PlayList.Controllers
                 _environment.ContentRootPath,
                 "uploads",
                 user.FileFolder,
-                track.address);
+                track.Address);
             
             var file = System.IO.File.ReadAllBytes(filePath);
             long fSize = file.Length;

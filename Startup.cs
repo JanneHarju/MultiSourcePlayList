@@ -23,6 +23,8 @@ namespace PlayList
 {
     public class Startup
     {
+
+        private IHostingEnvironment CurrentEnvironment{ get; set; } 
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -32,6 +34,7 @@ namespace PlayList
                 .AddJsonFile("config.json")
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+            CurrentEnvironment = env;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -39,11 +42,20 @@ namespace PlayList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = Configuration["Production:SqliteConnectionString"];
- 
-            services.AddDbContext<MultiSourcePlaylistContext>(options =>
-                options.UseSqlite(connection)
-            );
+            if(CurrentEnvironment.IsDevelopment())
+            {
+                var connection = Configuration["Development:SqliteConnectionString"];
+                services.AddDbContext<MultiSourcePlaylistContext>(options =>
+                    options.UseSqlite(connection)
+                );
+            }
+            else
+            {
+                var connection = Configuration["Production:SqlServerConnectionString"];
+                services.AddDbContext<MultiSourcePlaylistContext>(options =>
+                    options.UseSqlServer(connection)
+                );
+            }
             // Enable the use of an [Authorize("Bearer")] attribute on methods and classes to protect.
             services.AddAuthorization(auth =>
             {

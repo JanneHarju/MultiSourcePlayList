@@ -53,11 +53,11 @@ export class PlayerService {
     {
         if(this.track && this.tracklist)
         {
-            var newTrack = this.tracklist.find(t=> t.id == this.track.id);
+            var newTrack = this.tracklist.find(t=> t.Id == this.track.Id);
             if(newTrack)
             {
-                var currentTrackNewOrder = newTrack.order;
-                this.track.order = currentTrackNewOrder;
+                var currentTrackNewOrder = newTrack.Order;
+                this.track.Order = currentTrackNewOrder;
             }
         }
     }
@@ -65,9 +65,9 @@ export class PlayerService {
     {
         if(this.queueTracklist.length > 0)
         {
-            if(this.tracklist.find(x=>x.id == this.track.id))
+            if(this.tracklist.find(x=>x.Id == this.track.Id))
             {
-                this.lastOrder = this.track.order;
+                this.lastOrder = this.track.Order;
                 console.log(this.lastOrder);
             }
             this.setTrack(this.queueTracklist.shift());
@@ -79,8 +79,8 @@ export class PlayerService {
             {
             
                 console.log(this.lastOrder);
-                let order = this.lastOrder == -1 ? this.track.order : this.lastOrder;
-                let nextTracks = this.tracklist.filter(x=>x.order > order);
+                let order = this.lastOrder == -1 ? this.track.Order : this.lastOrder;
+                let nextTracks = this.tracklist.filter(x=>x.Order > order);
                 if(nextTracks != null && nextTracks.length > 0)
                 {
                     this.setTrack(nextTracks[0]);
@@ -100,7 +100,7 @@ export class PlayerService {
     }
     choosePreviousTrack()
     {
-        let nextTracks = this.tracklist.filter(x=>x.order < this.track.order);
+        let nextTracks = this.tracklist.filter(x=>x.Order < this.track.Order);
         if(nextTracks != null && nextTracks.length > 0)
         {
             this.setTrack(nextTracks[nextTracks.length-1]);
@@ -118,8 +118,8 @@ export class PlayerService {
     isCurrentlyPlayingTrackThisPlaylistTrack(playlistId: number): boolean
     {
         return (this.track && 
-                this.track.playlist && 
-                this.track.playlist.id == playlistId)
+                this.track.Playlist && 
+                this.track.Playlist.Id == playlistId)
     }
     addTrackToQueue(track: Track)
     {

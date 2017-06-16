@@ -65,8 +65,8 @@ namespace PlayList.Controllers
         [Authorize("Bearer")]
         public void Put(int id, [FromBody]Track value)
         {
-            Playlist pl = _multiSourcePlaylistRepository.AttachPlaylist(value.playlist.id);
-            value.playlist = pl;
+            Playlist pl = _multiSourcePlaylistRepository.AttachPlaylist(value.Playlist.Id);
+            value.Playlist = pl;
             _multiSourcePlaylistRepository.PutTrack(id,value);
         }
 
@@ -77,14 +77,14 @@ namespace PlayList.Controllers
         {
             if(values != null && values.Any())
             {
-                long playlistId = values[0].playlist.id;
+                long playlistId = values[0].Playlist.Id;
                 int order = 0;
                 Playlist pl = _multiSourcePlaylistRepository.AttachPlaylist(playlistId);
                 foreach(Track track in values)
                 {
-                    track.playlist = pl;
-                    track.order = order;
-                    _multiSourcePlaylistRepository.PutTrack(track.id,track);
+                    track.Playlist = pl;
+                    track.Order = order;
+                    _multiSourcePlaylistRepository.PutTrack(track.Id,track);
                     ++order;
                 }
             }
@@ -115,24 +115,24 @@ namespace PlayList.Controllers
             //_logger.LogCritical("PÖÖÖÖÖÖÖ "+ JsonConvert.SerializeObject(someTrack));
             List<Track> temp = new List<Track>();
             if(allTracks != null)
-                temp = allTracks.Where(y=>y.playlist.id==someTrack.playlist.id).ToList();
+                temp = allTracks.Where(y=>y.Playlist.Id==someTrack.Playlist.Id).ToList();
             if(temp != null && temp.Any())
             {
-                lastOrder = temp.OrderByDescending(x => x.order).FirstOrDefault().order + 1;
+                lastOrder = temp.OrderByDescending(x => x.Order).FirstOrDefault().Order + 1;
             }
             Playlist pl = new Playlist();
             if(temp == null || !temp.Any())
             {
-                 pl = _multiSourcePlaylistRepository.AttachPlaylist(someTrack.playlist.id);
+                 pl = _multiSourcePlaylistRepository.AttachPlaylist(someTrack.Playlist.Id);
             }
             foreach(Track newtrack in values)
             {
-                newtrack.order = lastOrder;
+                newtrack.Order = lastOrder;
                 if(temp == null || !temp.Any())
                 {
-                    newtrack.playlist = pl;
+                    newtrack.Playlist = pl;
                 }
-                if(newtrack.type == 3)
+                if(newtrack.Type == 3)
                 {
                     //hae tässä kappale koneelta tai kaikki kappaleet kansiosta ja lisää ne
                     // miten kappaleitten nimet silloin kun lisätään kansiosta
@@ -147,8 +147,8 @@ namespace PlayList.Controllers
         public void Delete(int id)
         {
             var track = _multiSourcePlaylistRepository.GetTrack(id);
-            var address = track.address;
-            var type = track.type;
+            var address = track.Address;
+            var type = track.Type;
             _multiSourcePlaylistRepository.DeleteTrack(id);
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);

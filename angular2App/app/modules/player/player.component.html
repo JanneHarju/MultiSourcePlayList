@@ -3,8 +3,8 @@
     <div class="box-style">
         <a id="queue" [routerLink]="['/main/queue']" data-toggle="tooltip" title="Queue" class="queue pull-right control-button glyphicon glyphicon-th-list"></a>
         <div class="row playlistname" >
-            <div *ngIf="track && track.playlist">
-                {{track.playlist.name}}
+            <div *ngIf="track && track.Playlist">
+                {{track.Playlist.Name}}
             </div>
         </div>
         <div class="row">
@@ -33,7 +33,7 @@
             </iframe>-->
             <youtube-player
                 style="visibility: hidden"
-                [videoId]="track.address"
+                [videoId]="track.Address"
                 (ready)="savePlayer($event)"
                 (change)="onStateChange($event)"
                 width="1" height="40"
@@ -42,10 +42,10 @@
             <iframe id="spotify" (load)="onLoad(this)" [src]="track.address | safe" width="300" height="1" frameborder="0" allowtransparency="true"></iframe>
         </div>-->
         <!--style="visibility: hidden"--><!--[currentTime]="15" [duration]="{{duration}}" [currentTime]="{{progress}}" (loadedmetadata)="loadedmeadata()"-->
-            <audio (error)="error()" height="40" *ngIf="track.type == 3" style="visibility: hidden"  (ended)="onAudioEnded()" (loadedmetadata)="loadedmeadata()" id="audio1" [src]="localFileAddress(track) | safe" controls="" autoplay>
+            <audio (error)="error()" height="40" *ngIf="track.Type == 3" style="visibility: hidden"  (ended)="onAudioEnded()" (loadedmetadata)="loadedmeadata()" id="audio1" [src]="localFileAddress(track) | safe" controls="" autoplay>
             </audio>
         <div>
-            {{track.name}}
+            {{track.Name}}
         </div>
     </div>
 </div>

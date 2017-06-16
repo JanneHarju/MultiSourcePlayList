@@ -67,7 +67,7 @@ export class TrackService {
     update(track: Track): Promise<Track> {
 
         let headers = this.authService.initAuthHeaders();
-        const url = `${this.tracksUrl}/${track.id}`;
+        const url = `${this.tracksUrl}/${track.Id}`;
         return this.http
             .put(url, track, {headers: headers})
             .toPromise()

@@ -61,10 +61,10 @@ namespace PlayList.Controllers
             int lastOrder = 0;
             List<Track> temp = new List<Track>();
             if(allTracks != null)
-                temp = allTracks.Where(y=>y.playlist.id==id).ToList();
+                temp = allTracks.Where(y=>y.Playlist.Id==id).ToList();
             if(temp != null && temp.Any())
             {
-                lastOrder = temp.OrderByDescending(x => x.order).FirstOrDefault().order + 1;
+                lastOrder = temp.OrderByDescending(x => x.Order).FirstOrDefault().Order + 1;
             }
             
             //@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)
@@ -103,11 +103,11 @@ namespace PlayList.Controllers
                         [1]       
                         [1] crit: FileUploadController[0]
                         [1]       1*/
-                        fileTrack.address = filename;
-                        fileTrack.playlist = playlist;
-                        fileTrack.type = 3;
-                        fileTrack.order = lastOrder;
-                        fileTrack.name = getTrackName(fp);//hanki bändi ja kappale mp3 tiedoston metasta
+                        fileTrack.Address = filename;
+                        fileTrack.Playlist = playlist;
+                        fileTrack.Type = 3;
+                        fileTrack.Order = lastOrder;
+                        fileTrack.Name = getTrackName(fp);//hanki bändi ja kappale mp3 tiedoston metasta
                         _multiSourcePlaylistRepository.PostTrack(fileTrack);
                         ++lastOrder;
                     }

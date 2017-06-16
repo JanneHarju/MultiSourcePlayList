@@ -11,12 +11,12 @@
             
             <td class="tablerowdata" (click)="$event.dropdown || $event.addTrackToPlaylistclicked || $event.addTrackToQueueclicked || onSelect(track)" >
                 <div class="col-sm-1 logos" >
-                    <img *ngIf="track.type == 1" src="assets/YouTube-social-squircle_red_128px.png" data-toggle="tooltip" title="Track from YouTube" width="30" align="left">
-                    <img *ngIf="track.type == 2" src="assets/Spotify_Logo_RGB_Green.png" data-toggle="tooltip" title="Track from Spotify" width="30" align="left">
-                    <img *ngIf="track.type == 3" src="assets/128px-MP3_logo_white.png" data-toggle="tooltip" title="Local Mp3 file" width="30" align="left">
+                    <img *ngIf="track.Type == 1" src="assets/YouTube-social-squircle_red_128px.png" data-toggle="tooltip" title="Track from YouTube" width="30" align="left">
+                    <img *ngIf="track.Type == 2" src="assets/Spotify_Logo_RGB_Green.png" data-toggle="tooltip" title="Track from Spotify" width="30" align="left">
+                    <img *ngIf="track.Type == 3" src="assets/128px-MP3_logo_white.png" data-toggle="tooltip" title="Local Mp3 file" width="30" align="left">
                 </div>
                 <div class="col-sm-8 trackname">
-                    {{track.name}}
+                    {{track.Name}}
                 </div>
                 <div class="col-sm-3">
                     <div class="pull-right btn-group" role="group">
@@ -30,7 +30,7 @@
                                 <li role="separator" class="divider"></li>
                                 <li *ngFor="let playlist of playlists">
                                     <a (click)="$event.addTrackToPlaylistclicked = true; addTrackToPlaylist(playlist, track)">
-                                        {{playlist.name}}
+                                        {{playlist.Name}}
                                     </a>
                                 </li>
                             </ul>

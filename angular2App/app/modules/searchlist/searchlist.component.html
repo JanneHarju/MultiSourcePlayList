@@ -35,7 +35,7 @@ Spotify Search result for:  {{query}}
                         <li role="separator" class="divider"></li>
                         <li *ngFor="let playlist of playlists">
                             <a (click)="addSpotifyTrackToPlaylist(playlist, track)">
-                                {{playlist.name}}
+                                {{playlist.Name}}
                             </a>
                         </li>
                     </ul>
@@ -73,7 +73,7 @@ Youtube Search result for:  {{query}}
                         <li role="separator" class="divider"></li>
                         <li *ngFor="let playlist of playlists">
                             <a (click)="addVideoToPlaylist(playlist, video)">
-                                {{playlist.name}}
+                                {{playlist.Name}}
                             </a>
                         </li>
                     </ul>

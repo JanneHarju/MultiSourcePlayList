@@ -9,7 +9,7 @@
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
             <li *ngFor="let playlist of playlists">
                 <a (click)="addAllSpotifyTrackToPlaylist(playlist)">
-                    {{playlist.name}}
+                    {{playlist.Name}}
                 </a>
             </li>
         </ul>
@@ -57,7 +57,7 @@
                         <li role="separator" class="divider"></li>
                         <li *ngFor="let playlist of playlists">
                             <a (click)="addSpotifyTrackToPlaylist(playlist, track.track)">
-                                {{playlist.name}}
+                                {{playlist.Name}}
                             </a>
                         </li>
                     </ul>

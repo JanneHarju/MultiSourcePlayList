@@ -1,10 +1,10 @@
 import { Playlist } from './playlist';
 
 export class Track {
-  id: number;
-  playlist: Playlist;
-  address: string;
-  order: number;
-  type: number;
-  name: string;
+  Id: number;
+  Playlist: Playlist;
+  Address: string;
+  Order: number;
+  Type: number;
+  Name: string;
 }

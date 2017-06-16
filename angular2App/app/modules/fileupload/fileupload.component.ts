@@ -39,7 +39,7 @@ export class FileUploadComponent implements OnInit {
             let token = this.authService.getLocalToken();
             const event: UploadInput = {
                 type: 'uploadAll',
-                url: '/api/fileupload/'+this.currentPlaylist.id,
+                url: '/api/fileupload/'+this.currentPlaylist.Id,
                 method: 'POST',
                 fieldName: 'files',
                 headers: { 'Authorization': 'Bearer '+ token},
@@ -82,7 +82,7 @@ export class FileUploadComponent implements OnInit {
         let token = this.authService.getLocalToken();
         const event: UploadInput = {
             type: 'uploadAll',
-            url: '/api/fileupload/'+this.currentPlaylist.id,
+            url: '/api/fileupload/'+this.currentPlaylist.Id,
             fieldName: 'files',
             method: 'POST',
             headers: { 'Authorization': 'Bearer '+ token},

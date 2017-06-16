@@ -1,6 +1,6 @@
 export class Playlist {
-  id: number;
-  owner: number;
-  order: number;
-  name: string;
+  Id: number;
+  Owner: number;
+  Order: number;
+  Name: string;
 }

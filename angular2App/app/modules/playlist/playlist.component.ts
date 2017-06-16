@@ -59,6 +59,7 @@ export class PlaylistComponent implements OnInit {
             .then((playlists : Playlist[])=> 
             {
                 this.playlists = playlists;
+                console.log(playlists);
             })
             .catch(err =>
             {
@@ -92,18 +93,18 @@ export class PlaylistComponent implements OnInit {
     }
     delete()
     {
-        this.playlistService.delete(this.removetarget.id).then(result =>
+        this.playlistService.delete(this.removetarget.Id).then(result =>
         {
-            if(this.selectedPlaylist.id == this.removetarget.id)
+            if(this.selectedPlaylist.Id == this.removetarget.Id)
             {
-                let selectedPlaylist = this.playlists.find(x=>x.order>this.removetarget.order);
+                let selectedPlaylist = this.playlists.find(x=>x.Order>this.removetarget.Order);
                 if(!selectedPlaylist)
                 {
-                    selectedPlaylist = this.playlists.find(x=>x.order<this.removetarget.order);
+                    selectedPlaylist = this.playlists.find(x=>x.Order<this.removetarget.Order);
                 }
-                this.router.navigate(['/main/tracklist', selectedPlaylist.id]);
+                this.router.navigate(['/main/tracklist', selectedPlaylist.Id]);
             }
-            this.playlists.splice(this.playlists.findIndex(pl=>pl.id == this.removetarget.id),1);
+            this.playlists.splice(this.playlists.findIndex(pl=>pl.Id == this.removetarget.Id),1);
         });
     }
     setRenameTarget(playlist: Playlist)
@@ -112,7 +113,7 @@ export class PlaylistComponent implements OnInit {
     }
     rename(newName: string)
     {
-        this.renametarget.name = newName;
+        this.renametarget.Name = newName;
         this.playlistService.update(this.renametarget).then(plaa =>
         {
         });
@@ -125,7 +126,7 @@ export class PlaylistComponent implements OnInit {
     {
         this.playlistService.shuffle(this.shuffletarget).then(plaa =>
         {
-            this.router.navigate(['/main/tracklist', this.shuffletarget.id]);
+            this.router.navigate(['/main/tracklist', this.shuffletarget.Id]);
         });
     }
 }

@@ -15,11 +15,11 @@ module.exports = {
     entry: {
         'vendor': './angular2App/vendor.ts',
         'polyfills': './angular2App/polyfills.ts',
-        'app': './angular2App/main-aot.ts' // AoT compilation
+        'app': './angular2App/main.ts' // AoT compilation
     },
 
     output: {
-        path: './wwwroot/',
+        path: '/wwwroot/',
         filename: 'dist/[name].[hash].bundle.js',
         chunkFilename: 'dist/[id].[hash].chunk.js',
         publicPath: '/'

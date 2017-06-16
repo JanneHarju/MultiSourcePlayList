@@ -167,7 +167,7 @@ export class SearchlistComponent implements OnInit {
      }
      selectCurrentTrack(track: Track)
      {
-        let temptrack = this.spotifyTracks.find(x=>x.uri == track.address);
+        let temptrack = this.spotifyTracks.find(x=>x.uri == track.Address);
         if(temptrack)
         {
             if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempSpotifyPlaylistId))
@@ -183,7 +183,7 @@ export class SearchlistComponent implements OnInit {
         }
         else
         {
-            let tempvideo = this.youtubeVideos.find(x=>x.id.videoId == track.address);
+            let tempvideo = this.youtubeVideos.find(x=>x.id.videoId == track.Address);
             if(tempvideo)
             {
                 if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempYoutubePlaylistId))
@@ -203,10 +203,10 @@ export class SearchlistComponent implements OnInit {
      {
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
-        newTrack.address = track.uri;
-        newTrack.name = track.artists[0].name +" - "+ track.name;
-        newTrack.type = 2;
-        newTrack.playlist = playlist;
+        newTrack.Address = track.uri;
+        newTrack.Name = track.artists[0].name +" - "+ track.name;
+        newTrack.Type = 2;
+        newTrack.Playlist = playlist;
         trackList.push(newTrack);
         this.trackService.createMany(trackList).then(ret =>
         {
@@ -217,10 +217,10 @@ export class SearchlistComponent implements OnInit {
      {
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
-        newTrack.address = video.id.videoId;
-        newTrack.name = video.snippet.title;
-        newTrack.type = 1;
-        newTrack.playlist = playlist;
+        newTrack.Address = video.id.videoId;
+        newTrack.Name = video.snippet.title;
+        newTrack.Type = 1;
+        newTrack.Playlist = playlist;
         trackList.push(newTrack);
         this.trackService.createMany(trackList).then(ret =>
         {
@@ -237,22 +237,22 @@ export class SearchlistComponent implements OnInit {
         let trackList: Track[] = [];
         let order: number = 0;
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = this.tempSpotifyPlaylistId;
-        newPlaylist.name = "Spotify Search : "+this.query;
+        newPlaylist.Id = this.tempSpotifyPlaylistId;
+        newPlaylist.Name = "Spotify Search : "+this.query;
         this.spotifyTracks.forEach(st =>
         {
 
             let newTrack: Track = new Track();
-            newTrack.address = st.uri;
-            newTrack.name = st.artists[0].name +" - "+ st.name;
-            newTrack.type = 2;
-            newTrack.playlist = newPlaylist;
-            newTrack.order = order;
+            newTrack.Address = st.uri;
+            newTrack.Name = st.artists[0].name +" - "+ st.name;
+            newTrack.Type = 2;
+            newTrack.Playlist = newPlaylist;
+            newTrack.Order = order;
             ++order;
             trackList.push(newTrack);
         });
         this.playerService.setTrackList(trackList);
-        let tempTrack = trackList.find(tr => tr.address == track.uri);
+        let tempTrack = trackList.find(tr => tr.Address == track.uri);
         this.playerService.setTrack(tempTrack);
 
     }
@@ -261,50 +261,50 @@ export class SearchlistComponent implements OnInit {
         let trackList: Track[] = [];
         let order: number = 0;
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = this.tempYoutubePlaylistId;
-        newPlaylist.name = "Youtube Search : "+this.query;
+        newPlaylist.Id = this.tempYoutubePlaylistId;
+        newPlaylist.Name = "Youtube Search : "+this.query;
         this.youtubeVideos.forEach(ytv =>
         {
 
             let newTrack: Track = new Track();
-            newTrack.address = ytv.id.videoId;
-            newTrack.id = 99999;
-            newTrack.name = ytv.snippet.title
-            newTrack.type = 1;
-            newTrack.playlist = newPlaylist;
-            newTrack.order = order;
+            newTrack.Address = ytv.id.videoId;
+            newTrack.Id = 99999;
+            newTrack.Name = ytv.snippet.title
+            newTrack.Type = 1;
+            newTrack.Playlist = newPlaylist;
+            newTrack.Order = order;
             ++order;
             trackList.push(newTrack);
         });
         this.playerService.setTrackList(trackList);
-        let tempTrack = trackList.find(tr => tr.address == video.id.videoId);
+        let tempTrack = trackList.find(tr => tr.Address == video.id.videoId);
         this.playerService.setTrack(tempTrack);
     }
     addSpotifyToQueue(track: SpotifyTrack)
     {
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = this.tempSpotifyPlaylistId;
-        newPlaylist.name = "Spotify Search : "+this.query;
+        newPlaylist.Id = this.tempSpotifyPlaylistId;
+        newPlaylist.Name = "Spotify Search : "+this.query;
         let newTrack: Track = new Track();
-            newTrack.address = track.uri;
-            newTrack.name = track.artists[0].name +" - "+ track.name;
-            newTrack.type = 2;
-            newTrack.playlist = newPlaylist;
-            newTrack.order = 0;
+            newTrack.Address = track.uri;
+            newTrack.Name = track.artists[0].name +" - "+ track.name;
+            newTrack.Type = 2;
+            newTrack.Playlist = newPlaylist;
+            newTrack.Order = 0;
         this.playerService.addTrackToQueue(newTrack);
     }
     addYoutubeToQueue(video: YoutubeVideo)
     {
         let newPlaylist: Playlist = new Playlist();
-        newPlaylist.id = this.tempSpotifyPlaylistId;
-        newPlaylist.name = "YouTube Search : "+this.query;
+        newPlaylist.Id = this.tempSpotifyPlaylistId;
+        newPlaylist.Name = "YouTube Search : "+this.query;
         let newTrack: Track = new Track();
-            newTrack.address = video.id.videoId;
-            newTrack.name = video.snippet.title;
-            newTrack.id = 99999;
-            newTrack.type = 1;
-            newTrack.playlist = newPlaylist;
-            newTrack.order = 0;
+            newTrack.Address = video.id.videoId;
+            newTrack.Name = video.snippet.title;
+            newTrack.Id = 99999;
+            newTrack.Type = 1;
+            newTrack.Playlist = newPlaylist;
+            newTrack.Order = 0;
         this.playerService.addTrackToQueue(newTrack);
     }
 }
