@@ -9,5 +9,4 @@ declare var module: any;
 if (module.hot) {
     module.hot.accept();
 }
-
 platformBrowserDynamic().bootstrapModule(AppModule);
