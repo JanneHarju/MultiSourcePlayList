@@ -6,7 +6,6 @@ import { HttpModule }    from '@angular/http';
 import { Configuration } from './app.constants';
 import { AppRoutingModule } from './app-routing.module';
 
-
 import { YoutubePlayerModule } from 'ng2-youtube-player';
 import { DndModule } from 'ng2-dnd';
 
