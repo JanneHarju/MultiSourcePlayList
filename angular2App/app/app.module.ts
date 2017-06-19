@@ -39,6 +39,7 @@ import { MusixMatchAPIService } from './services/musixmatch.service';
 import { PlayerService } from './services/player.service';
 import { BandcampService } from './services/bandcamp.service';
 import { AuthService } from "./services/auth.service";
+import { LoadingService } from "./services/loading.service";
 import { AppComponent }  from './app.component';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { PopupComponent} from './modules/shared/popup/popup.component';
@@ -81,6 +82,7 @@ import './rxjs-extensions';
     PlaylistService,
     PlayerService,
     AuthService,
+    LoadingService,
     BandcampService,
     SpotifyService,
     {
@@ -88,6 +90,7 @@ import './rxjs-extensions';
         useValue: {
             clientId: '5ab10cb4fa9045fca2b92fcd0a97545c',
             redirectUri: 'http://muusiple.azurewebsites.net/callback.html',
+            //redirectUri: 'http://localhost:8080/callback.html',
             scope: ['user-read-private',
             'user-modify-playback-state'],
             // If you already have an authToken
@@ -100,6 +103,5 @@ import './rxjs-extensions';
   ],
   bootstrap: [ AppComponent ]
 })
-
 
 export class AppModule { }

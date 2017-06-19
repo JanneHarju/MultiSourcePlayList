@@ -68,7 +68,6 @@ export class PlayerService {
             if(this.tracklist.find(x=>x.Id == this.track.Id))
             {
                 this.lastOrder = this.track.Order;
-                console.log(this.lastOrder);
             }
             this.setTrack(this.queueTracklist.shift());
             //this.setQueue(this.queueTracklist);
@@ -78,7 +77,6 @@ export class PlayerService {
             if(!this.shuffle)
             {
             
-                console.log(this.lastOrder);
                 let order = this.lastOrder == -1 ? this.track.Order : this.lastOrder;
                 let nextTracks = this.tracklist.filter(x=>x.Order > order);
                 if(nextTracks != null && nextTracks.length > 0)

@@ -5,6 +5,7 @@ import { SpotifyService } from '../../services/spotify.service';
 import { Playlist } from '../../models/playlist'
 import { SpotifyPlaylist } from '../../models/spotifyplaylist';
 import { AuthService } from '../../services/auth.service';
+import { LoadingService }         from '../../services/loading.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -18,7 +19,10 @@ export class PlaylistComponent implements OnInit {
         private playlistService: PlaylistService,
         private spotifyService: SpotifyService,
         private authService: AuthService,
-        private router: Router) { }
+        private router: Router,
+        private loadingService: LoadingService)
+    { }
+
     playlists: Playlist[] = [];
     spotifyplaylists: SpotifyPlaylist[] = [];
     selectedPlaylist: Playlist = new Playlist();
@@ -55,11 +59,11 @@ export class PlaylistComponent implements OnInit {
         }
     }
     getPlaylists(): void {
+        
         this.playlistService.getUsersPlaylists()
             .then((playlists : Playlist[])=> 
             {
                 this.playlists = playlists;
-                console.log(playlists);
             })
             .catch(err =>
             {
@@ -75,12 +79,18 @@ export class PlaylistComponent implements OnInit {
                 .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
     }
     add(name: string): void {
+        this.loadingService.setLoading(true);
         name = name.trim();
         if (!name) { return; }
         this.playlistService.create(name)
             .then((playlist : Playlist) => {
-            this.playlists.push(playlist);
-            this.getPlaylists();
+                this.playlists.push(playlist);
+                this.getPlaylists();
+
+                this.loadingService.setLoading(false);
+            }).catch(err=>
+            {
+                this.loadingService.setLoading(false);
             });
     }
     selectPlaylist(playlist: Playlist)
@@ -93,6 +103,8 @@ export class PlaylistComponent implements OnInit {
     }
     delete()
     {
+
+        this.loadingService.setLoading(true);
         this.playlistService.delete(this.removetarget.Id).then(result =>
         {
             if(this.selectedPlaylist.Id == this.removetarget.Id)
@@ -105,6 +117,10 @@ export class PlaylistComponent implements OnInit {
                 this.router.navigate(['/main/tracklist', selectedPlaylist.Id]);
             }
             this.playlists.splice(this.playlists.findIndex(pl=>pl.Id == this.removetarget.Id),1);
+            this.loadingService.setLoading(false);
+        }).catch(err=>
+        {
+            this.loadingService.setLoading(false);
         });
     }
     setRenameTarget(playlist: Playlist)
@@ -113,9 +129,16 @@ export class PlaylistComponent implements OnInit {
     }
     rename(newName: string)
     {
+
+        this.loadingService.setLoading(true);
         this.renametarget.Name = newName;
         this.playlistService.update(this.renametarget).then(plaa =>
         {
+            this.loadingService.setLoading(false);
+        })
+        .catch(err=>
+        {
+            this.loadingService.setLoading(false);
         });
     }
     setShuffleTarget(playlist: Playlist)
@@ -124,9 +147,15 @@ export class PlaylistComponent implements OnInit {
     }
     shuffle()
     {
+        this.loadingService.setLoading(true);
         this.playlistService.shuffle(this.shuffletarget).then(plaa =>
         {
             this.router.navigate(['/main/tracklist', this.shuffletarget.Id]);
+            this.loadingService.setLoading(false);
+        })
+        .catch(err=>
+        {
+            this.loadingService.setLoading(false);
         });
     }
 }

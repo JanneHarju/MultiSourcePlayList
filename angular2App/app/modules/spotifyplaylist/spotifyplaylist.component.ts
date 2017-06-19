@@ -13,6 +13,7 @@ import { SpotifyPlaylistInfo } from '../../models/spotifyplaylistinfo';
 import { SpotifyTracklist } from '../../models/spotifytracklist';
 import { TrackService }         from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
+import { LoadingService }         from '../../services/loading.service';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 
@@ -31,6 +32,8 @@ export class SpotifyPlaylistComponent implements OnInit {
     subscriptionTrack: Subscription;
     subscriptionPlaylistsModified: Subscription;
     tempPlaylistId: number = -1;
+    numberOfParts: number = 0;
+    numberOfLoadedParts: number = 0;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -39,7 +42,8 @@ export class SpotifyPlaylistComponent implements OnInit {
         private playlistService: PlaylistService,
         private trackService: TrackService,
         private authService: AuthService,
-        private playerService: PlayerService
+        private playerService: PlayerService,
+        private loadingService: LoadingService
         ) { }
 
 
@@ -52,10 +56,14 @@ export class SpotifyPlaylistComponent implements OnInit {
         this.spotifyTracks  = [];
         
         this.route.params
-            .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'],params['id2'],
+            .switchMap((params: Params) => 
+            {
+                setTimeout(()=> this.loadingService.setLoading(true));
+                return this.spotifyService.getPlaylistTracks(params['id'],params['id2'],
                 {
                     limit: limit
-                }))
+                });
+            })
             .subscribe((tracklist: SpotifyTracklist) => 
             {
                 this.spotifyTracks  = [];
@@ -65,8 +73,15 @@ export class SpotifyPlaylistComponent implements OnInit {
                 let promises = [],
                 total = tracklist.total,
                 offset = tracklist.offset;
+                this.numberOfParts = 0;
+                this.numberOfLoadedParts = 0;
+                if(total < limit + offset)
+                {
+                    setTimeout(()=> this.loadingService.setLoading(false));
+                }
                 while(total > limit + offset)
                 {
+                    ++this.numberOfParts;
                     this.route.params
                     .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'],params['id2'],
                         {
@@ -75,11 +90,24 @@ export class SpotifyPlaylistComponent implements OnInit {
                         }))
                     .subscribe((innerResult: SpotifyTracklist) => 
                     {
+                        ++this.numberOfLoadedParts;
                         this.spotifyTracks = this.spotifyTracks.concat(innerResult.items.filter(tra => !tra.is_local && tra.track));
                         this.selectCurrentTrack(this.playerService.track);
+                        //console.log("parts : "+this.numberOfParts + "   Loads : "+this.numberOfLoadedParts);
+                        this.loadingService.setLoading(false);
+                        /*if(this.numberOfParts <= this.numberOfLoadedParts)
+                        {
+                            this.loadingService.setLoading(false);
+                        }*/
+                    },error=>
+                    {
+                        this.loadingService.setLoading(false);
                     });
                     offset += limit;
                 }
+            },error=>
+            {
+                this.loadingService.setLoading(false);
             });
         this.route.params
             .switchMap((params: Params) => this.spotifyService.getPlaylistInfo(params['id'],params['id2']))
@@ -134,6 +162,7 @@ export class SpotifyPlaylistComponent implements OnInit {
      }
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
+        this.loadingService.setLoading(true);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
         newTrack.Address = track.uri;
@@ -143,11 +172,16 @@ export class SpotifyPlaylistComponent implements OnInit {
         trackList.push(newTrack);
         this.trackService.createMany(trackList).then(ret =>
         {
-
+            this.loadingService.setLoading(false);
+        })
+        .catch(err=>
+        {
+            this.loadingService.setLoading(false);
         });
      }
      addAllSpotifyTrackToPlaylist(playlist: Playlist)
      {
+        this.loadingService.setLoading(true);
         let trackList: Track[] = [];
         this.spotifyTracks.forEach(st =>
         {
@@ -161,7 +195,11 @@ export class SpotifyPlaylistComponent implements OnInit {
         });
         this.trackService.createMany(trackList).then(ret =>
         {
-            alert("All tracks added to :" +playlist.Name);
+            this.loadingService.setLoading(false);
+        })
+        .catch(err=>
+        {
+            this.loadingService.setLoading(false);
         });
      }
     onSpotifySelect(track: SpotifyTrack)

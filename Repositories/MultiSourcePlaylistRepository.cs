@@ -140,6 +140,11 @@ namespace PlayList.Repositories
             _context.SaveChanges();
         }
 
+        public void PostManyTracks(List<Track> tracks)
+        {
+            _context.Tracks.AddRange(tracks);
+            _context.SaveChanges();
+        }
         public void PostPlaylist(Playlist playlist)
         {
             _context.Playlists.Add(playlist);
@@ -161,6 +166,12 @@ namespace PlayList.Repositories
         {
             
             _context.Tracks.Update(track);
+            _context.SaveChanges();
+        }
+
+        public void PutManyTracks(long id, List<Track> tracks)
+        {
+            _context.Tracks.UpdateRange(tracks);
             _context.SaveChanges();
         }
         public void PutPlaylist(long id, [FromBody] Playlist playlist)

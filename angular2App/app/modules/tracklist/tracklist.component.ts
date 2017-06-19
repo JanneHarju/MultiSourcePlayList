@@ -5,6 +5,7 @@ import { PlayerService } from '../../services/player.service';
 import { PlaylistService } from '../../services/playlist.service';
 import { AuthService } from '../../services/auth.service';
 import { MusixMatchAPIService } from '../../services/musixmatch.service';
+import { LoadingService }         from '../../services/loading.service';
 import { Track } from '../../models/track';
 import { Playlist } from '../../models/playlist';
 import { MusixMatchLyric } from '../../models/musixmatchlyric';
@@ -36,21 +37,27 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     playlists: Playlist[] = [];
 
     constructor(
-    private trackService: TrackService,
-    private playerService: PlayerService,
-    private playlistService: PlaylistService,
-    private musixmatchService: MusixMatchAPIService,
-    private authService: AuthService,
-    private route: ActivatedRoute,
-    private renderer: Renderer,
-    private st: SimpleTimer,
-    private el: ElementRef,
-    private router: Router) { }
+        private trackService: TrackService,
+        private playerService: PlayerService,
+        private playlistService: PlaylistService,
+        private musixmatchService: MusixMatchAPIService,
+        private authService: AuthService,
+        private route: ActivatedRoute,
+        private renderer: Renderer,
+        private st: SimpleTimer,
+        private el: ElementRef,
+        private router: Router,
+        private loadingService: LoadingService)
+    { }
 
     ngOnInit() {
         this.getPlaylistTracks();
+
         this.route.params
-            .switchMap((params: Params) => this.playlistService.getPlaylist(+params['id']))
+            .switchMap((params: Params) => 
+            {
+                return this.playlistService.getPlaylist(+params['id']);
+            })
             .subscribe((playlist: Playlist) => 
             {
                 this.currrentPlaylist = playlist;
@@ -58,9 +65,6 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
         {
             this.selectCurrentTrack(track);
-        },error=>
-        {
-            //DO something with error info
         });
 
         this.getUsersPlaylistsasync();
@@ -72,7 +76,11 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      getPlaylistTracks()
      {
         this.route.params
-            .switchMap((params: Params) => this.trackService.getPlaylistTracks(+params['id']))
+            .switchMap((params: Params) => 
+            {
+                setTimeout(()=> this.loadingService.setLoading(true));
+                return this.trackService.getPlaylistTracks(+params['id']);
+            })
             .subscribe((tracklist: Track[]) => 
             {
                 this.tracklist = tracklist;
@@ -85,6 +93,10 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.playerService.setCurrentTrackOrder();
                     }
                 }
+                setTimeout(()=> this.loadingService.setLoading(false));
+            },error =>
+            {
+                setTimeout(()=> this.loadingService.setLoading(false));
             });
      }
      getUsersPlaylists()
@@ -123,7 +135,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      }
      selectCurrentTrack(track: Track)
      {
-         if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tracklist[0].Playlist.Id))
+         if(this.tracklist[0] && this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tracklist[0].Playlist.Id))
          {
             let temptrack = this.tracklist.find(x=>x.Address == track.Address);
             if(temptrack)
@@ -145,12 +157,18 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     
     delete(track: Track)
     {
+        this.loadingService.setLoading(true);
         this.trackService
             .delete(track.Id)
             .then(() => {
                 this.tracklist = this.tracklist.filter(h => h !== track);
                 if (this.currentTrack === track) { this.currentTrack = null; }
                 this.ngOnInit();
+                this.loadingService.setLoading(false);
+            })
+            .catch(err=>
+            {
+                this.loadingService.setLoading(false);
             });
     }
     lyrics(track: Track) {
@@ -167,15 +185,22 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.lyricImageUrl = lyrics.pixel_tracking_url;
                 }
                 else
-                    this.lyric = "Lyrics dosen't found.";
+                    this.lyric = "Lyrics could not be found.";
             });
     }
     orderedTrack()
     {
+
+        this.loadingService.setLoading(true);
         this.trackService
             .updatePlaylistOrder(this.tracklist)
             .then(() => {
+                this.loadingService.setLoading(false);
                 this.getPlaylistTracks();
+            })
+            .catch(error =>
+            {
+                this.loadingService.setLoading(false);
             });
     }
     loadComplited(e: any)

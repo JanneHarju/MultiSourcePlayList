@@ -25,10 +25,12 @@ namespace PlayList.Repositories
         User GetUser(long id);
         List<User> GetAllUsers();
         void PostTrack(Track track);
+        void PostManyTracks(List<Track> tracks);
         void PostPlaylist(Playlist playlist);
         void PostUser(User user);
         Playlist AttachPlaylist(long id);
         void PutTrack(long id, [FromBody] Track track);
+        void PutManyTracks(long id, List<Track> tracks);
         void PutPlaylist(long id, [FromBody] Playlist playlist);
         void PutUser(long id, [FromBody] User user);
     }

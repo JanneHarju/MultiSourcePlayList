@@ -11,6 +11,7 @@ import { Track } from '../../models/track'
 import { TrackService }         from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { BandcampService, BandcampOptions } from '../..//services/bandcamp.service';
+import { LoadingService }         from '../../services/loading.service';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
@@ -51,7 +52,8 @@ export class SearchlistComponent implements OnInit {
         private playlistService: PlaylistService,
         private trackService: TrackService,
         private bandcampService: BandcampService,
-        private playerService: PlayerService
+        private playerService: PlayerService,
+        private loadingService: LoadingService
         ) { }
 
 
@@ -201,6 +203,8 @@ export class SearchlistComponent implements OnInit {
      }
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
      {
+
+        this.loadingService.setLoading(true);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
         newTrack.Address = track.uri;
@@ -210,11 +214,17 @@ export class SearchlistComponent implements OnInit {
         trackList.push(newTrack);
         this.trackService.createMany(trackList).then(ret =>
         {
+            this.loadingService.setLoading(false);
 
+        })
+        .catch(err=>
+        {
+            this.loadingService.setLoading(false);
         });
      }
      addVideoToPlaylist(playlist: Playlist, video: YoutubeVideo)
      {
+        this.loadingService.setLoading(true);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
         newTrack.Address = video.id.videoId;
@@ -224,7 +234,12 @@ export class SearchlistComponent implements OnInit {
         trackList.push(newTrack);
         this.trackService.createMany(trackList).then(ret =>
         {
+            this.loadingService.setLoading(false);
 
+        })
+        .catch(err=>
+        {
+            this.loadingService.setLoading(false);
         });
      }
      /*search(q: string): void {

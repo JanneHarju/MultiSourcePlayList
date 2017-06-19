@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { UploadOutput, UploadInput, UploadFile, humanizeBytes } from 'ngx-uploader';
 import { AuthService } from "../../services/auth.service";
+import { LoadingService }         from '../../services/loading.service';
 import { Playlist } from '../../models/playlist';
 
 @Component({
@@ -22,7 +23,8 @@ export class FileUploadComponent implements OnInit {
     @Output() loadComplited: EventEmitter<any> = new EventEmitter();
     constructor(
         private authService : AuthService,
-        private router: Router
+        private router: Router,
+        private loadingService: LoadingService
     )
     {
         this.files = []; // local uploading files array
@@ -36,6 +38,7 @@ export class FileUploadComponent implements OnInit {
 
         if (output.type === 'allAddedToQueue') { // when all files added in queue
         // uncomment this if you want to auto upload files when added
+            this.loadingService.setLoading(true);
             let token = this.authService.getLocalToken();
             const event: UploadInput = {
                 type: 'uploadAll',
@@ -74,6 +77,7 @@ export class FileUploadComponent implements OnInit {
                     var message = "No more disc space for you anymore";
                     alert(message);
                 }
+                this.loadingService.setLoading(false);
                 this.loadComplited.emit(null);
             }
         }

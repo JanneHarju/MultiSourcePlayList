@@ -7,7 +7,8 @@ import '../style/app.css';
   selector: 'my-app',
   templateUrl: 'app.component.html',
   encapsulation: ViewEncapsulation.None,
-  styles: [ require('./app.component.less') ]
+  styles: [ require('./app.component.less'),
+            require('./app2.component.css') ]
 })
 export class AppComponent
 {

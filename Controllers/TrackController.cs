@@ -80,13 +80,15 @@ namespace PlayList.Controllers
                 long playlistId = values[0].Playlist.Id;
                 int order = 0;
                 Playlist pl = _multiSourcePlaylistRepository.AttachPlaylist(playlistId);
+                List<Track> updateTracks = new List<Track>();
                 foreach(Track track in values)
                 {
                     track.Playlist = pl;
                     track.Order = order;
-                    _multiSourcePlaylistRepository.PutTrack(track.Id,track);
                     ++order;
+                    updateTracks.Add(track);
                 }
+                _multiSourcePlaylistRepository.PutManyTracks(0,updateTracks);
             }
         }
         // POST api/values
@@ -125,6 +127,8 @@ namespace PlayList.Controllers
             {
                  pl = _multiSourcePlaylistRepository.AttachPlaylist(someTrack.Playlist.Id);
             }
+            List<Track> newTracks = new List<Track>();
+
             foreach(Track newtrack in values)
             {
                 newtrack.Order = lastOrder;
@@ -137,9 +141,10 @@ namespace PlayList.Controllers
                     //hae tässä kappale koneelta tai kaikki kappaleet kansiosta ja lisää ne
                     // miten kappaleitten nimet silloin kun lisätään kansiosta
                 }
-                _multiSourcePlaylistRepository.PostTrack(newtrack);
                 ++lastOrder;
+                newTracks.Add(newtrack);
             }
+            _multiSourcePlaylistRepository.PostManyTracks(newTracks);
         }
         // DELETE api/values/5
         [HttpDelete("{id}")]

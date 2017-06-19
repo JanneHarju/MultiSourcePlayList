@@ -244,7 +244,6 @@ export class SpotifyService {
         .toPromise()
         .then(res => 
         {
-            console.log(res);
             return res.json() as SpotifyTracklist;
         })
         .catch(this.handlePromiseError);
