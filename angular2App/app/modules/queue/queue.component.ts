@@ -5,7 +5,7 @@ import { PlayerService } from '../../services/player.service';
 @Component({
     selector: 'my-queue',
     templateUrl: 'queue.component.html',
-    styles: [ require('./queue.component.less') ],
+    styleUrls: [ './queue.component.less' ],
 })
 
 export class QueueComponent implements OnInit {

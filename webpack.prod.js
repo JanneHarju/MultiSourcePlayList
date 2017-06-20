@@ -6,7 +6,11 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 var helpers = require('./webpack.helpers');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const extractLess = new ExtractTextPlugin({
+    filename: "[name].[contenthash].css"
+});
 
 console.log('@@@@@@@@@ USING PRODUCTION @@@@@@@@@@@@@@@');
 
@@ -15,11 +19,11 @@ module.exports = {
     entry: {
         'vendor': './angular2App/vendor.ts',
         'polyfills': './angular2App/polyfills.ts',
-        'app': './angular2App/main.ts' // AoT compilation
+        'app': './angular2App/main-aot.ts' // AoT compilation
     },
 
     output: {
-        path: '/wwwroot/',
+        path: __dirname +'/wwwroot/',
         filename: 'dist/[name].[hash].bundle.js',
         chunkFilename: 'dist/[id].[hash].chunk.js',
         publicPath: '/'
@@ -52,10 +56,6 @@ module.exports = {
                 test: /favicon.ico$/,
                 loader: 'file-loader?name=/[name].[ext]'
             },
-            { 
-                test: /.less$/, 
-                exclude: /node_modules/, 
-                loader: 'raw-loader!less-loader' },
             {
                 test: /\.css$/,
                 loader: 'to-string-loader!css-loader'
@@ -65,6 +65,13 @@ module.exports = {
                 exclude: /node_modules/,
                 loaders: ['raw-loader', 'css-loader', 'sass-loader']
             },
+            { 
+                test: /.less$/,
+                loader: ExtractTextPlugin.extract({
+                        fallbackLoader: 'style-loader',
+                        loader: "css-loader!less-loader",
+                }),
+                exclude: /node_modules/,},
             {
                 test: /\.html$/,
                 loader: 'raw-loader'
@@ -74,6 +81,7 @@ module.exports = {
     },
 
     plugins: [
+        extractLess,
         new CleanWebpackPlugin(
             [
                 './wwwroot/dist',
@@ -105,9 +113,6 @@ module.exports = {
             inject: 'body',
             template: 'angular2App/callback.html'
         }),
-        new CopyWebpackPlugin([
-            { from: './angular2App/login.css', to: 'assets/', flatten: true }
-        ]),
         new CopyWebpackPlugin([
             { from: './angular2App/images/*.*', to: 'assets/', flatten: true }
         ])

@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
   selector: 'my-main',
   templateUrl: 'main.component.html',
-  styles: [require('./main.component.less') ],
+  styleUrls: [ './main.component.less' ]
   
 })
 export class MainComponent implements OnInit

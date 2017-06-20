@@ -8,7 +8,7 @@ import { Playlist } from '../../models/playlist';
 @Component({
     selector: 'my-fileupload',
     templateUrl: 'fileupload.component.html',
-    styles: [ require('./fileupload.component.less') ]
+    styleUrls: [ './fileupload.component.less' ]
 })
 
 export class FileUploadComponent implements OnInit {

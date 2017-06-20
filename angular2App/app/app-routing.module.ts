@@ -12,8 +12,6 @@ import { UserInfoComponent } from './modules/userinfo/userInfo.component';
 import { QueueComponent } from './modules/queue/queue.component';
 import { AuthService} from './services/auth.service';
 
-import { PopupComponent} from './modules/shared/popup/popup.component';
-
 const routes: Routes = [
     { path: "", redirectTo: "login", pathMatch: "full" },
     { path: 'login',  component: LoginComponent },

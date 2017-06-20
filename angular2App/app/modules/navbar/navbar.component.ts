@@ -9,7 +9,7 @@ import { UserInfo } from '../../models/userInfo';
 @Component({
     selector: 'my-navbar',
     templateUrl: 'navbar.component.html',
-    styles: [ require('./navbar.component.less') ]
+    styleUrls: [ './navbar.component.less' ]
 })
 
 export class NavbarComponent implements OnInit {

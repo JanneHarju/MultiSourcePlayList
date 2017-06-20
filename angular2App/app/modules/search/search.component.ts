@@ -5,7 +5,7 @@ import { Router }                 from '@angular/router';
 @Component({
     selector: 'my-search',
     templateUrl: 'search.component.html',
-    styles: [ require('./search.component.less') ],
+    styleUrls: [ './search.component.less' ],
 })
 
 export class SearchComponent implements OnInit {

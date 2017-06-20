@@ -29,7 +29,7 @@ declare function search(params: any, cb: any) : Observable<any>;*/
 @Component({
     selector: 'my-searchlist',
     templateUrl: 'searchlist.component.html',
-    styles: [ require('./searchlist.component.less') ],
+    styleUrls: [ './searchlist.component.less' ],
 })
 
 export class SearchlistComponent implements OnInit {

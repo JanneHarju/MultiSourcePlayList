@@ -41,7 +41,6 @@ import { AuthService } from "./services/auth.service";
 import { LoadingService } from "./services/loading.service";
 import { AppComponent }  from './app.component';
 import { SimpleTimer } from 'ng2-simple-timer';
-import { PopupComponent} from './modules/shared/popup/popup.component';
 import './rxjs-extensions';
 
 @NgModule({
@@ -66,7 +65,6 @@ import './rxjs-extensions';
     SpotifyPlaylistComponent,
     SpotifyAlbumComponent,
     SpotifyArtistComponent,
-    PopupComponent,
     NavbarComponent,
     LoginComponent,
     FileUploadComponent,

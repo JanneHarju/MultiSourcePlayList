@@ -7,13 +7,13 @@ import { User } from '../../models/user';
 @Component({
     selector: "my-login",
     templateUrl: 'login.component.html',
-    styles: [ require('./login.component.less') ]
+    styleUrls: [ './login.component.less' ]
 })
 
 export class LoginComponent implements OnInit {
 
-    private loginUser: User;
-    private register: boolean;
+    public loginUser: User;
+    public register: boolean;
     rememberMe: boolean = false;
     //private postStream: Subscription;
 

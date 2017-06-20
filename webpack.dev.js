@@ -120,6 +120,7 @@ module.exports = {
         exprContextCritical: false
     },
     plugins: [
+        
         new webpack.HotModuleReplacementPlugin(),
         new webpack.optimize.CommonsChunkPlugin({ name: ['app', 'vendor', 'polyfills']}),
         new webpack.ProvidePlugin({   
@@ -145,9 +146,6 @@ module.exports = {
             inject: 'body',
             template: 'angular2App/callback.html'
         }),
-        new CopyWebpackPlugin([
-            { from: './angular2App/login.css', to: 'assets/', flatten: true }
-        ]),
         new CopyWebpackPlugin([
             { from: './angular2App/images/*.*', to: 'assets/', flatten: true }
         ])
