@@ -7,21 +7,22 @@
     <tbody>
         <tr *ngFor="let track of tracklist; let i = index" 
                 [class.activetrack]="track == currentTrack" 
-                class="list-group-item tablerow" dnd-sortable [sortableIndex]="i">
+                class="list-group-item tablerow" dnd-sortable [sortableIndex]="i"
+                (click)="onSelect(track)">
             
-            <td class="tablerowdata" (click)="onSelect(track)" >
-                <div class="col-sm-1 logos" >
+            <td class="logo" >
+                <div class="logos" >
                     <img *ngIf="track.Type == 1" src="assets/YouTube-social-squircle_red_128px.png" width="30" align="left">
                     <img *ngIf="track.Type == 2" src="assets/Spotify_Logo_RGB_Green.png" width="30" align="left">
                     <img *ngIf="track.Type == 3" src="assets/128px-MP3_logo_white.png" width="30" align="left">
                 </div>
-                <div class="col-sm-8 trackname">
-                    {{track.Name}}
-                </div>
-                <div class="col-sm-3">
-                    <div class="pull-right btn-group" role="group">
-                        <button type="button" class="trackbuttons btn btn-danger glyphicon glyphicon-remove" (click)="delete(track); $event.stopPropagation()"></button>
-                    </div>
+            </td>
+            <td class="trackname">
+                {{track.Name}}
+            </td>
+            <td class="buttons">
+                <div class="btn-group" role="group">
+                    <button type="button" class="trackbuttons btn btn-danger glyphicon glyphicon-remove" (click)="delete(track); $event.stopPropagation()"></button>
                 </div>
             </td>
         </tr>
