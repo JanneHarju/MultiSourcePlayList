@@ -9,7 +9,7 @@
     <tbody>
         <tr *ngFor="let track of tracklist; let i = index" 
                 [class.activetrack]="track == currentTrack" 
-                class="list-group-item tablerow" dnd-sortable [sortableIndex]="i"
+                class="tablerow list-group-item" dnd-sortable [sortableIndex]="i"
                 (click)="$event.dropdown || $event.addTrackToPlaylistclicked || $event.addTrackToQueueclicked || onSelect(track)" >
             
             <td class="logo" >
@@ -20,12 +20,14 @@
                 </div>
             </td>
             <td class="trackname">
+                <div>
                 {{track.Name}}
+                </div>
             </td>
-            <td >
+            <td class="lastcol">
                 <div class="buttons">
                     <div class="btn-group" role="group">
-                        <button type="button" class="trackbuttons btn btn-info glyphicon glyphicon-align-center" (click)="myModal.open(); $event.stopPropagation(); lyrics(track)" data-toggle="tooltip" title="Lyrics"></button>
+                        <button type="button" class="trackbuttons btn btn-info glyphicon glyphicon-align-center" (click)="myModal.show(); $event.stopPropagation(); lyrics(track)" data-toggle="tooltip" title="Lyrics"></button>
                         <div class="btn-group" role="group" data-toggle="tooltip" title="Add track to playlist or to queue">
                             <button class="btn btn-default dropdown-toggle trackbuttons alignButton" (click)="$event.dropdown = true" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -47,18 +49,18 @@
         </tr>
     </tbody>
 </table>
-            
-<modal #myModal modalClass="modal-lg">
-    <modal-header>
+
+<my-modal class="mymodal" #myModal>
+    <div class="app-modal-header">
         <h1>Lyrics for: {{lyricHeader}}</h1>
-    </modal-header>
-    <modal-content>
+    </div>
+    <div class="app-modal-body">
         <pre class="lyric">
             {{lyric}}
-            </pre>
-    </modal-content>
-    <modal-footer>
+        </pre>
+    </div>
+    <div class="app-modal-footer">
         <img class="pull-left" [src]="lyricImageUrl | safe">
-        <button class="btn btn-primary" (click)="myModal.close()">close</button>
-    </modal-footer>
-</modal>
+        <button class="btn btn-primary" (click)="myModal.hide()">Close</button>
+    </div>
+</my-modal>

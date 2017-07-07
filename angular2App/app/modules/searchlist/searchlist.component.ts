@@ -63,7 +63,7 @@ export class SearchlistComponent implements OnInit {
         this.route.params.subscribe((params: Params) => this.query = params['id']);
 
         this.route.params.subscribe((params: Params) => this.spotifyService.search(params['id'],"track")
-            .subscribe((tracklist: SpotifyTrack[]) => 
+            .then((tracklist: SpotifyTrack[]) => 
             {
                 this.spotifyTracks = tracklist;
                 this.selectCurrentTrack(this.playerService.track);

@@ -19,12 +19,13 @@ export class MainComponent implements OnInit
         private loadingService: LoadingService) { }
     ngOnInit(): void 
     {
-        this.spotifyService.login(false).then(token => {
-            
-        });
         this.subscriptionLoading = this.loadingService.getLoading().subscribe(loading => 
         {
             this.loading = loading;
         });
+        if(!this.spotifyService.authCompleted)
+        {
+            this.spotifyService.getTokensByRefreshToken();
+        }
     }
 }

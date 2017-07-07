@@ -9,6 +9,8 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs/Subscription';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { SpotifyPlayStatus } from '../../models/spotifyPlayStatus';
+import { MusixMatchAPIService } from '../../services/musixmatch.service';
+import { MusixMatchLyric } from '../../models/musixmatchlyric';
 import { AuthService } from "../../services/auth.service";
 
 @Component({
@@ -23,6 +25,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     player: YT.Player;
     notFirstTime: boolean = false;
     random: number = 0;
+    lyric: string = "";
+    lyricHeader: string = "";
+    lyricImageUrl: string = "";
     playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
     subscriptionPlayStatus: Subscription;
     subscriptionTrack: Subscription;
@@ -43,6 +48,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         private router: Router,
         private location: Location,
         private route: ActivatedRoute,
+        private musixmatchService: MusixMatchAPIService,
         private st: SimpleTimer) { }
     
     ngOnInit(): void 
@@ -61,7 +67,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         {
             if(auth)
             {
-                this.spotifyService.checkPlayerState().subscribe(status =>
+                this.spotifyService.checkPlayerState().then(status =>
                 {
                     if(status.is_playing)
                     {
@@ -111,10 +117,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
     
     next()
     {
-        if(this.track.Address)
+        localStorage.removeItem('spotify-access-token');
+        localStorage.removeItem('spotify-refresh-token');
+        /*if(this.track.Address)
         {
             this.playerService.chooseNextTrack();
-        }
+        }*/
     }
     previous()
     {
@@ -137,7 +145,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     {
         if(this.track.Address)
         {
-            this.isplaying = true;
             this.disableProgressUpdate = true;
             if(this.track != null)
             {
@@ -151,6 +158,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                                 this.player.loadVideoById(trackUri);
                             }
                             this.player.playVideo();
+                            this.isplaying = true;
                         }
                         break;
                     case 2://spotify
@@ -170,6 +178,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         if(audio)
                         {
                             audio.play();
+                            this.isplaying = true;
                         }
                         break;
                     default:
@@ -230,6 +239,27 @@ export class PlayerComponent implements OnInit, OnDestroy {
         audio.play();
         //this.trackName = audio.audioTracks.toString();//[0].label + " " + audio.audioTracks[0].kind;
     }*/
+    lyrics()
+    {
+        if(this.track.Address)
+        {
+            this.lyricHeader = this.track.Name;
+            this.lyric = "";
+            this.lyricImageUrl = "";
+            this.musixmatchService.search(this.track.Name)
+                .subscribe(lyrics => 
+                {
+
+                    if(lyrics)
+                    {
+                        this.lyric = lyrics.lyrics_body;
+                        this.lyricImageUrl = lyrics.pixel_tracking_url;
+                    }
+                    else
+                        this.lyric = "Lyrics could not be found.";
+                });
+        }
+    }
     localFileAddress(track: Track) : string
     {
         let token = this.authService.getLocalToken();
@@ -250,14 +280,17 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     playSpotify(trackUri?: string)
     {
-        this.spotifyService.play(trackUri).subscribe(result =>
+        this.spotifyService.play(trackUri).then(result =>
         {
+
+            this.isplaying = true;
         });
     }
     pauseSpotify()
     {
-        this.spotifyService.pause().subscribe(result =>
+        this.spotifyService.pause().then(result =>
         {
+
         });
     }
     changeprogress()
@@ -284,7 +317,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         }
         else if(this.track.Type == 2)//spotify
         {
-            this.spotifyService.seek({position_ms: seek}).subscribe(res =>
+            this.spotifyService.seek({position_ms: seek}).then(res =>
             {
                 //Onnistui
             });

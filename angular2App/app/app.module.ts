@@ -10,7 +10,6 @@ import { YoutubePlayerModule } from 'ng2-youtube-player';
 import { DndModule } from 'ng2-dnd';
 
 import { NgUploaderModule } from 'ngx-uploader';
-import { ModalModule } from "ngx-modal";
 
 import { PlayerComponent } from './modules/player/player.component';
 import { PlaylistComponent } from './modules/playlist/playlist.component';
@@ -26,6 +25,7 @@ import { LoginComponent } from './modules/login/login.component';
 import { UserInfoComponent } from './modules/userinfo/userInfo.component';
 import { QueueComponent } from './modules/queue/queue.component';
 import { MainComponent} from './modules/main/main.component';
+import { ModalComponent} from './modules/modal/modal.component';
 import { SafePipe} from './modules/shared/safepipe';
 import { ColorPipe} from './modules/shared/colorpipe';
 import { DisplayTimePipe} from './modules/shared/displaytimepipe';
@@ -51,7 +51,6 @@ import './rxjs-extensions';
     HttpModule,
     AppRoutingModule,
     YoutubePlayerModule,
-    ModalModule,
     NgUploaderModule
   ],
   declarations: [
@@ -70,6 +69,7 @@ import './rxjs-extensions';
     FileUploadComponent,
     UserInfoComponent,
     QueueComponent,
+    ModalComponent,
     SafePipe,
     ColorPipe,
     DisplayTimePipe
@@ -91,7 +91,7 @@ import './rxjs-extensions';
             scope: ['user-read-private',
             'user-modify-playback-state'],
             // If you already have an authToken
-            authToken: localStorage.getItem('spotify-token')
+            authToken: localStorage.getItem('spotify-access-token')
         }
     },
     YoutubeAPIService,

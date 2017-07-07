@@ -73,9 +73,7 @@ namespace PlayList.Controllers
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
-            _logger.LogCritical("täällä");
             var values = _multiSourcePlaylistRepository.GetUsersPlaylistTracks(id,userId);
-            _logger.LogCritical(values.Count.ToString());
             var random = new Random();
             if(values != null && values.Any())
             {

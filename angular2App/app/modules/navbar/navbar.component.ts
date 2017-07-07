@@ -24,9 +24,13 @@ export class NavbarComponent implements OnInit {
 
     ngOnInit() 
     {
+        this.spotifyService.getCurrentUser().then(user => 
+            {
+                this.currentSpotifyUser = user;
+            });
         this.subscriptionSpotifyAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
         {
-            this.spotifyService.getCurrentUser().subscribe(user => 
+            this.spotifyService.getCurrentUser().then(user => 
             {
                 this.currentSpotifyUser = user;
             });
@@ -80,7 +84,7 @@ export class NavbarComponent implements OnInit {
     }
     loginToSpotify()
     {
-        this.spotifyService.login(true).then(token => {
+        this.spotifyService.login(true).then(result => {
             });
         
     }

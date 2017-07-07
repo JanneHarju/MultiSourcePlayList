@@ -7,7 +7,6 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { User } from '../models/user';
 import 'rxjs/add/operator/toPromise';
-//import { RequestResult } from "./RequestResult";
 
 @Injectable()
 export class AuthService implements CanActivate {
@@ -126,8 +125,6 @@ export class AuthService implements CanActivate {
     }
 
     private handleError(error: any) {
-        /*let errMsg = (error.message) ? error.message :
-            error.status ? `${error.status} - ${error.statusText}` : 'Server error';*/
         console.error(error);
         
         if(error.status == 401)

@@ -1,0 +1,83 @@
+
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using PlayList.Models;
+using PlayList.Repositories;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System;
+using System.Text;
+
+namespace PlayList.Controllers
+{
+    [Produces("application/json")]
+    [Route("api/spotifyaccount")]
+    public class SpotifyAccountController : Controller
+    {
+        private readonly ILogger _logger;
+        private readonly IHostingEnvironment _environment;
+        public SpotifyAccountController(
+            IHostingEnvironment environment,
+            IMultiSourcePlaylistRepository multiSourcePlaylistRepository
+            ,ILoggerFactory loggerFactory)
+         : base()
+        {
+            _environment = environment;
+            _logger = loggerFactory.CreateLogger("SpotifyAccountController");  
+        }
+
+        [HttpPost("code/{code}")]
+        [Authorize]
+        public async Task<string> code(string code)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var clientSecret = "6184cc25e3eb4dbb8b29c5a0feca99a8";
+                var clientId = "5ab10cb4fa9045fca2b92fcd0a97545c";
+                var auth = clientId + ":" + clientSecret;
+                var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(auth);
+                var authorization = System.Convert.ToBase64String(plainTextBytes);
+                client.BaseAddress = new Uri("https://accounts.spotify.com");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
+                
+                var url = "/api/token?redirect_uri=http://muusiple.azurewebsites.net/callback.html&grant_type=authorization_code&code="+code;
+                HttpResponseMessage response = await client.PostAsync
+                    (url, null);
+                
+                var res = response.Content.ReadAsStringAsync().Result;
+                return res;
+            }
+        }
+
+        [HttpPost("refreshtoken/{refreshtoken}")]
+        [Authorize]
+        public async Task<string> refreshtoken(string refreshtoken)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var clientSecret = "6184cc25e3eb4dbb8b29c5a0feca99a8";
+                var clientId = "5ab10cb4fa9045fca2b92fcd0a97545c";
+                var auth = clientId + ":" + clientSecret;
+                var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(auth);
+                var authorization = System.Convert.ToBase64String(plainTextBytes);
+                client.BaseAddress = new Uri("https://accounts.spotify.com");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
+                
+                var url = "/api/token?redirect_uri=http://muusiple.azurewebsites.net/callback.html&grant_type=refresh_token&refresh_token="+refreshtoken;
+                HttpResponseMessage response = await client.PostAsync
+                    (url, null);
+                
+                var res = response.Content.ReadAsStringAsync().Result;
+                return res;
+            }
+        }
+        
+    }
+}

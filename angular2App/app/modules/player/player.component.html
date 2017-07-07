@@ -1,23 +1,15 @@
 
 <div class="innerbox">
     <div class="box-style">
-        <a id="queue" [routerLink]="['/main/queue']" data-toggle="tooltip" title="Queue" class="queue pull-right control-button glyphicon glyphicon-th-list"></a>
-        <div class="row playlistname" >
-            <div *ngIf="track && track.Playlist">
-                {{track.Playlist.Name}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="row">
-                <span id="checkbox" class="pull-left">
-                    <input (click)="shuffleChanged()" data-toggle="tooltip" title="Shuffle" [(ngModel)]="shuffle" id="checkbox-element" type="checkbox"/>  
-                    <i class="glyphicon glyphicon-random"></i>
-                </span>
-                <div class="buttons">
-                    <a id="previous" (click)="previous()" data-toggle="tooltip" title="Previous" class="control-button previous glyphicon glyphicon-step-backward"></a>
-                    <a id="play" *ngIf="isplaying == false" (click)="play()" data-toggle="tooltip" title="Play" class="control-button glyphicon glyphicon-play"></a>
-                    <a id="pause" *ngIf="isplaying == true" (click)="pause()" data-toggle="tooltip" title="Pause" class="control-button glyphicon glyphicon-pause"></a>
-                    <a id="next" (click)="next()" data-toggle="tooltip" title="Next" class="control-button glyphicon glyphicon-step-forward"></a>
+        <div>
+            <div class="trackinfo row">
+                <div >
+                    <div class="playlistname" *ngIf="track && track.Playlist">
+                        {{track.Playlist.Name}}
+                    </div>
+                    <div>
+                        {{track.Name}}
+                    </div>
                 </div>
             </div>
             <div class="row seekcontrols">
@@ -25,6 +17,17 @@
                 <div class="duration">{{ duration | displaytime }}</div>
                 <div class="slider">
                     <input type="range" [(ngModel)]="progress" data-toggle="tooltip" title="Seek" (change)="changeprogress()" min="0" max="{{duration}}" (mousedown)=mouseDown() />
+                </div>
+                <div class="buttons">
+                    <span id="checkbox">
+                        <input (click)="shuffleChanged()" data-toggle="tooltip" title="Shuffle" [(ngModel)]="shuffle" id="checkbox-element" type="checkbox"/>  
+                        <i class="glyphicon glyphicon-random"></i>
+                    </span>
+                    <a id="previous" (click)="previous()" data-toggle="tooltip" title="Previous" class="control-button previous glyphicon glyphicon-step-backward"></a>
+                    <a id="play" *ngIf="isplaying == false" (click)="play()" data-toggle="tooltip" title="Play" class="control-button glyphicon glyphicon-play"></a>
+                    <a id="pause" *ngIf="isplaying == true" (click)="pause()" data-toggle="tooltip" title="Pause" class="control-button glyphicon glyphicon-pause"></a>
+                    <a id="next" (click)="next()" data-toggle="tooltip" title="Next" class="control-button glyphicon glyphicon-step-forward"></a>
+                    <a id="lyrics" (click)="myLyricsModal.show(); $event.stopPropagation(); lyrics()" data-toggle="tooltip" title="Lyrics" class="control-button glyphicon glyphicon-align-center"></a>                    
                 </div>
             </div>
         </div>
@@ -44,8 +47,20 @@
         <!--style="visibility: hidden"--><!--[currentTime]="15" [duration]="{{duration}}" [currentTime]="{{progress}}" (loadedmetadata)="loadedmeadata()"-->
             <audio (error)="error()" height="40" *ngIf="track.Type == 3" style="visibility: hidden"  (ended)="onAudioEnded()" (loadedmetadata)="loadedmeadata()" id="audio1" [src]="localFileAddress(track) | safe" controls="" autoplay>
             </audio>
-        <div>
-            {{track.Name}}
-        </div>
     </div>
 </div>
+<my-modal class="mymodal" #myLyricsModal>
+    <div class="app-modal-header">
+        <h1>Lyrics for: {{lyricHeader}}</h1>
+    </div>
+    <div class="app-modal-body">
+        <pre class="lyric">
+            {{lyric}}
+        </pre>
+    </div>
+    <div class="app-modal-footer">
+        <img class="pull-left" [src]="lyricImageUrl | safe">
+        <button class="btn btn-primary" (click)="myLyricsModal.hide()">Close</button>
+    </div>
+</my-modal>
+

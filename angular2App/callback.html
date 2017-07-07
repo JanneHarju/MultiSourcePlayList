@@ -6,14 +6,23 @@
   <title></title>
   <script>
     window.onload = function () {
-      var hash = window.location.hash;
-      if (window.location.search.substring(1).indexOf("error") !== -1) {
+      var search = window.location.search;
+      if (search.substring(1).indexOf("error") !== -1) {
         // login failure
         window.close();
-      } else if (hash) {
+      } else if (search) {
         // login success
-        var token = window.location.hash.split('&')[0].split('=')[1];
-        localStorage.setItem('spotify-token', token);
+        var state = search.split('&')[1].split('=')[1];
+        var storedState = localStorage.getItem('spotify_auth_state');
+        if(storedState  !== null && state !== null && storedState === state)
+        {
+          var code = search.split('&')[0].split('=')[1];
+          localStorage.setItem('spotify-code', code);
+          localStorage.removeItem('spotify_auth_state');
+        }
+        else{
+          window.close();
+        }
       }
     }
   </script>

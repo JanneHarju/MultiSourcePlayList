@@ -94,6 +94,7 @@ namespace PlayList
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            var log = loggerFactory.CreateLogger("Startup");
             #region Handle Exception
             app.UseExceptionHandler(appBuilder =>
             {
@@ -158,14 +159,10 @@ namespace PlayList
                 CookieName = "access_token"
             });
             #endregion
-            /*var angularRoutes = new[] {
-                 "/login",
-                 "/main",
-                 "/main/tracklist",
-                 "/main/searchlist",
-                 "/main/spotifylist",
-                 "/main/spotifyalbum",
-                 "/main/spotifyartist"
+            
+            var angularRoutes = new[] {
+                "/login",
+                "/main"
             };
             app.Use(async (context, next) =>
             {
@@ -179,13 +176,11 @@ namespace PlayList
                     await next();
                 }
                 else if (context.Request.Path.HasValue && null != angularRoutes.FirstOrDefault(
-                    (ar) => context.Request.Path.Value.StartsWith(ar, StringComparison.OrdinalIgnoreCase)))
+                    ar => context.Request.Path.Value.StartsWith(ar, StringComparison.OrdinalIgnoreCase)))
                 {
                     context.Request.Path = new PathString("/");
                 }
-
-                await next();
-            });*/
+            });
 
             app.UseCors("AllowAllOrigins");
 

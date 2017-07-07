@@ -15,7 +15,7 @@ using System;
 
         public static TimeSpan ExpiresSpan { get; } = TimeSpan.FromHours(12);
         public static TimeSpan ExtendedExpiresSpan { get; } = TimeSpan.FromDays(365*10);
-        public static TimeSpan GetExpriseSpan(bool rememberme)
+        public static TimeSpan GetExpiresSpan(bool rememberme)
         {
             return rememberme ? ExtendedExpiresSpan : ExpiresSpan;
         }

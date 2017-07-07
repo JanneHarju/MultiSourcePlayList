@@ -1,21 +1,26 @@
  <div class="innerbox">
      <div class="box-style">
         <div class="grid grid-pad" >
+            <a id="queue" [routerLink]="['/main/queue']" data-toggle="tooltip" title="Queue" class="queue pull-right control-button glyphicon glyphicon-th-list"></a>
             <h3> Local playlist: </h3>
-            <div *ngIf="playlists.length > 0">
-                <div *ngFor="let playlist of playlists" class="pldiv">
-                    <a *ngIf="playlist" (click)="selectPlaylist(playlist)" [routerLink]="['/main/tracklist', playlist.Id]" routerLinkActive="active">
-                    {{playlist.Name}}
-                    </a>
-                    <div class="pull-right btn-group buttongroup" role="group">
-                        <button class="editbuttons btn btn-warning glyphicon glyphicon-random" data-toggle="tooltip" title="Shuffle whole playlist" (click)="shuffleConfirmationModal.open(); setShuffleTarget(playlist); $event.stopPropagation()"></button>
-                        <button class="editbuttons btn btn-info glyphicon glyphicon-pencil" data-toggle="tooltip" title="Rename playlist" (click)="newPlaylistName.value = ''; editModal.open(); setRenameTarget(playlist); $event.stopPropagation()"></button>
-                        <button class="editbuttons btn btn-danger glyphicon glyphicon-remove" data-toggle="tooltip" title="Remove playlist" (click)="removeConfirmationModal.open(); setDeleteTarget(playlist); $event.stopPropagation()"></button>
-                                    
-                    </div>
-                </div>
-            </div>
-            <button class="addButton btn btn-primary glyphicon glyphicon-plus pull-left" (click)="addNewPlaylistModal.open()" data-toggle="tooltip" title="Add new playlist"></button>
+            <table *ngIf="playlists.length > 0">
+                <tr *ngFor="let playlist of playlists" class="pldiv">
+                    <td class="playlistname">
+                        <a *ngIf="playlist" (click)="selectPlaylist(playlist)" [routerLink]="['/main/tracklist', playlist.Id]" routerLinkActive="active">
+                        {{playlist.Name}}
+                        </a>
+                    </td>
+                    <td class="buttoncolumn">
+                        <div class="pull-right btn-group buttongroup" role="group">
+                            <button class="editbuttons btn btn-warning glyphicon glyphicon-random" data-toggle="tooltip" title="Shuffle whole playlist" (click)="shuffleConfirmationModal.show(); setShuffleTarget(playlist); $event.stopPropagation()"></button>
+                            <button class="editbuttons btn btn-info glyphicon glyphicon-pencil" data-toggle="tooltip" title="Rename playlist" (click)="newPlaylistName.value = ''; editModal.show(); setRenameTarget(playlist); $event.stopPropagation()"></button>
+                            <button class="editbuttons btn btn-danger glyphicon glyphicon-remove" data-toggle="tooltip" title="Remove playlist" (click)="removeConfirmationModal.show(); setDeleteTarget(playlist); $event.stopPropagation()"></button>
+                                        
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <button class="addButton btn btn-primary glyphicon glyphicon-plus pull-left" (click)="addNewPlaylistModal.show()" data-toggle="tooltip" title="Add new playlist"></button>
         </div>
         <div *ngIf="spotifyplaylists.length > 0" class="grid grid-pad" >
             <h3> Spotify playlists: </h3>
@@ -27,56 +32,57 @@
         </div>
      </div>
  </div>
+ 
  <!--Playlist name edit modal-->
- <modal #editModal modalClass="modal-sm">
-    <modal-header>
+ <my-modal class="mymodal" #editModal>
+    <div class="app-modal-header">
         <h1>New name for: {{renametarget.Name}}</h1>
-    </modal-header>
-    <modal-content>
-        <input class="form-control" (keyup.enter)="editModal.close(); rename(renamePlaylistName.value)" ng-focus="true" #renamePlaylistName />
-            
-    </modal-content>
-    <modal-footer>
-        <button class="btn btn-primary confirmbutton" (click)="editModal.close(); rename(renamePlaylistName.value)">OK</button>
-        <button class="btn btn-primary" (click)="editModal.close()">Cancel</button>
-    </modal-footer>
-</modal>
+    </div>
+    <div class="app-modal-body">
+         <input class="form-control" (keyup.enter)="editModal.hide(); rename(renamePlaylistName.value)" ng-focus="true" #renamePlaylistName />
+    </div>
+    <div class="app-modal-footer">
+        <button class="btn btn-primary confirmbutton" (click)="editModal.hide(); rename(renamePlaylistName.value)">OK</button>
+        <button class="btn btn-primary" (click)="editModal.hide()">Cancel</button>
+    </div>
+</my-modal>
+
 
  <!--Playlist remove confirmation modal-->
- <modal #removeConfirmationModal modalClass="modal-md">
-    <modal-header>
+<my-modal class="mymodal" #removeConfirmationModal>
+    <div class="app-modal-header">
         <h1>Are you sure you want to remove: {{removetarget.Name}} ?</h1>
-    </modal-header>
-    <modal-footer>
-        <button class="btn btn-primary confirmbutton" (click)="removeConfirmationModal.close(); delete()">Yes</button>
-        <button class="btn btn-primary" (click)="removeConfirmationModal.close()">No</button>
-    </modal-footer>
-</modal>
+    </div>
+    <div class="app-modal-footer">
+        <button class="btn btn-primary confirmbutton" (click)="removeConfirmationModal.hide(); delete()">Yes</button>
+        <button class="btn btn-primary" (click)="removeConfirmationModal.hide()">No</button>
+    </div>
+</my-modal>
 
  <!--Playlist shuffle confirmation modal-->
- <modal #shuffleConfirmationModal modalClass="modal-md">
-    <modal-header>
+<my-modal class="mymodal" #shuffleConfirmationModal>
+    <div class="app-modal-header">
         <h1>Are you sure you want to shuffle: {{shuffletarget.Name}} ?
             You cannot undo this.
         </h1>
-    </modal-header>
-    <modal-footer>
-        <button class="btn btn-primary confirmbutton" (click)="shuffleConfirmationModal.close(); shuffle()">Yes</button>
-        <button class="btn btn-primary" (click)="shuffleConfirmationModal.close()">No</button>
-    </modal-footer>
-</modal>
+    </div>
+    <div class="app-modal-footer">
+        <button class="btn btn-primary confirmbutton" (click)="shuffleConfirmationModal.hide(); shuffle()">Yes</button>
+        <button class="btn btn-primary" (click)="shuffleConfirmationModal.hide()">No</button>
+    </div>
+</my-modal>
 
 <!-- add new Playlist modal-->
- <modal #addNewPlaylistModal modalClass="modal-sm">
-    <modal-header>
+<my-modal class="mymodal" #addNewPlaylistModal>
+    <div class="app-modal-header">
         <h1>Create a new playlist</h1>
-    <modal-content>
+    </div>
+    <div class="app-modal-body">
         <label>Playlist name:</label>
-        <input class="form-control" (keyup.enter)="addNewPlaylistModal.close(); add(newPlaylistName.value); newPlaylistName.value=''" ng-focus="true" #newPlaylistName />
-    </modal-content> 
-    </modal-header>
-    <modal-footer>
-        <button class="btn btn-primary confirmbutton" (click)="addNewPlaylistModal.close(); add(newPlaylistName.value); newPlaylistName.value=''">Create</button>
-        <button class="btn btn-primary" (click)="addNewPlaylistModal.close()">Cancel</button>
-    </modal-footer>
-</modal>
+        <input class="form-control" (keyup.enter)="addNewPlaylistModal.hide(); add(newPlaylistName.value); newPlaylistName.value=''" ng-focus="true" #newPlaylistName />
+    </div>
+    <div class="app-modal-footer">
+        <button class="btn btn-primary confirmbutton" (click)="addNewPlaylistModal.hide(); add(newPlaylistName.value); newPlaylistName.value=''">Create</button>
+        <button class="btn btn-primary" (click)="addNewPlaylistModal.hide()">Cancel</button>
+    </div>
+</my-modal>

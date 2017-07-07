@@ -50,7 +50,7 @@ namespace PlayList
             {
 
                 var requestAt = DateTime.Now;
-                var expiresIn = requestAt + TokenAuthOption.GetExpriseSpan(rememberme);
+                var expiresIn = requestAt + TokenAuthOption.GetExpiresSpan(rememberme);
                 var token = GenerateToken(existUser, expiresIn);
 
                 return Json(new RequestResult
@@ -59,7 +59,7 @@ namespace PlayList
                     Data = new
                     {
                         requertAt = requestAt,
-                        expiresIn = TokenAuthOption.GetExpriseSpan(rememberme).TotalSeconds,
+                        expiresIn = TokenAuthOption.GetExpiresSpan(rememberme).TotalSeconds,
                         tokeyType = TokenAuthOption.TokenType,
                         accessToken = token
                     }
@@ -99,7 +99,7 @@ namespace PlayList
                 if(newUser != null)
                 {
                     var requestAt = DateTime.Now;
-                    var expiresIn = requestAt + TokenAuthOption.GetExpriseSpan(rememberme);
+                    var expiresIn = requestAt + TokenAuthOption.GetExpiresSpan(rememberme);
                     var token = GenerateToken(newUser, expiresIn);
 
                     return Json(new RequestResult
@@ -108,7 +108,7 @@ namespace PlayList
                         Data = new
                         {
                             requertAt = requestAt,
-                            expiresIn = TokenAuthOption.GetExpriseSpan(rememberme).TotalSeconds,
+                            expiresIn = TokenAuthOption.GetExpiresSpan(rememberme).TotalSeconds,
                             tokeyType = TokenAuthOption.TokenType,
                             accessToken = token
                         }

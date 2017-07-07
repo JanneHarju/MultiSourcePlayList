@@ -62,6 +62,10 @@ module.exports = {
             '/api/audio/*': {
             target: 'http://localhost:5000',
             secure: false
+            },
+            '/api/spotifyaccount/*': {
+            target: 'http://localhost:5000',
+            secure: false
             }
         }
     },

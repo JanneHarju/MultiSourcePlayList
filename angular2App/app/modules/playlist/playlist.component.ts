@@ -39,7 +39,7 @@ export class PlaylistComponent implements OnInit {
             if(auth)
             {
                 this.spotifyService.getUsersPlaylist()
-                    .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
+                    .then((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
             }
         });
         this.subscriptionAppAuthenticationComplited = this.authService.getAuthenticationComplited().subscribe(auth => 
@@ -76,7 +76,7 @@ export class PlaylistComponent implements OnInit {
                 }
             });
         this.spotifyService.getUsersPlaylist()
-                .subscribe((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
+                .then((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
     }
     add(name: string): void {
         this.loadingService.setLoading(true);

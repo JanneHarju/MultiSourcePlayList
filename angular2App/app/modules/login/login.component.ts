@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService } from "../../services/auth.service";
+import { SpotifyService } from '../../services/spotify.service';
 import { User } from '../../models/user';
 
 @Component({
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
 
     constructor(
         private authService: AuthService,
+        private spotifyService: SpotifyService,
         private router: Router) 
     { }
     ngOnInit()
@@ -45,7 +47,10 @@ export class LoginComponent implements OnInit {
         this.authService.login(this.rememberMe, this.loginUser).then(
             result => {
                 if (result.State == 1) {
-                    this.router.navigate(["/main"]);
+                    this.spotifyService.login(false).then(result => {
+                        this.router.navigate(["/main"]);
+                    });
+                    
                 } else {
                     alert(result.Msg);
                 }
@@ -57,7 +62,9 @@ export class LoginComponent implements OnInit {
         this.authService.register(this.rememberMe, this.loginUser).then(
             result => {
                 if (result.State == 1) {
-                    this.router.navigate(["/main"]);
+                    this.spotifyService.login(false).then(result => {
+                        this.router.navigate(["/main"]);
+                    });
                 } else {
                     alert(result.Msg);
                 }

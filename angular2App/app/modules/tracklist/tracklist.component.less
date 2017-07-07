@@ -69,6 +69,9 @@ tr
 {
     text-align: left;
     width: 100%;
+    max-width: 110px;
+    text-overflow: ellipsis;
+    overflow: hidden;
     //border-right: 1px solid white;
 }
 .lyric
@@ -84,6 +87,9 @@ tr
 .tablerow:hover{
     background: #595959; /* make this whatever you want */
 }
+.tablerow{
+    display: table-row;
+}
 .alignButton
 {
     margin-top: 6px;
@@ -91,3 +97,13 @@ tr
 .buttons{
     width: 115px;
 }
+.lastcol
+{
+    max-width: 150px;
+}
+table { border-collapse: collapse; }
+tr { border: solid 1px white; }
+.tablerow:first-child { border-top-left-radius: 4px; }
+.tablerow:first-child { border-top-right-radius: 4px; }
+.tablerow:last-child { border-bottom-left-radius: 4px; }
+.tablerow:last-child { border-bottom-right-radius: 4px; }
