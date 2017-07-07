@@ -21,6 +21,9 @@ namespace PlayList.Controllers
     [Route("api/spotifyaccount")]
     public class SpotifyAccountController : Controller
     {
+
+        //private string callbackUrl = "http://localhost:5000/callback.html";
+        private string callbackUrl = "http://muusiple.azurewebsites.net/callback.html";
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _environment;
         public SpotifyAccountController(
@@ -34,7 +37,7 @@ namespace PlayList.Controllers
         }
 
         [HttpPost("code/{code}")]
-        [Authorize]
+        [Authorize("Bearer")]
         public async Task<string> code(string code)
         {
             using (HttpClient client = new HttpClient())
@@ -47,7 +50,7 @@ namespace PlayList.Controllers
                 client.BaseAddress = new Uri("https://accounts.spotify.com");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
                 
-                var url = "/api/token?redirect_uri=http://muusiple.azurewebsites.net/callback.html&grant_type=authorization_code&code="+code;
+                var url = "/api/token?redirect_uri="+callbackUrl+"&grant_type=authorization_code&code="+code;
                 HttpResponseMessage response = await client.PostAsync
                     (url, null);
                 
@@ -57,7 +60,7 @@ namespace PlayList.Controllers
         }
 
         [HttpPost("refreshtoken/{refreshtoken}")]
-        [Authorize]
+        [Authorize("Bearer")]
         public async Task<string> refreshtoken(string refreshtoken)
         {
             using (HttpClient client = new HttpClient())
@@ -70,7 +73,7 @@ namespace PlayList.Controllers
                 client.BaseAddress = new Uri("https://accounts.spotify.com");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
                 
-                var url = "/api/token?redirect_uri=http://muusiple.azurewebsites.net/callback.html&grant_type=refresh_token&refresh_token="+refreshtoken;
+                var url = "/api/token?redirect_uri="+callbackUrl+"&grant_type=refresh_token&refresh_token="+refreshtoken;
                 HttpResponseMessage response = await client.PostAsync
                     (url, null);
                 

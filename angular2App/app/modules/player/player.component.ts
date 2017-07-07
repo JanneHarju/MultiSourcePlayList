@@ -117,12 +117,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
     
     next()
     {
-        localStorage.removeItem('spotify-access-token');
-        localStorage.removeItem('spotify-refresh-token');
-        /*if(this.track.Address)
+        if(this.track.Address)
         {
             this.playerService.chooseNextTrack();
-        }*/
+        }
     }
     previous()
     {
