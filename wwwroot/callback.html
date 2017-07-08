@@ -10,6 +10,7 @@
       if (search.substring(1).indexOf("error") !== -1) {
         // login failure
         window.close();
+        console.error(search);
       } else if (search) {
         // login success
         var state = search.split('&')[1].split('=')[1];

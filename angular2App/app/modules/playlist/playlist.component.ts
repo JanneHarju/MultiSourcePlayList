@@ -36,6 +36,9 @@ export class PlaylistComponent implements OnInit {
     { 
         this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
         {
+
+            console.log("authenticate complited playlist")
+            console.log(auth);
             if(auth)
             {
                 this.spotifyService.getUsersPlaylist()
@@ -75,8 +78,8 @@ export class PlaylistComponent implements OnInit {
                     this.router.navigate(['login']);
                 }
             });
-        this.spotifyService.getUsersPlaylist()
-                .then((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);
+        /*this.spotifyService.getUsersPlaylist()
+                .then((playlists : SpotifyPlaylist[])=> this.spotifyplaylists = playlists);*/
     }
     add(name: string): void {
         this.loadingService.setLoading(true);

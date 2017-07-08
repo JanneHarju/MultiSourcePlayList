@@ -23,8 +23,9 @@ export class MainComponent implements OnInit
         {
             this.loading = loading;
         });
-        if(!this.spotifyService.authCompleted)
+        if(localStorage.getItem('spotify-refresh-token'))
         {
+            console.log("Page reload.");
             this.spotifyService.getTokensByRefreshToken();
         }
     }

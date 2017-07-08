@@ -24,12 +24,9 @@ export class NavbarComponent implements OnInit {
 
     ngOnInit() 
     {
-        this.spotifyService.getCurrentUser().then(user => 
-            {
-                this.currentSpotifyUser = user;
-            });
         this.subscriptionSpotifyAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
         {
+            console.log("authenticate complited navbar")
             this.spotifyService.getCurrentUser().then(user => 
             {
                 this.currentSpotifyUser = user;

@@ -456,8 +456,6 @@ export class SpotifyService {
                 .then((res: Response) => 
                 {
                     let body = res.json();
-
-                    console.log(body);
                     this.config.authToken = body.access_token;
                     localStorage.setItem('spotify-access-token', body.access_token);
                     if(body.refresh_token)
@@ -468,12 +466,17 @@ export class SpotifyService {
                     var expiresIn = body.expires_in;
                     this.startRefreshTokenTimer(expiresIn);
                     this.authCompleted = true;
+                    if(!this.authenticationComplited)
+                    {
+                        this.setAuthenticationComplited("success");
+                    }
                     return true;
                 })
                 .catch(err=>
                 {
-                    localStorage.removeItem('spotify-refresh-token');
+                    //localStorage.removeItem('spotify-refresh-token');
                     this.authCompleted = false;
+                    this.setAuthenticationComplited(null);
                     this.handlePromiseError(err);
                     return false;
                 } );
@@ -525,7 +528,6 @@ export class SpotifyService {
                 if (authWindow) {
                     authWindow.close();
                 }
-
                 var code = localStorage.getItem('spotify-code');
                 this.getTokens(code)
                 .then(ret=>
@@ -620,15 +622,15 @@ export class SpotifyService {
         if(error.statusText == "Unauthorized")
         {
             console.error('Unauthorized', error);
-            if(localStorage.getItem('spotify-refresh-token') !== null)
+            /*if(localStorage.getItem('spotify-refresh-token') !== null)
             {
                 this.getTokensByRefreshToken();
             }
             else
-            {
+            {*/
                 this.login(false).then(result => {
                 });
-            }
+            //}
         }
         return Promise.reject(error.message || error);
     }
