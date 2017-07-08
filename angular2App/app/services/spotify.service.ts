@@ -628,8 +628,8 @@ export class SpotifyService {
             }
             else
             {*/
-                this.login(false).then(result => {
-                });
+                /*this.login(false).then(result => {
+                });*/
             //}
         }
         return Promise.reject(error.message || error);

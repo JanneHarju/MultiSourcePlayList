@@ -63,7 +63,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 this.play(this.track.Address);
         });
 
-        this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
+        /*this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
         {
             if(auth)
             {
@@ -77,7 +77,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                     }
                 });
             }
-        });
+        });*/
         this.subscriptionPlayStatus = this.spotifyService.getPlayStatus().subscribe(playStatus =>
         {
             this.playStatus = playStatus;
