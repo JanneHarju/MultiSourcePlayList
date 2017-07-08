@@ -40,22 +40,29 @@ namespace PlayList.Controllers
         [Authorize("Bearer")]
         public async Task<string> code(string code)
         {
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var clientSecret = "6184cc25e3eb4dbb8b29c5a0feca99a8";
-                var clientId = "5ab10cb4fa9045fca2b92fcd0a97545c";
-                var auth = clientId + ":" + clientSecret;
-                var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(auth);
-                var authorization = System.Convert.ToBase64String(plainTextBytes);
-                client.BaseAddress = new Uri("https://accounts.spotify.com");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
-                
-                var url = "/api/token?redirect_uri="+callbackUrl+"&grant_type=authorization_code&code="+code;
-                HttpResponseMessage response = await client.PostAsync
-                    (url, null);
-                
-                var res = response.Content.ReadAsStringAsync().Result;
-                return res;
+                using (HttpClient client = new HttpClient())
+                {
+                    var clientSecret = "6184cc25e3eb4dbb8b29c5a0feca99a8";
+                    var clientId = "5ab10cb4fa9045fca2b92fcd0a97545c";
+                    var auth = clientId + ":" + clientSecret;
+                    var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(auth);
+                    var authorization = System.Convert.ToBase64String(plainTextBytes);
+                    client.BaseAddress = new Uri("https://accounts.spotify.com");
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
+                    
+                    var url = "/api/token?redirect_uri="+callbackUrl+"&grant_type=authorization_code&code="+code;
+                    HttpResponseMessage response = await client.PostAsync
+                        (url, null);
+                    
+                    var res = response.Content.ReadAsStringAsync().Result;
+                    return res;
+                }
+            }
+            catch(Exception ex)
+            {
+                return ex.Message;
             }
         }
 
