@@ -95,7 +95,7 @@ namespace PlayList
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
             var log = loggerFactory.CreateLogger("Startup");
-            #region Handle Exception
+            /*#region Handle Exception
             app.UseExceptionHandler(appBuilder =>
             {
                 appBuilder.Use(async (context, next) =>
@@ -129,7 +129,7 @@ namespace PlayList
                     else await next();
                 });
             });
-            #endregion
+            #endregion*/
             var tokenValidationParameters = new TokenValidationParameters
             {
                 IssuerSigningKey = TokenAuthOption.Key,
