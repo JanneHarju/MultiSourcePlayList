@@ -36,7 +36,6 @@ namespace PlayList.Controllers
         }
 
         // GET api/values
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         [HttpGet]
         [Authorize("Bearer")]
         public List<Track> Get()
@@ -48,6 +47,7 @@ namespace PlayList.Controllers
         [Authorize("Bearer")]
         public Track Get(int id)
         {
+            
             return _multiSourcePlaylistRepository.GetTrack(id);
         }
         [HttpGet("{id}/{playlist}")]
