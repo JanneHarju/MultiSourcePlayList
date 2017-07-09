@@ -418,7 +418,7 @@ export class SpotifyService {
     getTokens(code?: string)
     {
         let headers = this.authService.initAuthHeaders();
-        let address = "api/spotifyaccount/code/"+code;
+        let address = "api/test/code/"+code;
 
         return this.http
             .get(address, {headers: headers})
@@ -449,7 +449,7 @@ export class SpotifyService {
             
             this.st.delTimer('spotify_refresh_token');
             let headers = this.authService.initAuthHeaders();
-            let address = "api/spotifyaccount/refreshtoken/"+localStorage.getItem('spotify-refresh-token');
+            let address = "api/test/refreshtoken/"+localStorage.getItem('spotify-refresh-token');
             console.log("getTokensByRefreshToken");
             return this.http
                 .get(address, {headers: headers})
