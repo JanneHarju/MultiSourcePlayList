@@ -36,7 +36,7 @@ namespace PlayList.Controllers
             _logger = loggerFactory.CreateLogger("SpotifyAccountController");  
         }
 
-        [HttpPost("code/{code}")]
+        [HttpGet("code/{code}")]
         [Authorize("Bearer")]
         public async Task<string> code(string code)
         {
@@ -66,7 +66,7 @@ namespace PlayList.Controllers
             }
         }
 
-        [HttpPost("refreshtoken/{refreshtoken}")]
+        [HttpGet("refreshtoken/{refreshtoken}")]
         [Authorize("Bearer")]
         public async Task<string> refreshtoken(string refreshtoken)
         {

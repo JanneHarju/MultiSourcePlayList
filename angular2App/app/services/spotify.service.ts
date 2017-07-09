@@ -421,7 +421,7 @@ export class SpotifyService {
         let address = "api/spotifyaccount/code/"+code;
 
         return this.http
-            .post(address, null, {headers: headers})
+            .get(address, {headers: headers})
             .toPromise()
             .then((res: Response) => 
             {
@@ -452,7 +452,7 @@ export class SpotifyService {
             let address = "api/spotifyaccount/refreshtoken/"+localStorage.getItem('spotify-refresh-token');
             console.log("getTokensByRefreshToken");
             return this.http
-                .post(address, null, {headers: headers})
+                .get(address, {headers: headers})
                 .toPromise()
                 .then((res: Response) => 
                 {
