@@ -51,7 +51,7 @@ namespace PlayList.Controllers
                     var authorization = System.Convert.ToBase64String(plainTextBytes);
                     client.BaseAddress = new Uri("https://accounts.spotify.com");
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
-                    
+                    client.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
                     var url = "/api/token?redirect_uri="+callbackUrl+"&grant_type=authorization_code&code="+code;
                     HttpResponseMessage response = await client.PostAsync
                         (url, null);
@@ -79,6 +79,7 @@ namespace PlayList.Controllers
                 var authorization = System.Convert.ToBase64String(plainTextBytes);
                 client.BaseAddress = new Uri("https://accounts.spotify.com");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
+                client.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
                 
                 var url = "/api/token?redirect_uri="+callbackUrl+"&grant_type=refresh_token&refresh_token="+refreshtoken;
                 HttpResponseMessage response = await client.PostAsync
