@@ -97,7 +97,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     {
         this.subscriptionTrack.unsubscribe();
         this.subscriptionPlayStatus.unsubscribe();
-        this.subscriptionAuthenticationComplited.unsubscribe();
     }
 
     savePlayer (player: YT.Player) {

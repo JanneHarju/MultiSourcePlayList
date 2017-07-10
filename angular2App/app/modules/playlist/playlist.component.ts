@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PlaylistService} from '../../services/playlist.service';
 import { SpotifyService } from '../../services/spotify.service';
@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs/Subscription';
     styleUrls: [ './playlist.component.less' ]
 })
 
-export class PlaylistComponent implements OnInit {
+export class PlaylistComponent implements OnInit, OnDestroy {
     constructor(
         private playlistService: PlaylistService,
         private spotifyService: SpotifyService,
@@ -36,9 +36,6 @@ export class PlaylistComponent implements OnInit {
     { 
         this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
         {
-
-            console.log("authenticate complited playlist")
-            console.log(auth);
             if(auth)
             {
                 this.spotifyService.getUsersPlaylist()
@@ -60,6 +57,11 @@ export class PlaylistComponent implements OnInit {
         {
             this.getPlaylists();
         }
+    }
+    ngOnDestroy(): void
+    {
+        this.subscriptionAppAuthenticationComplited.unsubscribe();
+        this.subscriptionAuthenticationComplited.unsubscribe();
     }
     getPlaylists(): void {
         

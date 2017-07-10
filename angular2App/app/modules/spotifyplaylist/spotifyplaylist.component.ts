@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router }   from '@angular/router';
 import { SpotifyService, SpotifyOptions } from '../../services/spotify.service';
 import { YoutubeAPIService } from '../../services/youtubeapi.service';
@@ -23,7 +23,7 @@ import 'rxjs/add/operator/toPromise';
     styleUrls: [ './spotifyplaylist.component.less' ],
 })
 
-export class SpotifyPlaylistComponent implements OnInit {
+export class SpotifyPlaylistComponent implements OnInit, OnDestroy {
     spotifyTracks : SpotifyPlaylistTrack[] = [];
     playlists: Playlist[] = [];
     playlistInfo: SpotifyPlaylistInfo = new SpotifyPlaylistInfo();
@@ -125,7 +125,12 @@ export class SpotifyPlaylistComponent implements OnInit {
         {
             this.getUsersPlaylists();
         });
-     }
+    }
+    ngOnDestroy(): void
+    {
+        this.subscriptionTrack.unsubscribe();
+        this.subscriptionPlaylistsModified.unsubscribe();
+    }
      getUsersPlaylists()
      {
          this.playlistService.getUsersPlaylists()

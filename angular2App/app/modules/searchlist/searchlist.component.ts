@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router }   from '@angular/router';
 import { SpotifyService } from '../../services/spotify.service';
 import { YoutubeAPIService } from '../../services/youtubeapi.service';
@@ -32,7 +32,7 @@ declare function search(params: any, cb: any) : Observable<any>;*/
     styleUrls: [ './searchlist.component.less' ],
 })
 
-export class SearchlistComponent implements OnInit {
+export class SearchlistComponent implements OnInit, OnDestroy {
     spotifyTracks : SpotifyTrack[] = [];
     youtubeVideos : YoutubeVideo[] = [];
     playlists: Playlist[] = [];
@@ -108,6 +108,11 @@ export class SearchlistComponent implements OnInit {
             this.getUsersPlaylists();
         });
      }
+    ngOnDestroy(): void
+    {
+        this.subscriptionPlaylistsModified.unsubscribe();
+        this.subscriptionTrack.unsubscribe();
+    }
      getUsersPlaylists()
      {
          this.playlistService.getUsersPlaylists()

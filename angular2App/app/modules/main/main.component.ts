@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SpotifyService } from '../../services/spotify.service';
 import { LoadingService } from '../../services/loading.service';
 import { Subscription } from 'rxjs/Subscription';
@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: [ './main.component.less' ]
   
 })
-export class MainComponent implements OnInit
+export class MainComponent implements OnInit, OnDestroy
 {
     loading: boolean = false;
     subscriptionLoading: Subscription;
@@ -28,5 +28,9 @@ export class MainComponent implements OnInit
             console.log("Page reload.");
             this.spotifyService.getTokensByRefreshToken();
         }
+    }
+    ngOnDestroy(): void
+    {
+        this.subscriptionLoading.unsubscribe();
     }
 }

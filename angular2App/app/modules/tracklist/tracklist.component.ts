@@ -131,6 +131,8 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      }
      ngOnDestroy(): void
      {
+         this.subscriptionPlaylistsModified.unsubscribe();
+         this.subscriptionTrack.unsubscribe();
         this.st.delTimer('5sec');
      }
      selectCurrentTrack(track: Track)

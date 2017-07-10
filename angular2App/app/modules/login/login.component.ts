@@ -33,7 +33,11 @@ export class LoginComponent implements OnInit {
             sessionStorage.setItem(this.authService.tokeyKey, longtermToken);
             this.authService.getUserInfo().then(res =>
             {
-                this.router.navigate(['main']);
+                this.router.navigate(["/main"]).then(navi=>
+                {
+                    this.spotifyService.login(false).then(result => {
+                    });
+                });
             })
             .catch(err =>
             {

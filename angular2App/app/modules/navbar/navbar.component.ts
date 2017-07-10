@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SpotifyService } from '../../services/spotify.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { UserInfo } from '../../models/userInfo';
     styleUrls: [ './navbar.component.less' ]
 })
 
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
     subscriptionSpotifyAuthenticationComplited : Subscription;
     subscriptionAppAuthenticationComplited : Subscription;
     currentSpotifyUser: SpotifyUser = new SpotifyUser();
@@ -26,7 +26,6 @@ export class NavbarComponent implements OnInit {
     {
         this.subscriptionSpotifyAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => 
         {
-            console.log("authenticate complited navbar")
             this.spotifyService.getCurrentUser().then(user => 
             {
                 this.currentSpotifyUser = user;
@@ -48,6 +47,11 @@ export class NavbarComponent implements OnInit {
             this.getUserInfo();
         }
         
+    }
+    ngOnDestroy(): void
+    {
+        this.subscriptionAppAuthenticationComplited.unsubscribe();
+        this.subscriptionSpotifyAuthenticationComplited.unsubscribe();
     }
     getUserInfo()
     {
