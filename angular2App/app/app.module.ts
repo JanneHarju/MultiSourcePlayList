@@ -86,7 +86,7 @@ import './rxjs-extensions';
         provide: "SpotifyConfig",
         useValue: {
             clientId: '5ab10cb4fa9045fca2b92fcd0a97545c',
-            redirectUri: 'http://muusiple.azurewebsites.net/callback.html',
+            redirectUri: 'http://musiple.azurewebsites.net/callback.html',
             //redirectUri: 'http://localhost:8080/callback.html',
             scope: ['user-read-private',
             'user-modify-playback-state'],

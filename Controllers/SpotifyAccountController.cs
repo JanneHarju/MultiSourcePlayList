@@ -23,7 +23,7 @@ namespace PlayList.Controllers
     {
 
         //private string callbackUrl = "http://localhost:8080/callback.html";
-        private string callbackUrl = "http://muusiple.azurewebsites.net/callback.html";
+        private string callbackUrl = "http://musiple.azurewebsites.net/callback.html";
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _environment;
         public SpotifyAccountController(
