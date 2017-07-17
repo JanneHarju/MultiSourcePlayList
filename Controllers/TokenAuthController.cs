@@ -9,8 +9,12 @@ using System.Security.Principal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.WindowsAzure.Storage; // Namespace for Storage Client Library
+using Microsoft.WindowsAzure.Storage.File; // Namespace for Azure File storage
 using PlayList.Models;
+using System.Threading.Tasks;
 using System.IO;
 using PlayList.Repositories;
 using Microsoft.Extensions.Logging;
@@ -25,15 +29,19 @@ namespace PlayList
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _environment;
+        private IConfigurationRoot _configuration { get; }
+
         public TokenAuthController(
             IHostingEnvironment environment,
             IMultiSourcePlaylistRepository multiSourcePlaylistRepository,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IConfigurationRoot configuration)
         :base()
         {
             _environment = environment;
             _multiSourcePlaylistRepository = multiSourcePlaylistRepository;
             _logger = loggerFactory.CreateLogger("TokenAuthController");  
+            _configuration = configuration;
         }
         [HttpPut("Login/{rememberme}")]
         [AllowAnonymous]
@@ -76,7 +84,7 @@ namespace PlayList
         }
         [HttpPost("Register/{rememberme}")]
         [AllowAnonymous]
-        public IActionResult Register(bool rememberme, [FromBody]User user)
+        public async Task<IActionResult> Register(bool rememberme, [FromBody]User user)
         {
             User existUser = _multiSourcePlaylistRepository.GetAllUsers().FirstOrDefault(u => u.Username == user.Username);
 
@@ -89,6 +97,46 @@ namespace PlayList
                 var uploads = Path.Combine(_environment.ContentRootPath,
                 "uploads", userfileFolder);
                 Directory.CreateDirectory(uploads);
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                    _configuration["Production:StorageConnectionString"]);
+
+                CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+                // Get a reference to the file share we created previously.
+                CloudFileShare share = fileClient.GetShareReference(userfileFolder);
+                share.Properties.Quota = 1;
+                await share.CreateIfNotExistsAsync();
+                CloudFileDirectory userDir = null;
+                // Ensure that the share exists.
+                if (await share.ExistsAsync())
+                {
+                    // Get a reference to the root directory for the share.
+                    CloudFileDirectory rootDir = share.GetRootDirectoryReference();
+                    // Get a reference to the directory we created previously.
+                    userDir = rootDir.GetDirectoryReference("audio");
+                    await userDir.CreateIfNotExistsAsync();
+                    // Ensure that the directory exists.
+                    if (!await userDir.ExistsAsync())
+                    {
+                        return Json(new RequestResult
+                        {
+                            State = RequestState.Failed,
+                            Msg = "Cannot create folder to cloud."
+                        });
+                        /*totalSize = await isThereDiscSpaceInAzure(userDir);
+                        if((totalSize)/bytesToMegaBytes > 1000)
+                        {
+                            return "NO_DISC_SPACE";
+                        }*/
+                    }
+                }
+                else
+                {
+                    return Json(new RequestResult
+                    {
+                        State = RequestState.Failed,
+                        Msg = "Cannot create share to cloud."
+                    });
+                }
                 user.Password = hashedPW;
                 user.FileFolder = userfileFolder;
                 _logger.LogCritical(JsonConvert.SerializeObject(user));

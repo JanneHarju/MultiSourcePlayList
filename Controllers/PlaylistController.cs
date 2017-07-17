@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 
@@ -21,15 +23,18 @@ namespace PlayList.Controllers
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _environment;
+        private IConfigurationRoot _configuration { get; }
         public PlaylistController(
             IHostingEnvironment environment,
             IMultiSourcePlaylistRepository multiSourcePlaylistRepository
-            ,ILoggerFactory loggerFactory)
+            ,ILoggerFactory loggerFactory,
+            IConfigurationRoot configuration)
          : base()
         {
             _environment = environment;
             _multiSourcePlaylistRepository = multiSourcePlaylistRepository;
-            _logger = loggerFactory.CreateLogger("PlaylistController");  
+            _logger = loggerFactory.CreateLogger("PlaylistController"); 
+            _configuration = configuration;
         }
         // GET api/values
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
@@ -116,7 +121,7 @@ namespace PlayList.Controllers
         // DELETE api/values/5
         [HttpDelete("{id}")]
         [Authorize("Bearer")]
-        public void Delete(int id)
+        public async Task<string> Delete(int id)
         {
 
             var claimsIdentity = User.Identity as ClaimsIdentity;
@@ -133,19 +138,19 @@ namespace PlayList.Controllers
                 
                     if(!_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
                     {
-                        var filePath = Path.Combine(
-                            _environment.ContentRootPath,
-                            "uploads",
+                        if(!await CloudHelper.RemoveFileFromCloud(
+                            _configuration["Production:StorageConnectionString"],
                             user.FileFolder,
-                            address);
-                        
-                        _logger.LogCritical(filePath);
-                        System.IO.File.Delete(filePath);
+                            address))
+                        {
+                            return "FAILED";
+                        }
                     }
                 }
             }
             
             _multiSourcePlaylistRepository.DeletePlaylist(id);
+            return "SUCCESS";
         }
     }
 }

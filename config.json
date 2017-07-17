@@ -3,7 +3,9 @@
         "SqliteConnectionString": "Data Source=//Users//paiviharju//Documents//Database//MSPL.sqlite"
     },
     "Production": {
-        "SqlServerConnectionString": "Data Source=tcp:mspl.database.windows.net,1433;Initial Catalog=MSPL;User Id=JanneHarju@mspl.database.windows.net;Password=Rikalantie69;"
+        "SqlServerConnectionString": "Data Source=tcp:mspl.database.windows.net,1433;Initial Catalog=MSPL;User Id=JanneHarju@mspl.database.windows.net;Password=Rikalantie69;",
+        "StorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=musiple;AccountKey=6tvAy3S9dLNm71wUancnH8ZPqd+A01Q/B1oQ9VGAUCa4Mk3ClCe9BTrHQavz7c54X5mnNAwotFW1vDnM7n/zfQ==;EndpointSuffix=core.windows.net"
+
+    
     }
 } 
-

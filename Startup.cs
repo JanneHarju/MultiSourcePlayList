@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft;
 using Newtonsoft.Json;
 using PlayList.Controllers;
 using PlayList.Repositories;
@@ -56,6 +57,7 @@ namespace PlayList
                     options.UseSqlServer(connection)
                 );
             }
+            services.AddSingleton<IConfigurationRoot>(Configuration);
             // Enable the use of an [Authorize("Bearer")] attribute on methods and classes to protect.
             services.AddAuthorization(auth =>
             {

@@ -175,8 +175,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         if(audio)
                         {
                             audio.play();
-                            this.isplaying = true;
                         }
+                        this.isplaying = true;
                         break;
                     default:
                         break;
