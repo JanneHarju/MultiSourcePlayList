@@ -135,6 +135,7 @@ namespace PlayList.Controllers
                     fileTrack.Name = getTrackName(fullpath);//hanki bändi ja kappale mp3 tiedoston metasta
                     _multiSourcePlaylistRepository.PostTrack(fileTrack);
                     ++lastOrder;
+                    System.Threading.Thread.Sleep(200);
                     System.IO.Directory.EnumerateFiles(uploads).ToList().ForEach(x=>
                     {
                         System.IO.File.Delete(x);
