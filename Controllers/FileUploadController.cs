@@ -108,15 +108,9 @@ namespace PlayList.Controllers
                     {
                         if (file.Length > 0)
                         {
-                            try{
-                                using(var fileStream = file.OpenReadStream())
-                                {
-                                    await newfile.UploadFromStreamAsync(fileStream);
-                                }
-                            }
-                            catch(Exception ex)
+                            using(var fileStream = file.OpenReadStream())
                             {
-                                return ex.Message;
+                                await newfile.UploadFromStreamAsync(fileStream);
                             }
                         }
                     }
@@ -135,26 +129,11 @@ namespace PlayList.Controllers
                     fileTrack.Name = getTrackName(fullpath);//hanki bändi ja kappale mp3 tiedoston metasta
                     _multiSourcePlaylistRepository.PostTrack(fileTrack);
                     ++lastOrder;
-                    var canremove = false;
                     
-                    while(!canremove)
+                    System.IO.Directory.EnumerateFiles(uploads).ToList().ForEach(x=>
                     {
-                        try
-                        {
-                            counter++;
-                            System.Threading.Thread.Sleep(200);
-                            System.IO.Directory.EnumerateFiles(uploads).ToList().ForEach(x=>
-                            {
-                                System.IO.File.Delete(x);
-                            });
-                            canremove = true;
-                        }
-                        catch(Exception ex)
-                        {
-
-                        }
-                    }
-
+                        System.IO.File.Delete(x);
+                    });
                     
                 } catch(Exception ex) {
                     return ex.Message;
