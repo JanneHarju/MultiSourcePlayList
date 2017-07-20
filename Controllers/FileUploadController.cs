@@ -144,8 +144,8 @@ namespace PlayList.Controllers
                     {
                         System.IO.File.Delete(x);
                     });
-                } catch {
-                    return null;
+                } catch(Exception ex) {
+                    return ex.Message;
                 }
             }
             return "File was Uploaded";

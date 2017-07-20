@@ -77,6 +77,10 @@ export class FileUploadComponent implements OnInit {
                     var message = "No more disc space for you anymore";
                     alert(message);
                 }
+                else
+                {
+                    console.log(output.file.response);
+                }
                 this.loadingService.setLoading(false);
                 this.loadComplited.emit(null);
             }
