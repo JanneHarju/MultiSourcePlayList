@@ -220,6 +220,7 @@ namespace PlayList.Controllers
             if (stream != null)
             {
                 stream.Flush();
+                stream.Dispose();
             }
         }
     }
