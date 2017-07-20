@@ -185,7 +185,6 @@ namespace PlayList.Controllers
             var title = tagFile.Tag.Title;
             tagFile.Dispose();
             tempFile.CloseStream(tempFile.ReadStream);
-            tempFile.CloseStream(tempFile.WriteStream);
             _logger.LogCritical(artist);
             _logger.LogCritical(title);
             trackname = artist +" - "+title;
