@@ -95,7 +95,6 @@ namespace PlayList.Controllers
                 }
                 
             }
-            var counter = 0;
             foreach(var file in files)
             {
                 try {
@@ -129,17 +128,13 @@ namespace PlayList.Controllers
                     fileTrack.Name = getTrackName(fullpath);//hanki bändi ja kappale mp3 tiedoston metasta
                     _multiSourcePlaylistRepository.PostTrack(fileTrack);
                     ++lastOrder;
-                    
-                    System.IO.Directory.EnumerateFiles(uploads).ToList().ForEach(x=>
-                    {
-                        System.IO.File.Delete(x);
-                    });
+                    System.IO.File.Delete(fullpath);
                     
                 } catch(Exception ex) {
                     return ex.Message;
                 }
             }
-            return "File was Uploaded"+counter;
+            return "File was Uploaded";
         }
 
         private async Task<long> isThereDiscSpaceInAzure(CloudFileDirectory userDir)
