@@ -95,6 +95,7 @@ namespace PlayList.Controllers
                 }
                 
             }
+            var counter = 0;
             foreach(var file in files)
             {
                 try {
@@ -111,7 +112,8 @@ namespace PlayList.Controllers
                                 using(var fileStream = file.OpenReadStream())
                                 {
                                     await newfile.UploadFromStreamAsync(fileStream);
-                                    
+                                    fileStream.Flush();
+                                    fileStream.Dispose();
                                 }
                             }
                             catch(Exception ex)
@@ -135,20 +137,32 @@ namespace PlayList.Controllers
                     fileTrack.Name = getTrackName(fullpath);//hanki bändi ja kappale mp3 tiedoston metasta
                     _multiSourcePlaylistRepository.PostTrack(fileTrack);
                     ++lastOrder;
-                    while(!System.IO.File.Exists(fullpath))
+                    var canremove = false;
+                    
+                    while(!canremove)
                     {
-                        System.Threading.Thread.Sleep(200);
+                        try
+                        {
+                            counter++;
+                            System.Threading.Thread.Sleep(200);
+                            System.IO.Directory.EnumerateFiles(uploads).ToList().ForEach(x=>
+                            {
+                                System.IO.File.Delete(x);
+                            });
+                            canremove = true;
+                        }
+                        catch(Exception ex)
+                        {
+
+                        }
                     }
 
-                    System.IO.Directory.EnumerateFiles(uploads).ToList().ForEach(x=>
-                    {
-                        System.IO.File.Delete(x);
-                    });
+                    
                 } catch(Exception ex) {
                     return ex.Message;
                 }
             }
-            return "File was Uploaded";
+            return "File was Uploaded"+counter;
         }
 
         private async Task<long> isThereDiscSpaceInAzure(CloudFileDirectory userDir)
@@ -194,6 +208,7 @@ namespace PlayList.Controllers
             var title = tagFile.Tag.Title;
             tagFile.Dispose();
             tempFile.CloseStream(tempFile.ReadStream);
+            tempFile.CloseStream(tempFile.WriteStream);
             _logger.LogCritical(artist);
             _logger.LogCritical(title);
             trackname = artist +" - "+title;

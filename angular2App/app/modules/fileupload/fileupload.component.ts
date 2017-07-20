@@ -72,17 +72,17 @@ export class FileUploadComponent implements OnInit {
             this.readycount++;
             if(this.readycount >= this.filecount)
             {
-                if(output.file.response == "NO_DISC_SPACE")
-                {
-                    var message = "No more disc space for you anymore";
-                    alert(message);
-                }
-                else
-                {
-                    console.log(output.file.response);
-                }
                 this.loadingService.setLoading(false);
                 this.loadComplited.emit(null);
+            }
+            if(output.file.response == "NO_DISC_SPACE")
+            {
+                var message = "No more disc space for you anymore";
+                alert(message);
+            }
+            else
+            {
+                console.log(output.file.response);
             }
         }
     }
