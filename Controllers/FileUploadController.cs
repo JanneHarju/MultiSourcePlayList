@@ -112,13 +112,11 @@ namespace PlayList.Controllers
                                 using(var fileStream = file.OpenReadStream())
                                 {
                                     await newfile.UploadFromStreamAsync(fileStream);
-                                    fileStream.Flush();
-                                    fileStream.Dispose();
                                 }
                             }
                             catch(Exception ex)
                             {
-                                return "NO_DISC_SPACE";
+                                return ex.Message;
                             }
                         }
                     }
