@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +31,9 @@ namespace PlayList
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _environment;
         private IConfigurationRoot _configuration { get; }
-
+        private int azureFileCount;
+        private int azureUsage;
+        private int? azureQuota;
         public TokenAuthController(
             IHostingEnvironment environment,
             IMultiSourcePlaylistRepository multiSourcePlaylistRepository,
@@ -206,26 +209,23 @@ namespace PlayList
 
         [HttpGet]
         [Authorize("Bearer")]
-        public IActionResult GetUserInfo()
+        public async Task<IActionResult> GetUserInfo()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var Id = Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
             var user = _multiSourcePlaylistRepository.GetUser(Id);
-            var filePath = Path.Combine(
-                _environment.ContentRootPath,
-                "uploads",
-                user.FileFolder);
+            
             var youTubeTrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,1);
             var spotifyTrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,2);
             var mp3TrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,3);
             var trackCount = _multiSourcePlaylistRepository.GetUsersTrackCount(Id);
             var playlistCount = _multiSourcePlaylistRepository.GetUsersPlaylistCount(Id);
-
-            var directoryInfo = new DirectoryInfo(filePath);
-            var mp3fileAmount = directoryInfo.EnumerateFiles().Count();
-            var sizeInBytes = directoryInfo.EnumerateFiles().Sum(file=> file.Length);
+            var temp = await getAzureInfo(user.FileFolder);
+            var mp3fileAmount = azureFileCount;
+            var sizeInBytes = azureUsage;
             var sizeInMb = sizeInBytes / 1048576;//1024*1024
-            var usersMaxDirectorySize = 1000;
+            var quota = azureQuota;
+            var usersMaxDirectorySize = quota * 1000;
             return Json(new RequestResult
             {
                 State = RequestState.Success,
@@ -243,6 +243,51 @@ namespace PlayList
                             FirstName = user.Fname,
                             LastName = user.Lname }
             });
+        }
+
+        private async Task<string> getAzureInfo(string filefolder)
+        {
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                    _configuration["Production:StorageConnectionString"]);
+
+            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+            // Get a reference to the file share we created previously.
+            CloudFileShare share = fileClient.GetShareReference(filefolder);
+            CloudFileDirectory userDir = null;
+            // Ensure that the share exists.
+            if (await share.ExistsAsync())
+            {
+                var stats = await share.GetStatsAsync();
+                azureUsage = stats.Usage;
+                azureQuota = share.Properties.Quota;
+                // Get a reference to the root directory for the share.
+                CloudFileDirectory rootDir = share.GetRootDirectoryReference();
+                // Get a reference to the directory we created previously.
+                userDir = rootDir.GetDirectoryReference("audio");
+                // Ensure that the directory exists.
+                if (await userDir.ExistsAsync())
+                {
+                    var results = new List<IListFileItem>();
+                    FileContinuationToken token = null;
+                    try
+                    {
+                        do
+                        {
+                            FileResultSegment resultSegment = await userDir.ListFilesAndDirectoriesSegmentedAsync(token);
+                            results.AddRange(resultSegment.Results);
+                            token = resultSegment.ContinuationToken;
+                        }
+                        while (token != null);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        Console.ReadKey();
+                    }
+                    azureFileCount = results.Count;
+                }
+            }
+            return "SUCCESS";
         }
     }
 }
