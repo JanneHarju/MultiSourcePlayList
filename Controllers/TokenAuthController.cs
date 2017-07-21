@@ -32,7 +32,7 @@ namespace PlayList
         private readonly IHostingEnvironment _environment;
         private IConfigurationRoot _configuration { get; }
         private int azureFileCount;
-        private int azureUsage;
+        private long azureUsage;
         private int? azureQuota;
         public TokenAuthController(
             IHostingEnvironment environment,
@@ -257,8 +257,8 @@ namespace PlayList
             // Ensure that the share exists.
             if (await share.ExistsAsync())
             {
-                var stats = await share.GetStatsAsync();
-                azureUsage = stats.Usage;
+                //var stats = await share.GetStatsAsync();
+                //azureUsage = stats.Usage;//Usage in Gb
                 azureQuota = share.Properties.Quota;
                 // Get a reference to the root directory for the share.
                 CloudFileDirectory rootDir = share.GetRootDirectoryReference();
@@ -285,6 +285,16 @@ namespace PlayList
                         Console.ReadKey();
                     }
                     azureFileCount = results.Count;
+                    long sizeInBytes = 0;
+                    results.ForEach( x=>
+                    {
+                        if (x is CloudFile)
+                        {
+                            var cloudFile = (CloudFile) x;
+                            sizeInBytes += cloudFile.Properties.Length;
+                        }
+                    });
+                    azureUsage = sizeInBytes;
                 }
             }
             return "SUCCESS";
