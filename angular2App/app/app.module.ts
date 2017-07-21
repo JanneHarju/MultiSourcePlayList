@@ -27,6 +27,7 @@ import { QueueComponent } from './modules/queue/queue.component';
 import { MainComponent} from './modules/main/main.component';
 import { ModalComponent} from './modules/modal/modal.component';
 import { SafePipe} from './modules/shared/safepipe';
+import { SafeValuePipe} from './modules/shared/safevaluepipe';
 import { ColorPipe} from './modules/shared/colorpipe';
 import { DisplayTimePipe} from './modules/shared/displaytimepipe';
 
@@ -71,6 +72,7 @@ import './rxjs-extensions';
     QueueComponent,
     ModalComponent,
     SafePipe,
+    SafeValuePipe,
     ColorPipe,
     DisplayTimePipe
   ],
