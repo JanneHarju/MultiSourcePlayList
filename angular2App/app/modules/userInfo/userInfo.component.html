@@ -64,6 +64,6 @@
     <div align="left" class="col-xs-12 col-sm-6 meterclass">
         <meter min="0" [value]="userInfo.UsedDiscSpace | safevalue" [max]="userInfo.MaxDiscSpace | safevalue">
         </meter>
-        <div align=center class="valuefield">{{(userInfo.UsedDiscSpace / userInfo.MaxDiscSpace)*100}} %</div>
+        <div align=center class="valuefield">{{disckUsageProcent | number : '1.2-2' }} %</div>
     </div>
 </div>

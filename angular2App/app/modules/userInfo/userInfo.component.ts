@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 
 export class UserInfoComponent implements OnInit {
     userInfo: UserInfo = new UserInfo();
+    disckUsageProcent: number = 0.0;
     constructor(
         private authService: AuthService,
         private router: Router)
@@ -27,6 +28,7 @@ export class UserInfoComponent implements OnInit {
         {
             var info = res.Data as UserInfo;
             this.userInfo = info;
+            this.disckUsageProcent = (this.userInfo.UsedDiscSpace / this.userInfo.MaxDiscSpace)*100;
         })
         .catch(err=>
         {
