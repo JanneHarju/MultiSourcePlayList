@@ -40,6 +40,7 @@ export interface SpotifyOptions {
   public?: boolean,
   name?: string,
   position_ms?: number,
+  volume_percent?: number,
   code?: string,
   redirect_uri?: string,
   grant_type?: string,
@@ -204,6 +205,18 @@ export class SpotifyService {
         return this.api({
             method: 'put',
             url: `/me/player/seek`,
+            search: options,
+            headers: this.getHeaders(true)
+        })
+        .toPromise()
+        .then(res => res.json())
+        .catch(err=> this.handlePromiseError(err));
+    }
+    setVolume(options?: SpotifyOptions) {
+        options = options || {};
+        return this.api({
+            method: 'put',
+            url: `/me/player/volume`,
             search: options,
             headers: this.getHeaders(true)
         })

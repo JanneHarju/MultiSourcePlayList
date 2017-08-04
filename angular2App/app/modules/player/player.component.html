@@ -27,7 +27,12 @@
                     <a id="play" *ngIf="isplaying == false" (click)="play()" data-toggle="tooltip" title="Play" class="control-button glyphicon glyphicon-play"></a>
                     <a id="pause" *ngIf="isplaying == true" (click)="pause()" data-toggle="tooltip" title="Pause" class="control-button glyphicon glyphicon-pause"></a>
                     <a id="next" (click)="next()" data-toggle="tooltip" title="Next" class="control-button glyphicon glyphicon-step-forward"></a>
-                    <a id="lyrics" (click)="myLyricsModal.show(); $event.stopPropagation(); lyrics()" data-toggle="tooltip" title="Lyrics" class="control-button glyphicon glyphicon-align-center"></a>                    
+                    <a id="lyrics" (click)="myLyricsModal.show(); $event.stopPropagation(); lyrics()" data-toggle="tooltip" title="Lyrics" class="control-button glyphicon glyphicon-align-center"></a>
+                    
+                    <div id="vol-control">
+                        <span class="glyphicon glyphicon-volume-up"></span>
+                        <input  type="range" min="0" max="100" step="1" [(ngModel)]="volume" (change)="setVolume()" title="Volume"/>
+                    </div>
                 </div>
             </div>
         </div>

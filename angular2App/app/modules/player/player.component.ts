@@ -39,7 +39,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     isplaying: boolean = false;
 
     localFilePath: string = "api/audio/";
-
+    volume: number = 50;
     constructor(
         private infoService: TrackService,
         private playerService: PlayerService,
@@ -55,7 +55,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
     {
         //this.setProgress(0);
         //this.duration = 0;
-        
+        let vol = localStorage.getItem('musiple-volume');
+        if(vol)
+        {
+            this.volume = +vol;
+        }
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
         {
             this.track = track;
@@ -140,6 +144,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     
     play(trackUri?: string)
     {
+
         if(this.track.Address)
         {
             this.disableProgressUpdate = true;
@@ -154,17 +159,21 @@ export class PlayerComponent implements OnInit, OnDestroy {
                             {
                                 this.player.loadVideoById(trackUri);
                             }
+                            this.player.setVolume(this.volume/4);
                             this.player.playVideo();
                             this.isplaying = true;
                         }
                         break;
                     case 2://spotify
-                        
                         this.player.pauseVideo();
                         /*let iframe = document.getElementById('spotify');
                         let doc = (<HTMLIFrameElement>iframe).contentDocument 
                         let playbutton = doc.getElementById("play-button");
                         playbutton.click();*/
+                        this.spotifyService.setVolume({volume_percent: this.volume}).then(res =>
+                        {
+                            //Onnistui
+                        });
                         this.playSpotify(trackUri);
                         break;
                     case 3://mp3
@@ -175,6 +184,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         if(audio)
                         {
                             audio.play();
+                            audio.volume = this.volume/250;
                         }
                         this.isplaying = true;
                         break;
@@ -189,6 +199,41 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.timerId = this.st.subscribe('1sec', e => this.callback());
             
             this.disableProgressUpdate = false;
+        }
+    }
+    setVolume()
+    {
+        
+        localStorage.setItem('musiple-volume', this.volume.toString());
+        if(this.track != null)
+        {
+            if(this.track.Address)
+            {
+                switch (this.track.Type) {
+                    case 1://youtube
+                        if(this.player)
+                        {
+                            
+                            this.player.setVolume(this.volume/4);
+                        }
+                        break;
+                    case 2://spotify
+                        this.spotifyService.setVolume({volume_percent: this.volume}).then(res =>
+                        {
+                            //Onnistui
+                        });
+                        break;
+                    case 3://mp3
+                        let audio = (<HTMLAudioElement>document.getElementById("audio1"));
+                        if(audio)
+                        {
+                            audio.volume = this.volume/250;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
     pause()
@@ -266,7 +311,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     {
         
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-        
+        audio.volume = this.volume/250;
         
         this.duration = audio.duration*1000;
     }
