@@ -91,7 +91,8 @@ import './rxjs-extensions';
             redirectUri: 'http://musiple.azurewebsites.net/callback.html',
             //redirectUri: 'http://localhost:8080/callback.html',
             scope: ['user-read-private',
-            'user-modify-playback-state'],
+            'user-modify-playback-state',
+            'user-read-playback-state'],
             // If you already have an authToken
             authToken: localStorage.getItem('spotify-access-token')
         }
