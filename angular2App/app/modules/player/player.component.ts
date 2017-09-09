@@ -4,7 +4,7 @@ import { Track } from '../../models/track';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { SpotifyService } from '../../services/spotify.service';
-import { Location }                 from '@angular/common';
+import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs/Subscription';
 import { SimpleTimer } from 'ng2-simple-timer';
@@ -37,7 +37,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     shuffle: boolean = false;
     disableProgressUpdate: boolean = false;
     isplaying: boolean = false;
-
+    audioScale: number = 300;
+    YTScale: number = 4;
     localFilePath: string = "api/audio/";
     volume: number = 50;
     constructor(
@@ -159,7 +160,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                             {
                                 this.player.loadVideoById(trackUri);
                             }
-                            this.player.setVolume(this.volume/4);
+                            this.player.setVolume(this.volume/this.YTScale);
                             this.player.playVideo();
                             this.isplaying = true;
                         }
@@ -184,7 +185,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         if(audio)
                         {
                             audio.play();
-                            audio.volume = this.volume/250;
+                            audio.volume = this.volume/this.audioScale;
                         }
                         this.isplaying = true;
                         break;
@@ -214,7 +215,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         if(this.player)
                         {
                             
-                            this.player.setVolume(this.volume/4);
+                            this.player.setVolume(this.volume/this.YTScale);
                         }
                         break;
                     case 2://spotify
@@ -227,7 +228,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
                         if(audio)
                         {
-                            audio.volume = this.volume/250;
+                            audio.volume = this.volume/this.audioScale;
                         }
                         break;
                     default:
@@ -311,7 +312,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     {
         
         let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-        audio.volume = this.volume/250;
+        audio.volume = this.volume/this.audioScale;
         
         this.duration = audio.duration*1000;
     }
