@@ -479,7 +479,7 @@ export class SpotifyService {
                         localStorage.setItem('spotify-refresh-token', body.refresh_token);
                     }
                     
-                    var expiresIn = body.expires_in;
+                    var expiresIn = +body.expires_in;
                     this.startRefreshTokenTimer(expiresIn);
                     this.authCompleted = true;
                     if(!this.authenticationComplited)

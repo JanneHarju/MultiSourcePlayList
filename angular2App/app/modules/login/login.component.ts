@@ -47,26 +47,10 @@ export class LoginComponent implements OnInit {
 
         }
     }
-    login() {
-        this.authService.login(this.rememberMe, this.loginUser).then(
-            result => {
-                if (result.State == 1) {
-                    this.router.navigate(["/main"]).then(navi=>
-                    {
-                        this.spotifyService.login(false).then(result => {
-                        });
-                    });
-                    
-                    
-                } else {
-                    alert(result.Msg);
-                }
-            }
-        )
-    }
-    registerUser()
-    {
-        this.authService.register(this.rememberMe, this.loginUser).then(
+    submit() {
+        if (this.register)
+        {
+            this.authService.register(this.rememberMe, this.loginUser).then(
             result => {
                 if (result.State == 1) {
 
@@ -78,8 +62,26 @@ export class LoginComponent implements OnInit {
                 } else {
                     alert(result.Msg);
                 }
-            }
-        )
+            });
+        }
+        else
+        {
+            this.authService.login(this.rememberMe, this.loginUser).then(
+                result => {
+                    if (result.State == 1) {
+                        this.router.navigate(["/main"]).then(navi=>
+                        {
+                            this.spotifyService.login(false).then(result => {
+                            });
+                        });
+                        
+                        
+                    } else {
+                        alert(result.Msg);
+                    }
+                }
+            );
+        }
     }
     registerState()
     {

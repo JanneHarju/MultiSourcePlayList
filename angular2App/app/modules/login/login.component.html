@@ -1,17 +1,50 @@
 <div class="container">
 
-    <form class="form-signin">
+    <form class="form-signin" (ngSubmit)="submit()" #loginForm="ngForm">
         <h1>Musiple</h1>
         <h2 class="form-signin-heading">Please log in</h2>
-        <label for="inputEmail" class="sr-only">User name</label>
-        <input [(ngModel)]="loginUser.Username" type="username" name="username" id="inputEmail" class="form-control" placeholder="User name" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input [(ngModel)]="loginUser.Password" type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-        <label *ngIf="register" for="inputFname" class="sr-only">First name</label>
-        <input *ngIf="register" [(ngModel)]="loginUser.Fname" type="username" name="firstname" id="inputFirstname" class="form-control" placeholder="First name" required>
-        <label *ngIf="register" for="inputLname" class="sr-only">Last name</label>
-        <input *ngIf="register" [(ngModel)]="loginUser.Lname" type="username" name="lastname" id="inputLastname" class="form-control" placeholder="Last name" required>
-        
+        <div>
+            <label for="username" class="sr-only">User name</label>
+            <input [(ngModel)]="loginUser.Username" type="username" name="username" #userName="ngModel" id="inputEmail" class="form-control" placeholder="User name" minlength="4" required autofocus>
+            <div *ngIf="userName.invalid && (userName.dirty || userName.touched)"
+                class="alert alert-danger">
+                <div *ngIf="userName.errors.required">
+                    User name is required
+                </div>
+                <div *ngIf="userName.errors.minlength">
+                    User name must be at least 4 characters long.
+                </div>
+            </div>
+        </div>
+        <div>
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input [(ngModel)]="loginUser.Password" type="password" name="password" #password="ngModel" id="inputPassword" class="form-control" placeholder="Password" minlength="4" required>
+            <div *ngIf="password.invalid && (password.dirty || password.touched)"
+                class="alert alert-danger">
+                <div *ngIf="password.errors.required">
+                    Password is required
+                </div>
+                <div *ngIf="password.errors.minlength">
+                    Password must be at least 4 characters long.
+                </div>
+            </div>
+        </div>
+        <div *ngIf="register">
+            <label for="inputFname" class="sr-only">First name</label>
+            <input [(ngModel)]="loginUser.Fname" type="username" name="firstname" #firstname="ngModel" id="inputFirstname" class="form-control" placeholder="First name" required>
+            <div [hidden]="firstname.valid || firstname.pristine"
+                class="alert alert-danger">
+            First name is required
+            </div>
+        </div>
+        <div *ngIf="register">
+            <label for="inputLname" class="sr-only">Last name</label>
+            <input [(ngModel)]="loginUser.Lname" type="password" name="lastname" #lastname="ngModel" id="inputLastname" class="form-control" placeholder="Last name" required>
+            <div [hidden]="lastname.valid || lastname.pristine"
+                class="alert alert-danger">
+            Last name is required
+            </div>
+        </div>
         <a *ngIf="register == false" (click)="registerState()">Register</a>
 
         <a *ngIf="register" (click)="loginState()">Login</a>
@@ -22,13 +55,13 @@
                  Remember me
             </label>
         </div>
-        <button *ngIf="register == false" (click)="login()" class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
-        <button *ngIf="register" (click)="registerUser()" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+        <button *ngIf="register == false" [disabled]="!loginForm.form.valid" class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+        <button *ngIf="register" [disabled]="!loginForm.form.valid" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
     </form>
 
 </div>
 <footer class="footer">
     <div class="container">
-    <p class="text-muted">Musiple version 0.5.2</p>
+    <p class="text-muted">Musiple version 0.5.3</p>
     </div>
 </footer>
