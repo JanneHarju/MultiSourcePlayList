@@ -41,11 +41,177 @@
                     User info
                     </a>
                 </li>
+                <li>
+                    <a (click)="helpModal.show()">
+                    Help
+                    </a>
+                </li>
+                <li>
+                    <a (click)="aboutModal.show()">
+                    About
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
 </div>
-
+<!--help modal-->
+ <my-modal class="mymodal" #helpModal>
+    <div class="app-modal-header">
+        <h1>Help</h1>
+    </div>
+    <div class="app-modal-body">
+        <ol class="infoarea">
+            <li>
+                If you face any issues try to refresh your browser.
+                <ol type="a">
+                    <li>
+                        If this doesn't fix issue you counter try to force refresh your browser by pressing shift + refresh button
+                    </li>
+                </ol>
+            </li>
+            <li>
+                If spotify won't start to play try to press Change spotify user and confirm dialog by pressing OK.
+                <ol type="a">
+                    <li>
+                        This might occure if you open app yesterday and spotify token is expired (token expired every 1h, but token is refreshed automatically when app is active)
+                    </li>
+                </ol>
+            </li>
+            <li>
+                If spotify still won't start to play try to activate your spotify application by start playing any track.
+                <ol type="a">
+                    <li>
+                        This application assume that you have spotify application active when you start playing track.
+                    </li>
+                    <li>
+                        You must have Spotify Premium to control Spotify remotely.
+                    </li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+    <div class="app-modal-footer">
+        <button class="btn btn-primary" (click)="helpModal.hide()">Close</button>
+    </div>
+</my-modal>
+<!--help modal-->
+ <my-modal class="mymodal" #aboutModal>
+    <div class="app-modal-header">
+        <h1>Musiple 0.54</h1>
+    </div>
+    <div class="app-modal-body">
+        <div class="infoarea">
+            <h2>Author Janne Harju</h2>
+            <h3>Used components:</h3>
+            <ol>
+                <li>
+                    .Net Core in backend
+                </li>
+                <li>
+                    Angular (4.1.2) in fronend
+                </li>
+                <li>
+                    Spotify API
+                </li>
+                <li>
+                    Google's Youtube API
+                </li>
+                <li>
+                    ng2-youtube-player for playing YouTube videos
+                </li>
+                <li>
+                    ng2-dnd in drag and drop track ordering
+                </li>
+                <li>
+                    ngx-uploader in file upload. (drag and drop file or select file)
+                </li>
+                <li>
+                    ng2-simple-timer with every timer application needed
+                </li>
+                <li>
+                    MusixMatch API for lyrics
+                </li>
+                <li>
+                    Azure for deploy
+                </li>
+                <li>
+                    Entity Framework with SQL Server
+                </li>
+            </ol>
+            <h3>Features:</h3>
+            <ol>
+                <li>
+                    <ol type="a">
+                        <li>Spotify</li>
+                        <li>Search</li>
+                        <li>Play track on active spotify device which support Spotify Connect</li>
+                            <ol>
+                                <li>Application doesn't support yet device selection</li>
+                            </ol>
+                        <li>Browse spotify artists and albums</li>
+                        <li>Load current spotify users Spotify playlists</li>
+                            <ol>
+                                <li>User can add whole playlist to local playlist at once</li>
+                            </ol>
+                        <li>Seek to position</li>
+                        <li>Change spotify user</li>
+                        <li>User must have Spotify premium to use spotify with this application</li>
+                    </ol>
+                </li>
+                <li>
+                    Youtube
+                    <ol type="a">
+                        <li>Search</li>
+                        <li>Play (video is hidden only video sound is heard)</li>
+                    </ol>
+                </li>
+                <li>
+                    Custom playlists
+                    <ol type="a">
+                        <li>Create playlist which contains tracks from spotify and youtube</li>
+                        <li>Shuffle playlist</li>
+                        <li>Rename playlist</li>
+                        <li>Order playlist by drag and drop</li>
+                        <li>Remove track from playlist</li>
+                    </ol>
+                </li>
+                <li>
+                    MP3 files
+                    <ol type="a">
+                        <li>Every user have 1Gb space for own MP3 files. More can be get if needed and asked(for now).</li>
+                        <li>MP3 files are stored at Azure cloud.</li>
+                        <li>MP3 files can be used with any devices (not like in spotify which support only local files)</li>
+                        <li>Only uploader can use own MP3 files. Other users can't see or use other users' files.</li>
+                    </ol>
+                </li>
+                <li>
+                    MusixMatch
+                    <ol type="a">
+                        <li>Find lyrics. (find also lyrics for youtube videos if youtube video name is "artisname - trackname" )</li>
+                    </ol>
+                </li>
+                <li>
+                    Authentication
+                    <ol type="a">
+                        <li>Login</li>
+                        <li>Register</li>
+                        <li>Remember me</li>
+                    </ol>
+                </li>
+                <li>
+                    General
+                    <ol type="a">
+                        <li>Shuffle is real shuffle. (Not like in spotify) So same song can be played again.</li>
+                    </ol>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="app-modal-footer">
+        <button class="btn btn-primary" (click)="aboutModal.hide()">Close</button>
+    </div>
+</my-modal>
 <!--<nav class="navbar navbar-default navbar-static-top">
     <div class="container">
         <div class="navbar-header">
