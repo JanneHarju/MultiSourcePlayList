@@ -86,9 +86,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.subscriptionPlayStatus = this.spotifyService.getPlayStatus().subscribe(playStatus =>
         {
             this.playStatus = playStatus;
-            this.setProgress(this.playStatus.progress_ms);
-            if(this.playStatus.item)
-                this.duration = this.playStatus.item.duration_ms;
+            if(this.track.Type == 2)
+            {
+                this.setProgress(this.playStatus.progress_ms);
+                if(this.playStatus.item)
+                    this.duration = this.playStatus.item.duration_ms;
+            }
         });
     } 
     setProgress(newprogress: number)

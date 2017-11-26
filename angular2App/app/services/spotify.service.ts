@@ -186,18 +186,27 @@ export class SpotifyService {
     
     pause(options?: SpotifyOptions) {
         options = options || {};
-        
-        this.playStatus.is_playing = false;
-        this.setPlayStatus(this.playStatus);
-        this.st.delTimer('spotify');
-        return this.api({
-            method: 'put',
-            url: `/me/player/pause`,
-            search: options,
-            headers: this.getHeaders(true)
-        }).toPromise()
-        .then(res => res.json())
-        .catch(err=> this.handlePromiseError(err));
+        if( this.playStatus.is_playing )
+        {
+            this.playStatus.is_playing = false;
+            this.setPlayStatus(this.playStatus);
+            this.st.delTimer('spotify');
+            return this.api({
+                method: 'put',
+                url: `/me/player/pause`,
+                search: options,
+                headers: this.getHeaders(true)
+            }).toPromise()
+            .then(res => res.json())
+            .catch(err=> this.handlePromiseError(err));
+        }
+        else
+        {
+            return new Promise<Response>((resolve, reject) => {
+                resolve();
+                // the resolve / reject functions control the fate of the promise
+            });
+        }
     }
 
     seek(options?: SpotifyOptions) {
