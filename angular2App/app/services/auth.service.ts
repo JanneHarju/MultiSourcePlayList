@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Headers, Http, Response, RequestOptions } from "@angular/http";
-
 import { Router, CanActivate } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthService } from "../../services/auth.service";
 import { SpotifyService } from '../../services/spotify.service';
@@ -17,7 +18,6 @@ export class LoginComponent implements OnInit {
     public register: boolean;
     rememberMe: boolean = false;
     //private postStream: Subscription;
-
     constructor(
         private authService: AuthService,
         private spotifyService: SpotifyService,
@@ -47,40 +47,43 @@ export class LoginComponent implements OnInit {
 
         }
     }
-    submit() {
-        if (this.register)
+    submit(loginForm : NgForm) {
+        if (loginForm.valid)
         {
-            this.authService.register(this.rememberMe, this.loginUser).then(
-            result => {
-                if (result.State == 1) {
-
-                    this.router.navigate(["/main"]).then(navi =>
-                    {
-                        this.spotifyService.login(false).then(result => {
-                        });
-                    });
-                } else {
-                    alert(result.Msg);
-                }
-            });
-        }
-        else
-        {
-            this.authService.login(this.rememberMe, this.loginUser).then(
+            if (this.register)
+            {
+                this.authService.register(this.rememberMe, this.loginUser).then(
                 result => {
                     if (result.State == 1) {
-                        this.router.navigate(["/main"]).then(navi=>
+
+                        this.router.navigate(["/main"]).then(navi =>
                         {
                             this.spotifyService.login(false).then(result => {
                             });
                         });
-                        
-                        
                     } else {
                         alert(result.Msg);
                     }
-                }
-            );
+                });
+            }
+            else
+            {
+                this.authService.login(this.rememberMe, this.loginUser).then(
+                    result => {
+                        if (result.State == 1) {
+                            this.router.navigate(["/main"]).then(navi=>
+                            {
+                                this.spotifyService.login(false).then(result => {
+                                });
+                            });
+                            
+                            
+                        } else {
+                            alert(result.Msg);
+                        }
+                    }
+                );
+            }
         }
     }
     registerState()
