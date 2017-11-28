@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
     selector: 'my-tracklist',
     templateUrl: 'tracklist.component.html',
-    styleUrls: [ './tracklist.component.less' ],
+    styleUrls: [ './tracklist.component.css' ],
 })
 export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
 

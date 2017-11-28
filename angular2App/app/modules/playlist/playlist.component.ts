@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
     selector: 'my-playlist',
     templateUrl: 'playlist.component.html',
-    styleUrls: [ './playlist.component.less' ]
+    styleUrls: [ './playlist.component.css' ]
 })
 
 export class PlaylistComponent implements OnInit, OnDestroy {

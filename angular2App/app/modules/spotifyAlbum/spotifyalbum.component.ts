@@ -21,7 +21,7 @@ import 'rxjs/add/operator/toPromise';
 @Component({
     selector: 'my-spotifyalbum',
     templateUrl: 'spotifyalbum.component.html',
-    styleUrls: [ './spotifyalbum.component.less' ],
+    styleUrls: [ './spotifyalbum.component.css' ],
 })
 
 export class SpotifyAlbumComponent implements OnInit, OnDestroy {

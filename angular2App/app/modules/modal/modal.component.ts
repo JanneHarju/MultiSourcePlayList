@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
     selector: 'my-modal',
     templateUrl: 'modal.component.html',
-    styleUrls: [ './modal.component.less' ],
+    styleUrls: [ './modal.component.css' ],
 })
 
 export class ModalComponent {

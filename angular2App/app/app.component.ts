@@ -7,7 +7,7 @@ import '../style/app.css';
   selector: 'my-app',
   templateUrl: 'app.component.html',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: [ './app.component.less', './app2.component.css']
+  styleUrls: [ './app3.component.css', './app2.component.css']
 })
 export class AppComponent
 {

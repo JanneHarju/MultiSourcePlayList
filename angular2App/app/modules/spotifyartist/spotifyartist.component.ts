@@ -22,7 +22,7 @@ import 'rxjs/add/operator/toPromise';
 @Component({
     selector: 'my-spotifyartist',
     templateUrl: 'spotifyartist.component.html',
-    styleUrls: [ './spotifyartist.component.less' ],
+    styleUrls: [ './spotifyartist.component.css' ],
 })
 
 export class SpotifyArtistComponent implements OnInit, OnDestroy {

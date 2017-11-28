@@ -16,7 +16,7 @@ import { AuthService } from "../../services/auth.service";
 @Component({
     selector: 'my-player',
     templateUrl: 'player.component.html',
-    styleUrls: [ './player.component.less' ],
+    styleUrls: [ './player.component.css' ],
 })
 export class PlayerComponent implements OnInit, OnDestroy {
     //viewList: boolean = false;

@@ -45,11 +45,11 @@
 }
 
 #checkbox>input[type='checkbox']+i{
-  color:rgba(255,255,255,0.2); // color 1
+  color:rgba(255,255,255,0.2);
 }
 
 #checkbox>input[type='checkbox']:checked+i{
-  color:#fff; //color 2
+  color:#fff;
 }
 .previous
 {
@@ -57,7 +57,6 @@
 }
 .mymodal{
     z-index:9999;
-    //position: absolute;
 }
 .lyric
 {
@@ -115,11 +114,9 @@
 }
 
 .seekcontrols div.progress {
-	//width: 60px;
 	position: absolute;
 	top: 3px;
 	left: 5px;
-	//text-align: center;
     height: inherit;
     background-color: inherit;
     margin-bottom: 0;

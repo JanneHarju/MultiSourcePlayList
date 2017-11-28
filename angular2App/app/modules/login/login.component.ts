@@ -9,7 +9,7 @@ import { User } from '../../models/user';
 @Component({
     selector: "my-login",
     templateUrl: 'login.component.html',
-    styleUrls: [ './login.component.less' ]
+    styleUrls: [ './login.component.css' ]
 })
 
 export class LoginComponent implements OnInit {

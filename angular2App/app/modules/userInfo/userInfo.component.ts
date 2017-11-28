@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'my-userinfo',
     templateUrl: 'userinfo.component.html',
-    styleUrls: [ './userinfo.component.less' ],
+    styleUrls: [ './userinfo.component.css' ],
 })
 
 export class UserInfoComponent implements OnInit {

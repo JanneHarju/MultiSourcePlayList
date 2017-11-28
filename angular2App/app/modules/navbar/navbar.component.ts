@@ -9,7 +9,7 @@ import { UserInfo } from '../../models/userInfo';
 @Component({
     selector: 'my-navbar',
     templateUrl: 'navbar.component.html',
-    styleUrls: [ './navbar.component.less' ]
+    styleUrls: [ './navbar.component.css' ]
 })
 
 export class NavbarComponent implements OnInit, OnDestroy {

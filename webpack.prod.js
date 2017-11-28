@@ -5,6 +5,8 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+const webpackTools = require('@ngtools/webpack');
+const rxPaths = require('rxjs/_esm5/path-mapping');
 var helpers = require('./webpack.helpers');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
@@ -17,8 +19,8 @@ console.log('@@@@@@@@@ USING PRODUCTION @@@@@@@@@@@@@@@');
 module.exports = {
 
     entry: {
-        'vendor': './angular2App/vendor.ts',
         'polyfills': './angular2App/polyfills.ts',
+        'vendor': './angular2App/vendor.ts',
         'app': './angular2App/main-aot.ts' // AoT compilation
     },
 
@@ -30,7 +32,8 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.ts', '.js', '.json','.less', '.css', '.scss', '.html']
+        extensions: ['.ts', '.js', '.json','.less', '.css', '.scss', '.html'],
+        alias: rxPaths()
     },
 
     devServer: {
@@ -42,11 +45,8 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts$/,
-                loaders: [
-                    'awesome-typescript-loader',
-                    'angular-router-loader?aot=true&genDir=aot/'
-                ]
+                test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+                use: '@ngtools/webpack'
             },
             {
                 test: /\.(png|jpg|gif|woff|woff2|ttf|svg|eot)$/,
@@ -82,6 +82,10 @@ module.exports = {
 
     plugins: [
         extractLess,
+        new webpackTools.AngularCompilerPlugin({
+            tsConfigPath: './tsconfig-aot.json'
+            // entryModule: './angularApp/app/app.module#AppModule'
+        }),
         new CleanWebpackPlugin(
             [
                 './wwwroot/dist',
