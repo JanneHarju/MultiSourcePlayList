@@ -1,4 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { trigger,
+    state,
+    style,
+    transition,
+    animate } from '@angular/animations';
 import { SpotifyService } from '../../services/spotify.service';
 import { LoadingService } from '../../services/loading.service';
 import { Subscription } from 'rxjs/Subscription';
@@ -7,13 +12,23 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
   selector: 'my-main',
   templateUrl: 'main.component.html',
-  styleUrls: [ './main.component.css' ]
-  
+  styleUrls: [ './main.component.css' ],
+  animations: [
+        trigger('slideInOut', [
+        state('in', style({
+            display: 'none'
+        })),
+        state('out', style({
+            display: 'inherit'
+        })),
+    ])]
 })
 export class MainComponent implements OnInit, OnDestroy
 {
     loading: boolean = false;
     subscriptionLoading: Subscription;
+    menuState:string = 'in';
+    menuStateIn:boolean = true;
     constructor(
         private spotifyService: SpotifyService,
         private loadingService: LoadingService) { }
@@ -32,5 +47,10 @@ export class MainComponent implements OnInit, OnDestroy
     ngOnDestroy(): void
     {
         this.subscriptionLoading.unsubscribe();
+    }
+    toggleMenu() {
+        // 1-line if statement that toggles the value:
+        this.menuState = this.menuState === 'out' ? 'in' : 'out';
+        this.menuStateIn = this.menuState == 'in'
     }
 }

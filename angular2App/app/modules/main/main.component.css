@@ -10,6 +10,7 @@
 .box {
   height: 100%;
   width: 100%;
+  background-color: black;
 }
 .container-fluid{
   background-color: black;
@@ -49,4 +50,45 @@ div {
     height: 150px;
     background-color: black;
     width: 100%;
+}
+.shrink-button
+{
+    width: 100%;
+    height: 30px;
+    padding: 0px;
+    background: #242021;
+    color: white;
+    border: solid #595959 3px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+@media only screen and (max-width: 768px) {
+.shrink
+{
+    display: none;
+}
+
+}
+
+@media only screen and (max-width: 768px) and (min-width: 600px) {
+#container {
+    height: calc(100vh - 238px)!important;
+}
+}
+
+@media only screen and (max-width: 599px) {
+#container {
+    height: calc(100vh - 277px)!important;
+}
+}
+
+@media only screen and (min-width: 769px) {
+.shrink-button
+{
+    display: none;
+}
+.shrink
+{
+    display: inherit!important;
+}
 }
