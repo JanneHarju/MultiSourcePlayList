@@ -65,11 +65,17 @@ export class SpotifyService {
 
         config.apiBase = 'https://api.spotify.com/v1';
         config.accountApiBase = 'https://accounts.spotify.com';
+
+        this.st.newTimer('tokenFallback', 2);
+        this.tokenFallBackTimerId = this.st.subscribe('tokenFallback', e => this.tokenfallback());
     }
 
     trackEnd: boolean = false;
-    timerId: string;
+    playStatusTimerId: string;
     refreshTokenTimerId: string;
+    tokenFallBackTimerId: string;
+    tokenRefreshedLastTime: Date = new Date();
+    tokenRefreshed: boolean = false;
     currentTrackUri: string;
     lastCurrentTrackUri: string;
     lastProgress: number;
@@ -100,6 +106,16 @@ export class SpotifyService {
             this.setPlayStatus(playState);
             this.lastCurrentTrackUri = this.currentTrackUri;
         });
+    }
+    tokenfallback()
+    {
+        let currentTime = new Date();
+        if ((currentTime > this.tokenRefreshedLastTime) && this.tokenRefreshed)
+        {
+            console.log("New token please");
+            this.tokenRefreshed = false;
+            this.login(false);
+        }
     }
     setAuthenticationComplited(status: string)
     {
@@ -134,13 +150,14 @@ export class SpotifyService {
     {
         this.st.delTimer('spotify');
         this.st.newTimer('spotify', 1);
-        this.timerId = this.st.subscribe('spotify', e => this.callback());
+        this.playStatusTimerId = this.st.subscribe('spotify', e => this.callback());
     }
     startRefreshTokenTimer(expires_in: number)
     {
         console.log("settimer");
         //this.st.delTimer('spotify_refresh_token');
         this.st.newTimer('spotify_refresh_token', expires_in - 60);
+        this.setTokenRefreshedLastTime(expires_in);
         //this.st.newTimer('spotify_refresh_token', 30);
         this.ignore = true;
         this.refreshTokenTimerId = this.st.subscribe('spotify_refresh_token', e => this.getTokensByRefreshToken());
@@ -464,7 +481,14 @@ export class SpotifyService {
             } );
             
     }
-
+    setTokenRefreshedLastTime(expiresIn: number)
+    {
+        let current = new Date();
+        let time = current.getTime();
+        time += (expiresIn * 1000);
+        this.tokenRefreshedLastTime = new Date(time);
+        this.tokenRefreshed = true;
+    }
     getTokensByRefreshToken()
     {
         if(!this.ignore)
