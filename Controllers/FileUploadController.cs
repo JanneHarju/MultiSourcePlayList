@@ -27,13 +27,12 @@ namespace PlayList.Controllers
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
         private readonly IHostingEnvironment _environment;
         private readonly ILogger _logger;
-        private static long bytesToMegaBytes = 1048576;
-        private IConfigurationRoot _configuration { get; }
+        private IConfiguration _configuration { get; }
         public FileUploadController(
             IHostingEnvironment environment,
             ILoggerFactory loggerFactory,
             IMultiSourcePlaylistRepository multiSourcePlaylistRepository,
-            IConfigurationRoot configuration)
+            IConfiguration configuration)
         {
             _environment = environment;
             _logger = loggerFactory.CreateLogger("FileUploadController");  

@@ -1,5 +1,5 @@
 <div class="menu1">
-    <input class="form-control pull-left" #searchInput (keyup.enter)="search(searchInput.value); searchInput.value=''" placeholder="Search"/>
+    <input class="form-control pull-left" #searchInput (keyup.enter)="search(searchInput.value)" placeholder="Search"/>
     <div class="pull-right righttop">
         <div class="topright userInfo">
             <div>
@@ -98,7 +98,7 @@
 <!--help modal-->
  <my-modal class="mymodal" #aboutModal>
     <div class="app-modal-header">
-        <h1>Musiple 0.6.2</h1>
+        <h1>Musiple 0.7.0</h1>
     </div>
     <div class="app-modal-body">
         <div class="infoarea">
@@ -106,7 +106,7 @@
             <h3>Used components:</h3>
             <ol>
                 <li>
-                    .Net Core 1.1 in backend
+                    .Net Core 2.0 in backend
                 </li>
                 <li>
                     Angular (5.0.3) in fronend

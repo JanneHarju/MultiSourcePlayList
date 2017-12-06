@@ -19,7 +19,9 @@ using System.Threading.Tasks;
 using System.IO;
 using PlayList.Repositories;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace PlayList
 {
@@ -30,7 +32,7 @@ namespace PlayList
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _environment;
-        private IConfigurationRoot _configuration { get; }
+        private IConfiguration _configuration { get; }
         private int azureFileCount;
         private long azureUsage;
         private int? azureQuota;
@@ -38,7 +40,7 @@ namespace PlayList
             IHostingEnvironment environment,
             IMultiSourcePlaylistRepository multiSourcePlaylistRepository,
             ILoggerFactory loggerFactory,
-            IConfigurationRoot configuration)
+            IConfiguration configuration)
         :base()
         {
             _environment = environment;
@@ -184,18 +186,13 @@ namespace PlayList
             }
         }
 
-        private string GenerateToken(PlayList.Models.User user, DateTime expires)
+        private IActionResult GenerateToken(PlayList.Models.User user, DateTime expires)
         {
             var handler = new JwtSecurityTokenHandler();
-
             ClaimsIdentity identity = new ClaimsIdentity(
                 new GenericIdentity(user.Username, "TokenAuth"),
                 new[] { new Claim("Id", user.Id.ToString())}
             );
-            HttpContext.Authentication.SignInAsync("Bearer",
-                new ClaimsPrincipal(identity));
-            HttpContext.Authentication.SignInAsync("Cookie",
-                new ClaimsPrincipal(identity));
             var securityToken = handler.CreateToken(new SecurityTokenDescriptor
             {
                 Issuer = TokenAuthOption.Issuer,
@@ -204,7 +201,7 @@ namespace PlayList
                 Subject = identity,
                 Expires = expires
             });
-            return handler.WriteToken(securityToken);
+            return Ok(handler.WriteToken(securityToken));
         }
 
         [HttpGet]

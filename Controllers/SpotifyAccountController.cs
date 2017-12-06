@@ -17,7 +17,7 @@ using System.Text;
 
 namespace PlayList.Controllers
 {
-    [Produces("application/json")]
+    //[Produces("application/json")] Perkele
     [Route("api/spotifyaccount")]
     public class SpotifyAccountController : Controller
     {

@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Newtonsoft.Json;
 using PlayList.Controllers;
 using PlayList.Repositories;
@@ -26,19 +27,13 @@ namespace PlayList
     {
 
         private IHostingEnvironment CurrentEnvironment{ get; set; } 
-        public Startup(IHostingEnvironment env)
+        
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddJsonFile("config.json")
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
-            CurrentEnvironment = env;
+            Configuration = configuration;
+            CurrentEnvironment = environment;
         }
-
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -57,7 +52,7 @@ namespace PlayList
                     options.UseSqlServer(connection)
                 );
             }
-            services.AddSingleton<IConfigurationRoot>(Configuration);
+            services.AddSingleton<IConfiguration>(Configuration);
             // Enable the use of an [Authorize("Bearer")] attribute on methods and classes to protect.
             services.AddAuthorization(auth =>
             {
@@ -65,10 +60,32 @@ namespace PlayList
                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
                     .RequireAuthenticatedUser().Build());
             });
-            
-            /*services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<MultiSourcePlaylistContext>()
-                .AddDefaultTokenProviders();*/
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                IssuerSigningKey = TokenAuthOption.Key,
+                ValidAudience = TokenAuthOption.Audience,
+                ValidIssuer = TokenAuthOption.Issuer,
+                // When receiving a token, check that we've signed it.
+                ValidateIssuerSigningKey = true,
+                // When receiving a token, check that it is still valid.
+                ValidateLifetime = true,
+                // This defines the maximum allowable clock skew - i.e. provides a tolerance on the token expiry time 
+                // when validating the lifetime. As we're creating the tokens locally and validating them on the same 
+                // machines which should have synchronised time, this can be set to zero. Where external tokens are
+                // used, some leeway here could be useful.
+                ClockSkew = TimeSpan.FromMinutes(0)
+            };
+            // If you don't want the cookie to be automatically authenticated and assigned to HttpContext.User, 
+            // remove the CookieAuthenticationDefaults.AuthenticationScheme parameter passed to AddAuthentication.
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => 
+                {
+                    options.Cookie.Name = "access_token";
+                })
+                .AddJwtBearer(options => 
+                {
+                    options.TokenValidationParameters = tokenValidationParameters;
+                });
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
@@ -97,70 +114,8 @@ namespace PlayList
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
             var log = loggerFactory.CreateLogger("Startup");
-            /*#region Handle Exception
-            app.UseExceptionHandler(appBuilder =>
-            {
-                appBuilder.Use(async (context, next) =>
-                {
-                    var error = context.Features[typeof(IExceptionHandlerFeature)] as IExceptionHandlerFeature;
-
-                    //when authorization has failed, should retrun a json message to client
-                    if (error != null && error.Error is SecurityTokenExpiredException)
-                    {
-                        context.Response.StatusCode = 401;
-                        context.Response.ContentType = "application/json";
-
-                        await context.Response.WriteAsync(JsonConvert.SerializeObject(new RequestResult
-                        {
-                            State = RequestState.NotAuth,
-                            Msg = "token expired"
-                        }));
-                    }
-                    //when orther error, retrun a error message json to client
-                    else if (error != null && error.Error != null)
-                    {
-                        context.Response.StatusCode = 500;
-                        context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(JsonConvert.SerializeObject(new RequestResult
-                        {
-                            State = RequestState.Failed,
-                            Msg = error.Error.Message
-                        }));
-                    }
-                    //when no error, do next.
-                    else await next();
-                });
-            });
-            #endregion*/
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                IssuerSigningKey = TokenAuthOption.Key,
-                ValidAudience = TokenAuthOption.Audience,
-                ValidIssuer = TokenAuthOption.Issuer,
-                // When receiving a token, check that we've signed it.
-                ValidateIssuerSigningKey = true,
-                // When receiving a token, check that it is still valid.
-                ValidateLifetime = true,
-                // This defines the maximum allowable clock skew - i.e. provides a tolerance on the token expiry time 
-                // when validating the lifetime. As we're creating the tokens locally and validating them on the same 
-                // machines which should have synchronised time, this can be set to zero. Where external tokens are
-                // used, some leeway here could be useful.
-                ClockSkew = TimeSpan.FromMinutes(0)
-            };
-            #region UseJwtBearerAuthentication
-            app.UseJwtBearerAuthentication(new JwtBearerOptions()
-            {
-                AuthenticationScheme = "Bearer",
-                TokenValidationParameters = tokenValidationParameters
-            });
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                AuthenticationScheme = "Cookie",
-                CookieName = "access_token"
-            });
-            #endregion
+            
+            app.UseAuthentication();
             
             var angularRoutes = new[] {
                 "/login",

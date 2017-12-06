@@ -464,8 +464,6 @@ export class SpotifyService {
             .toPromise()
             .then((res: Response) => 
             {
-
-                console.log(res);
                 let body = res.json();
                 this.config.authToken = body.access_token;
                 localStorage.setItem('spotify-access-token', body.access_token);

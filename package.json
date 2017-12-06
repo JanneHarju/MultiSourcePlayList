@@ -1,5 +1,5 @@
 {
-  "name": "angular2-visualstudio",
+  "name": "musiple",
   "version": "1.0.0",
   "description": "",
   "main": "wwwroot/index.html",
@@ -10,7 +10,7 @@
   "license": "ISC",
   "scripts": {
     "ngc": "ngc -p ./tsconfig-aot.json",
-    "start": "concurrently \"webpack-dev-server --inline --hot --progress --port 8080\" \"ASPNETCORE_ENVIRONMENT=Production dotnet run\" ",
+    "start": "concurrently \"webpack-dev-server --inline --hot --progress --port 8080\" \"dotnet run --launch-profile Production\" ",
     "webpack-dev": "set NODE_ENV=development && webpack",
     "webpack-production": "set NODE_ENV=production && webpack",
     "build-dev": "npm run webpack-dev",

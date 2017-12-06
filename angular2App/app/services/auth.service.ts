@@ -30,12 +30,12 @@ export class AuthService implements CanActivate {
         return this.http.put("/api/tokenauth/Login/"+rememberme, user, options).toPromise().then(
             res => {
                 let result = res.json();
-                if (result.State == 1 && result.Data && result.Data.accessToken) {
+                if (result.State == 1 && result.Data && result.Data.accessToken.Value) {
                     if(this.rememberme)
                     {
-                        localStorage.setItem(this.tokeyKey, result.Data.accessToken);
+                        localStorage.setItem(this.tokeyKey, result.Data.accessToken.Value);
                     }
-                    sessionStorage.setItem(this.tokeyKey, result.Data.accessToken);
+                    sessionStorage.setItem(this.tokeyKey, result.Data.accessToken.Value);
                     this.setAuthenticationComplited(true);
                 }
                 else

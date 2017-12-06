@@ -23,12 +23,12 @@ namespace PlayList.Controllers
         private readonly IMultiSourcePlaylistRepository _multiSourcePlaylistRepository;
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _environment;
-        private IConfigurationRoot _configuration { get; }
+        private IConfiguration _configuration { get; }
         public PlaylistController(
             IHostingEnvironment environment,
             IMultiSourcePlaylistRepository multiSourcePlaylistRepository
             ,ILoggerFactory loggerFactory,
-            IConfigurationRoot configuration)
+            IConfiguration configuration)
          : base()
         {
             _environment = environment;
