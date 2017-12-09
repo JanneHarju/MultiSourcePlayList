@@ -78,9 +78,11 @@ namespace PlayList
             // If you don't want the cookie to be automatically authenticated and assigned to HttpContext.User, 
             // remove the CookieAuthenticationDefaults.AuthenticationScheme parameter passed to AddAuthentication.
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => 
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => 
                 {
                     options.Cookie.Name = "access_token";
+                    options.LoginPath = "/login";
+                    options.LogoutPath = "/login";
                 })
                 .AddJwtBearer(options => 
                 {
