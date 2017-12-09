@@ -64,7 +64,7 @@ namespace PlayList
 
                 var requestAt = DateTime.Now;
                 var expiresIn = requestAt + TokenAuthOption.GetExpiresSpan(rememberme);
-                var token = await GenerateToken(existUser, expiresIn);
+                var token = await GenerateToken(existUser, expiresIn, rememberme);
 
                 return Json(new RequestResult
                 {
@@ -153,7 +153,7 @@ namespace PlayList
                 {
                     var requestAt = DateTime.Now;
                     var expiresIn = requestAt + TokenAuthOption.GetExpiresSpan(rememberme);
-                    var token = await GenerateToken(newUser, expiresIn);
+                    var token = await GenerateToken(newUser, expiresIn, rememberme);
 
                     return Json(new RequestResult
                     {
@@ -186,19 +186,36 @@ namespace PlayList
             }
         }
 
-        private async Task<IActionResult> GenerateToken(PlayList.Models.User user, DateTime expires)
+        private async Task<IActionResult> GenerateToken(PlayList.Models.User user, DateTime expires, bool rememberme)
         {
             var handler = new JwtSecurityTokenHandler();
             ClaimsIdentity identity = new ClaimsIdentity(
                 new GenericIdentity(user.Username, "TokenAuth"),
                 new[] { new Claim("Id", user.Id.ToString())}
             );
+            AuthenticationProperties authProperties = null;
+            if (rememberme)
+            {
+                authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true
+                };
+            }
+            else
+            {
+                authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = expires
+                };
+            }
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             //await HttpContext.SignInAsync("Bearer",
             //    new ClaimsPrincipal(identity));
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity));
+                new ClaimsPrincipal(identity),
+                authProperties);
 
             var securityToken = handler.CreateToken(new SecurityTokenDescriptor
             {
