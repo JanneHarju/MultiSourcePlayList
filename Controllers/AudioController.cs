@@ -43,7 +43,7 @@ namespace PlayList.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> Get(int id)
+        public async Task<FileStreamResult> Get(int id)
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
@@ -80,19 +80,11 @@ namespace PlayList.Controllers
                 }
                 else
                 {
-                    return Json(new RequestResult
-                    {
-                        State = RequestState.Failed,
-                        Msg = "Cannot find folder from cloud."
-                    });
+                    return null;
                 }
             }
             else{
-                return Json(new RequestResult
-                {
-                    State = RequestState.Failed,
-                    Msg = "Cannot find share from cloud."
-                });
+                return null;
             }
             
             
@@ -121,7 +113,10 @@ namespace PlayList.Controllers
             Response.Headers.Remove("Cache-Control");
             var stream = new MemoryStream(audioArray, (int)startbyte, (int)desSize);
 
-            return File(stream, Response.ContentType);
+            return new FileStreamResult(stream, Response.ContentType)
+            {
+                FileDownloadName = track.Name
+            };
         }
         
     }
