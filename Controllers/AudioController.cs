@@ -43,7 +43,7 @@ namespace PlayList.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> Get(int id)
+        public async Task<FileStreamResult> Get(int id)
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
@@ -80,48 +80,22 @@ namespace PlayList.Controllers
                 }
                 else
                 {
-                    return Json(new RequestResult
-                    {
-                        State = RequestState.Failed,
-                        Msg = "Cannot find folder from cloud."
-                    });
+                    return null;
                 }
             }
             else{
-                return Json(new RequestResult
-                {
-                    State = RequestState.Failed,
-                    Msg = "Cannot find share from cloud."
-                });
+                return null;
             }
             
-            
-            long fSize = audioArray.Length;
-            long startbyte = 0;
-            long endbyte = fSize - 1;
-            int statusCode = 200;
-            var rangeRequest = Request.Headers["Range"].ToString();
-
-            if (rangeRequest != "")
-            {
-                string[] range = Request.Headers["Range"].ToString().Split(new char[] { '=', '-' });
-                startbyte = Convert.ToInt64(range[1]);
-                if (range.Length > 2 && range[2] != "") endbyte = Convert.ToInt64(range[2]);
-                if (startbyte != 0 || endbyte != fSize - 1 || range.Length > 2 && range[2] == "")
-                { statusCode = 206; }
-            }
-
-            long desSize = endbyte - startbyte + 1;
-            Response.StatusCode = statusCode;
             Response.ContentType = "audio/mp3";
             Response.Headers.Add("Content-Accept", Response.ContentType);
-            Response.Headers.Add("Content-Length", desSize.ToString());
-            Response.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}", startbyte, endbyte, fSize));
-            Response.Headers.Add("Accept-Ranges", "bytes");
             Response.Headers.Remove("Cache-Control");
-            var stream = new MemoryStream(audioArray, (int)startbyte, (int)desSize);
+            var stream = new MemoryStream(audioArray, 0, audioArray.Length);
 
-            return File(stream, Response.ContentType);
+            return new AudioStreamResult(stream, Response.ContentType)
+            {
+                FileDownloadName = track.Name
+            };
         }
         
     }
