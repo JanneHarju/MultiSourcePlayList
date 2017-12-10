@@ -90,7 +90,7 @@ namespace PlayList.Controllers
             Response.ContentType = "audio/mp3";
             Response.Headers.Add("Content-Accept", Response.ContentType);
             Response.Headers.Remove("Cache-Control");
-            var stream = new MemoryStream(audioArray, 0, audioArray.Length);
+            var stream = new MemoryStream(audioArray);
 
             return new AudioStreamResult(stream, Response.ContentType)
             {
