@@ -353,7 +353,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
         //console.error(audio.error.MEDIA_ERR_NETWORK);//2
         //console.error(audio.error.MEDIA_ERR_SRC_NOT_SUPPORTED);//4
         //console.error(audio.error.MS_MEDIA_ERR_ENCRYPTED);//undefined
-        alert("Some error occured when streaming mp3 file.");
+        alert("Some error occured when streaming mp3 file. Error code: " + audio.error.code);
+    }
+    loadeddata()
+    {
+        let audio = (<HTMLAudioElement>document.getElementById("audio1"));
+        if(audio && audio.readyState >= 2) {
+            audio.play();
+        }
     }
     changeprogressTo(seek: number)
     {

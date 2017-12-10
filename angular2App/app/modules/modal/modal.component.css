@@ -1,3 +1,10 @@
 .modal {
   background: rgba(0,0,0,0.6);
 }
+.right-top {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 35px;
+  width: 35px;
+}

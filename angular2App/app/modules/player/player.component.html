@@ -50,7 +50,7 @@
             <iframe id="spotify" (load)="onLoad(this)" [src]="track.address | safe" width="300" height="1" frameborder="0" allowtransparency="true"></iframe>
         </div>-->
         <!--style="visibility: hidden"--><!--[currentTime]="15" [duration]="{{duration}}" [currentTime]="{{progress}}" (loadedmetadata)="loadedmeadata()"-->
-            <audio (error)="error()" height="40" *ngIf="track.Type == 3" style="visibility: hidden"  (ended)="onAudioEnded()" (loadedmetadata)="loadedmeadata()" id="audio1" [src]="localFileAddress(track) | safe" controls="" autoplay type="audio/mpeg"><!--preload="auto">-->
+            <audio (error)="error()" height="40" *ngIf="track.Type == 3" style="visibility: hidden"  (ended)="onAudioEnded()" (loadedmetadata)="loadedmeadata()" (loadeddata)="loadeddata()" id="audio1" [src]="localFileAddress(track) | safe" controls="" type="audio/mpeg" preload="auto"><!--preload="auto">-->
             </audio>
     </div>
 </div>

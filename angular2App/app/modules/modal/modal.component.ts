@@ -26,4 +26,7 @@ export class ModalComponent {
       this.hide();
     }
   }
+  public close(): void {
+    this.hide();
+  }
 }
