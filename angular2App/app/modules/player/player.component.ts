@@ -308,8 +308,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     localFileAddress(track: Track) : string
     {
-        let token = this.authService.getLocalToken();
-        return this.localFilePath + track.Id + "?access_token="+token;
+        return this.localFilePath + track.Id;
     }
     loadedmeadata()
     {
