@@ -1,0 +1,28 @@
+<div class="row" *ngIf="albumInfo">
+    <img class="pull-left albumimage" [src]="albumInfo.imageUrl" height="150" width="150"/>
+    <div class="albuminfo" align="left">
+        Album: <a target="_blank" href="{{albumInfo.url}}">{{albumInfo.title}}</a>
+        Artist: {{albumInfo.artist}}
+        Track count: {{trackCount}}
+    </div>
+</div>
+<table class="tracks row" *ngIf="albumInfo">
+    <thead>
+        <th>#</th>
+        <th>TRACK</th>
+        <th><span class="glyphicon glyphicon-time" aria-hidden="true"></span></th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let track of albumInfo.tracks; let idx = index" class="track" >
+            <td class="tdTracknumber" (dblclick)="onSpotifySelect(track)">
+                {{idx + 1}}
+            </td>
+            <td class="tdTrack" >
+                <a target="_blank" href="{{track.url}}"> {{track.name}} </a>
+            </td>
+            <td class="tdDuration" >
+                {{track.duration | bandcampdurationpipe}}
+            </td>
+        </tr>
+    </tbody>
+</table>

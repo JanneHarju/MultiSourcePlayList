@@ -66,6 +66,10 @@ module.exports = {
             '/api/spotifyaccount/*': {
             target: 'http://localhost:5000',
             secure: false
+            },
+            '/api/bandcamp/*': {
+            target: 'http://localhost:5000',
+            secure: false
             }
         }
     },

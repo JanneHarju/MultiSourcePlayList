@@ -14,6 +14,7 @@ import { BandcampService, BandcampOptions } from '../..//services/bandcamp.servi
 import { LoadingService }         from '../../services/loading.service';
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
+import { SearchResult, Artist, Album, BandCampTrack, Fan, Label } from '../../json_schema/SearchResult';
 import 'rxjs/add/operator/toPromise';
 
 //var bandcamp = require('../../../../../node_modules/bandcamp-scraper/lib/index.js');
@@ -35,6 +36,9 @@ declare function search(params: any, cb: any) : Observable<any>;*/
 export class SearchlistComponent implements OnInit, OnDestroy {
     spotifyTracks : SpotifyTrack[] = [];
     youtubeVideos : YoutubeVideo[] = [];
+    bandcampArtists : Artist[] = [];
+    bandcampAlbums : Album[] = [];
+    bandcampTracks : BandCampTrack[] = [];
     playlists: Playlist[] = [];
     query: string = "";
     selectedSpotifyTrack: SpotifyTrack = new SpotifyTrack();
@@ -59,49 +63,32 @@ export class SearchlistComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         
-        
-        this.route.params.subscribe((params: Params) => this.query = params['id']);
+        this.route.params.subscribe((params: Params) => 
+        {
 
-        this.route.params.subscribe((params: Params) => this.spotifyService.search(params['id'],"track")
-            .then((tracklist: SpotifyTrack[]) => 
-            {
-                this.spotifyTracks = tracklist;
-                this.selectCurrentTrack(this.playerService.track);
-            }));
-        this.route.params.subscribe((params: Params) => this.youtubeApiService.search(params['id'])
-            .subscribe((youtubeVideos: YoutubeVideo[]) => 
-            {
-                this.youtubeVideos = youtubeVideos;
-                this.selectCurrentTrack(this.playerService.track);
-            }));
+            setTimeout(()=> this.loadingService.setLoading(true));
+            this.query = params['id'];
+            this.spotifyService.search(params['id'],"track")
+                .then((tracklist: SpotifyTrack[]) => 
+                {
+                    this.spotifyTracks = tracklist;
+                    this.selectCurrentTrack(this.playerService.track);
+                });
+            this.youtubeApiService.search(params['id'])
+                .subscribe((youtubeVideos: YoutubeVideo[]) => 
+                {
+                    this.youtubeVideos = youtubeVideos;
+                    this.selectCurrentTrack(this.playerService.track);
+                });
+            
+            this.bcsearch(params['id']);
+        });
+
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
         {
             this.selectCurrentTrack(track);
         });
-        /*var params = {
-            query: this.query,
-            page: 1
-        };
-
-        this.doBandcampCall(params).then(res =>
-        {
-            console.log(res);
-        })
-        .catch(err =>
-        {
-            console.error(err);
-        });*/
-
-
-        /*this.bandcampService.doBandcampCall(params).then(ret=>
-        {
-            console.log(ret);
-        })
-        .catch(err =>
-        {
-            console.error(err);
-        });*/
-        //this.bandcampSearch(this.query);
+        
         this.getUsersPlaylists();
         this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated =>
         {
@@ -131,39 +118,30 @@ export class SearchlistComponent implements OnInit, OnDestroy {
                 }
             });
      }
-     bcsearch()
+     bcsearch(query: string)
      {
         var params : BandcampOptions = {
-            page: 1,
-            q: this.query
+            q: query,
+            page: 1
         };
-        this.bandcampService.doBandcampCall(params).then(ret=>
+        this.bandcampService.bandCampSearch(params)
+        .then( (ret : SearchResult[]) =>
         {
-            console.log(ret);
+            this.bandcampAlbums = ret.filter(x=>x.type == "album") as Album[];
+            this.bandcampArtists = ret.filter(x=>x.type == "artist") as Artist[];
+            this.bandcampTracks = ret.filter(x=>x.type == "track") as BandCampTrack[];
+            setTimeout(()=> this.loadingService.setLoading(false));
         })
         .catch(err =>
         {
             console.error(err);
+            setTimeout(()=> this.loadingService.setLoading(false));
         });
      }
-     bandcampSearch(q: string)
-     {
-        var params = {
-            query: q,
-            page: 1
-        };
-
-        bandcamp.search(params, (error: string, searchResults: string) => {
-            if (error)
-            {
-                console.log(error);
-            }
-            else
-            {
-                console.log(searchResults);
-            }
-        });
-     }
+    urlToBase64(url: string)
+    {
+        return btoa(url);
+    }
      doBandcampCall(q: Object) {
         return new Promise(function(resolve, reject) {
             bandcamp.search(q, function(err:any, result:any) {

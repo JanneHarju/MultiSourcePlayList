@@ -1,4 +1,4 @@
-Spotify Search result for:  {{query}}
+<h3> Spotify Search result for:  {{query}} </h3>
 <table class="tracks">
     <thead>
         <th></th>
@@ -44,7 +44,7 @@ Spotify Search result for:  {{query}}
         </tr>
     </tbody>
 </table>
-Youtube Search result for:  {{query}}
+<h3> Youtube Search result for:  {{query}} </h3>
 <table class="tracks">
     <thead>
         <th></th>
@@ -78,6 +78,88 @@ Youtube Search result for:  {{query}}
                         </li>
                     </ul>
                 </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<h3> Bandcamp Search result for:  {{query}} </h3>
+Artists
+<table class="tracks">
+    <thead>
+        <th></th>
+        <th>Name</th>
+        <th>Genre</th>
+        <th>Location</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let artist of bandcampArtists" class="track" >
+            <td class="tdTenProcent">
+                <img src="{{artist.imageUrl}}" style="height:50px; width:50px">
+            </td>
+            <td class="tdThirtyProcent">
+                <a target="_blank" href="{{artist.url}}">
+                    {{artist.name}}
+                </a>
+            </td>
+            <td class="tdThirtyProcent" >
+                {{artist.genre}}
+            </td>
+            <td class="tdThirtyProcent" >
+                {{artist.location}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+Albums
+<table class="tracks">
+    <thead>
+        <th></th>
+        <th>Name</th>
+        <th>Artist</th>
+        <th>Track count</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let album of bandcampAlbums" class="track" >
+            <td>
+                <img src="{{album.imageUrl}}" style="height:50px; width:50px">
+            </td>
+            <td class="stdTrack">
+                <a [routerLink]="['/main/bandcampalbum', urlToBase64(album.url)]">
+                    {{album.name}}
+                </a>
+            </td>
+            <td class="stdTrack" >
+                {{album.artist}}
+            </td>
+            <td class="tdTenProcent" >
+                {{album.numTracks}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+Tracks
+<table class="tracks">
+    <thead>
+        <th></th>
+        <th>Name</th>
+        <th>Artist</th>
+        <th>Album</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let track of bandcampTracks" class="track" >
+            <td>
+                <img src="{{track.imageUrl}}" style="height:50px; width:50px">
+            </td>
+            <td class="pull-left">
+                <a target="_blank" href="{{track.url}}">
+                    {{track.name}}
+                </a>
+            </td>
+            <td class="tdThirtyProcent" >
+                {{track.artist}}
+            </td>
+            <td class="tdThirtyProcent" >
+                {{track.album}}
             </td>
         </tr>
     </tbody>

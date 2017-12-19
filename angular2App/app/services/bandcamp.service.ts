@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Request } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { HttpRequestOptions} from './spotify.service';
+import { SearchResult } from '../json_schema/SearchResult';
+import { AlbumInfo } from '../json_schema/BandCampAlbumInfo';
+import { AuthService } from './auth.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 var bandcamp = require('../../../node_modules/bandcamp-scraper/lib/index'),
@@ -13,24 +16,42 @@ export interface BandcampOptions {
 }
 @Injectable()
 export class BandcampService {
-    baseUri : string = "http://bandcamp.com/";
-    constructor(private http: Http) { }
-    doBandcampCall(options: BandcampOptions) {
+    baseUri : string = "api/bandcamp";
+    constructor(
+        private authService: AuthService,
+        private http: Http) { }
+
+    bandCampSearch(options: BandcampOptions) {
 
         return this.api({
             method: 'get',
-            url: `search`,
-            search: options
+            url: ``,
+            search: options,
+            headers: this.authService.initAuthHeaders()
         })
         .toPromise()
         .then(res => 
         {
-
-            var searchResults = htmlParser.parseSearchResults(res);
-            return res;
+            return htmlParser.parseSearchResults(res.text()) as SearchResult[];
         })
         .catch(this.handlePromiseError);
     }
+    bandCampAlbumInfo(url: string) {
+        let decodedUrl = atob(url);
+        const fullUrl = `/albuminfo/${url}`;
+        return this.api({
+            method: 'get',
+            url: fullUrl,
+            headers: this.authService.initAuthHeaders()
+        })
+        .toPromise()
+        .then(res => 
+        {
+            return htmlParser.parseAlbumInfo(res.text(), decodedUrl) as AlbumInfo;
+        })
+        .catch(this.handlePromiseError);
+    }
+
     private toQueryString(obj: Object): string {
         var parts : string[] = [];
         for (let key in obj) {
@@ -52,14 +73,5 @@ export class BandcampService {
     private handlePromiseError(error: any): Promise<any> {
         console.error('An error occurred', error); // for demo purposes only
         return Promise.reject(error.message || error);
-    }
-    firstAttempt(q: Object)
-    {
-        return new Promise( (resolve, reject) => {
-            bandcamp.search(q, (err:any, result:any) => {
-                if (err) return reject(err);
-                resolve(result);
-            });
-        });
     }
 }

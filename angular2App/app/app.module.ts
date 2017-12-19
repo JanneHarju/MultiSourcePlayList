@@ -20,6 +20,7 @@ import { SearchlistComponent } from './modules/searchlist/searchlist.component';
 import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplaylist.component';
 import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.component';
 import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
+import { BandcampAlbumComponent } from './modules/bandcampalbum/bandcampalbum.component';
 import { FileUploadComponent } from './modules/fileupload/fileupload.component';
 import { NavbarComponent } from './modules/navbar/navbar.component';
 import { LoginComponent } from './modules/login/login.component';
@@ -31,6 +32,7 @@ import { SafePipe} from './modules/shared/safepipe';
 import { SafeValuePipe} from './modules/shared/safevaluepipe';
 import { ColorPipe} from './modules/shared/colorpipe';
 import { DisplayTimePipe} from './modules/shared/displaytimepipe';
+import { BandcampDurationPipe } from './modules/shared/bandcampDurationPipe';
 
 import { TrackService }         from './services/track.service';
 import { PlaylistService } from './services/playlist.service';
@@ -67,6 +69,7 @@ import './rxjs-extensions';
     SpotifyPlaylistComponent,
     SpotifyAlbumComponent,
     SpotifyArtistComponent,
+    BandcampAlbumComponent,
     NavbarComponent,
     LoginComponent,
     FileUploadComponent,
@@ -76,7 +79,8 @@ import './rxjs-extensions';
     SafePipe,
     SafeValuePipe,
     ColorPipe,
-    DisplayTimePipe
+    DisplayTimePipe,
+    BandcampDurationPipe
   ],
   providers: [
     TrackService,
