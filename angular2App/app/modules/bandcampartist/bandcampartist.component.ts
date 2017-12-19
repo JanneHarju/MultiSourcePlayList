@@ -14,6 +14,7 @@ import 'rxjs/add/operator/toPromise';
 export class BandcampArtistComponent implements OnInit {
     
     artistUrl: string = "";
+    artistLink: string = "";
     albumUrls: string[] = [];
     imageUrl: string = "";
     albumCount: number = 0;
@@ -33,6 +34,7 @@ export class BandcampArtistComponent implements OnInit {
         {
             setTimeout(()=> this.loadingService.setLoading(true));
             this.artistUrl = params['id'];
+            this.artistLink = atob(this.artistUrl);
             this.imageUrl = atob(params['id2']);
             this.artistName = params['id3'];
             this.bandcampService.bandCampAlbumUrls(this.artistUrl)
