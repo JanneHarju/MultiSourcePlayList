@@ -97,7 +97,7 @@ Artists
                 <img src="{{artist.imageUrl}}" style="height:50px; width:50px">
             </td>
             <td class="tdThirtyProcent">
-                <a target="_blank" href="{{artist.url}}">
+                <a [routerLink]="['/main/bandcampartist', urlToBase64(artist.url),urlToBase64(artist.imageUrl),artist.name]" >
                     {{artist.name}}
                 </a>
             </td>

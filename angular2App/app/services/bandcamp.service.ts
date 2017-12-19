@@ -52,6 +52,22 @@ export class BandcampService {
         .catch(this.handlePromiseError);
     }
 
+    bandCampAlbumUrls(url: string) {
+        let decodedUrl = atob(url);
+        const fullUrl = `/albumurls/${url}`;
+        return this.api({
+            method: 'get',
+            url: fullUrl,
+            headers: this.authService.initAuthHeaders()
+        })
+        .toPromise()
+        .then(res => 
+        {
+            return htmlParser.parseAlbumUrls(res.text(), decodedUrl) as string[];
+        })
+        .catch(this.handlePromiseError);
+    }
+
     private toQueryString(obj: Object): string {
         var parts : string[] = [];
         for (let key in obj) {

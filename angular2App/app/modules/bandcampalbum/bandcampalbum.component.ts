@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router }   from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { BandcampService } from '../..//services/bandcamp.service';
@@ -13,7 +13,7 @@ import 'rxjs/add/operator/toPromise';
     styleUrls: [ './bandcampalbum.component.css' ],
 })
 
-export class BandcampAlbumComponent implements OnInit, OnDestroy {
+export class BandcampAlbumComponent implements OnInit {
     albumInfo: AlbumInfo;
     albumDuration: number = 0;
     trackCount: number = 0;;
@@ -35,15 +35,10 @@ export class BandcampAlbumComponent implements OnInit, OnDestroy {
             this.bandcampService.bandCampAlbumInfo(this.albumUrl)
                 .then( (res : AlbumInfo) => 
                 {
-                    console.log(res);
                     this.albumInfo = res;
                     this.trackCount = this.albumInfo.tracks.length;
                     setTimeout(()=> this.loadingService.setLoading(false));
                 });
         });
-    }
-    ngOnDestroy(): void
-    {
-        
     }
 }

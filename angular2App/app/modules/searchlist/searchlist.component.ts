@@ -100,26 +100,26 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         this.subscriptionPlaylistsModified.unsubscribe();
         this.subscriptionTrack.unsubscribe();
     }
-     getUsersPlaylists()
-     {
-         this.playlistService.getUsersPlaylists()
-            .then((playlists : Playlist[])=> 
+    getUsersPlaylists()
+    {
+        this.playlistService.getUsersPlaylists()
+        .then((playlists : Playlist[])=> 
+        {
+            this.playlists = playlists;
+        })
+        .catch(err =>
+        {
+            console.log("Some error occured" + err);
+            if(err.status == 401)
             {
-                this.playlists = playlists;
-            })
-            .catch(err =>
-            {
-                console.log("Some error occured" + err);
-                if(err.status == 401)
-                {
-                    console.log("Unauthorized");
-                    this.authService.clearLoginToken();
-                    this.router.navigate(['login']);
-                }
-            });
-     }
-     bcsearch(query: string)
-     {
+                console.log("Unauthorized");
+                this.authService.clearLoginToken();
+                this.router.navigate(['login']);
+            }
+        });
+    }
+    bcsearch(query: string)
+    {
         var params : BandcampOptions = {
             q: query,
             page: 1
@@ -137,21 +137,21 @@ export class SearchlistComponent implements OnInit, OnDestroy {
             console.error(err);
             setTimeout(()=> this.loadingService.setLoading(false));
         });
-     }
+    }
     urlToBase64(url: string)
     {
         return btoa(url);
     }
-     doBandcampCall(q: Object) {
+    doBandcampCall(q: Object) {
         return new Promise(function(resolve, reject) {
             bandcamp.search(q, function(err:any, result:any) {
                 if (err) return reject(err);
                 resolve(result);
             });
         });
-     }
-     selectCurrentTrack(track: Track)
-     {
+    }
+    selectCurrentTrack(track: Track)
+    {
         let temptrack = this.spotifyTracks.find(x=>x.uri == track.Address);
         if(temptrack)
         {
@@ -183,9 +183,9 @@ export class SearchlistComponent implements OnInit, OnDestroy {
                 }
             }
         }
-     }
-     addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
-     {
+    }
+    addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
+    {
 
         this.loadingService.setLoading(true);
         let newTrack: Track = new Track();
@@ -204,9 +204,9 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         {
             this.loadingService.setLoading(false);
         });
-     }
-     addVideoToPlaylist(playlist: Playlist, video: YoutubeVideo)
-     {
+    }
+    addVideoToPlaylist(playlist: Playlist, video: YoutubeVideo)
+    {
         this.loadingService.setLoading(true);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];

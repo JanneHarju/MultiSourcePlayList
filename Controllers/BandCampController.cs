@@ -50,7 +50,21 @@ namespace PlayList.Controllers
             using (HttpClient client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync(decodedUrl);
-                
+                var res = response.Content.ReadAsStringAsync().Result;
+                return res;
+            }
+        }
+
+        [HttpGet("albumurls/{url}")]
+        [Authorize("Bearer")]
+        public async Task<string> AlbumUrls(string url)
+        {
+            byte[] data = Convert.FromBase64String(url);
+            string decodedUrl = Encoding.UTF8.GetString(data);
+            string fullUrl = decodedUrl + "/music";
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(fullUrl);
                 var res = response.Content.ReadAsStringAsync().Result;
                 return res;
             }

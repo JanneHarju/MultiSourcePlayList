@@ -1,0 +1,16 @@
+<div class="row">
+    <img class="pull-left artisimage" [src]="imageUrl" height="150" width="150"/>
+    <div class="artisinfo" >
+        Artist: {{artistName}}
+        Albums: {{albumCount}}
+    </div>
+</div>
+<div>
+    Albums:
+</div>
+<div class="container albums" *ngIf="bandCampAlbumInfos">
+    <div *ngFor="let album of bandCampAlbumInfos" [routerLink]="['/main/bandcampalbum', urlToBase64(album.url)]" class="album col-sm-3 col-xs-6">
+        <img class="pull-left albumimage" [src]="album.imageUrl" height="150" width="150"/>
+        {{album.title}}
+    </div>
+</div>

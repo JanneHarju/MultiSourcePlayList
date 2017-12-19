@@ -21,6 +21,7 @@ import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplayl
 import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.component';
 import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
 import { BandcampAlbumComponent } from './modules/bandcampalbum/bandcampalbum.component';
+import { BandcampArtistComponent } from './modules/bandcampartist/bandcampartist.component';
 import { FileUploadComponent } from './modules/fileupload/fileupload.component';
 import { NavbarComponent } from './modules/navbar/navbar.component';
 import { LoginComponent } from './modules/login/login.component';
@@ -70,6 +71,7 @@ import './rxjs-extensions';
     SpotifyAlbumComponent,
     SpotifyArtistComponent,
     BandcampAlbumComponent,
+    BandcampArtistComponent,
     NavbarComponent,
     LoginComponent,
     FileUploadComponent,

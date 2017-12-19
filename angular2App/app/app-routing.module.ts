@@ -8,6 +8,7 @@ import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplayl
 import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.component';
 import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
 import { BandcampAlbumComponent } from './modules/bandcampalbum/bandcampalbum.component';
+import { BandcampArtistComponent } from './modules/bandcampartist/bandcampartist.component';
 import { LoginComponent } from './modules/login/login.component';
 import { UserInfoComponent } from './modules/userinfo/userInfo.component';
 import { QueueComponent } from './modules/queue/queue.component';
@@ -24,6 +25,7 @@ const routes: Routes = [
         { path: 'spotifyalbum/:id',  component: SpotifyAlbumComponent, canActivate: [ AuthService] },
         { path: 'spotifyartist/:id',  component: SpotifyArtistComponent, canActivate: [ AuthService] },
         { path: 'bandcampalbum/:id',  component: BandcampAlbumComponent, canActivate: [ AuthService] },
+        { path: 'bandcampartist/:id/:id2/:id3',  component: BandcampArtistComponent, canActivate: [ AuthService] },
         { path: 'userinfo',  component: UserInfoComponent, canActivate: [ AuthService] },
         { path: 'queue',  component: QueueComponent, canActivate: [ AuthService] }
     ]},
