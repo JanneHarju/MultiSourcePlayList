@@ -98,4 +98,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.router.navigate(['main/searchlist', q]);
         //this.router.navigate(['/searchlist', q]);
     }
+    fullScreen()
+    {
+        var body = document.documentElement;
+        if (body.requestFullscreen) {
+            body.requestFullscreen();
+        } else if (body.webkitRequestFullscreen) {
+            body.webkitRequestFullscreen();
+        }
+    }
 }
