@@ -143,6 +143,11 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             if(temptrack)
             {
                 this.currentTrack = temptrack;
+                let trackElement : HTMLElement = document.getElementById(this.getTrackElementName(this.currentTrack.Id));
+                if(trackElement && !this.isElementInViewport(trackElement))
+                {
+                    trackElement.scrollIntoView({behavior: "smooth"});
+                }
             }
          }
      }
@@ -226,5 +231,21 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     addToQueue(track: Track)
     {
         this.playerService.addTrackToQueue(track);
+    }
+
+    getTrackElementName(trackId : Number)
+    {
+        return 'track_' + trackId;
+    }
+
+    isElementInViewport (el: HTMLElement) : boolean
+    {
+        let rect = el.getBoundingClientRect();
+        let viewPortElement = document.getElementById("body-content");
+        let viewPortElementRect = viewPortElement.getBoundingClientRect();
+        return (
+            rect.top >= viewPortElementRect.top &&
+            rect.bottom <= viewPortElementRect.bottom
+        );
     }
 }

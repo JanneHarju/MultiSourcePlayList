@@ -10,7 +10,8 @@
         <tr *ngFor="let track of tracklist; let i = index" 
                 [class.activetrack]="track == currentTrack" 
                 class="tablerow list-group-item" dnd-sortable [sortableIndex]="i"
-                (click)="$event.dropdown || $event.addTrackToPlaylistclicked || $event.addTrackToQueueclicked || onSelect(track)" >
+                (click)="$event.dropdown || $event.addTrackToPlaylistclicked || $event.addTrackToQueueclicked || onSelect(track)" 
+                [id]="getTrackElementName(track.Id)">
             
             <td class="logo" >
                 <div class="logos" >
