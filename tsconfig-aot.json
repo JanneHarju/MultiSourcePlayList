@@ -9,6 +9,7 @@
     "removeComments": true,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
+    //"baseUrl": "./angular2App/app",
     "skipLibCheck": true,
     "lib": [
       "es2015",

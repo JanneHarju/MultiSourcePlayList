@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Headers, Http, Response, RequestOptions } from "@angular/http";
+import { Injectable } from '@angular/core';
+import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import { Router, CanActivate } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 
@@ -9,8 +9,8 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class AuthService implements CanActivate {
-    public tokeyKey = "token";
-    rememberme: boolean = false;
+    public tokeyKey = 'token';
+    rememberme = false;
     private subjectAuthenticationComplited = new Subject<boolean>();
     constructor(private http: Http, private router: Router) { }
 
@@ -22,24 +22,20 @@ export class AuthService implements CanActivate {
             return false;
         }
     }
-    
-    public login(rememberme:boolean, user: User) {
+    public login(rememberme: boolean, user: User) {
         let header = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: header });
         this.rememberme = rememberme;
-        return this.http.put("/api/tokenauth/Login/"+rememberme, user, options).toPromise().then(
+        return this.http.put('/api/tokenauth/Login/' + rememberme, user, options).toPromise().then(
             res => {
                 let result = res.json();
                 if (result.State == 1 && result.Data && result.Data.accessToken.Value) {
-                    if(this.rememberme)
-                    {
+                    if (this.rememberme) {
                         localStorage.setItem(this.tokeyKey, result.Data.accessToken.Value);
                     }
                     sessionStorage.setItem(this.tokeyKey, result.Data.accessToken.Value);
                     this.setAuthenticationComplited(true);
-                }
-                else
-                {
+                } else {
                     this.setAuthenticationComplited(false);
                 }
                 return result;
@@ -47,24 +43,21 @@ export class AuthService implements CanActivate {
         ).catch(this.handleError);
     }
 
-    public register(rememberme:boolean,user: User) {
+    public register(rememberme: boolean, user: User) {
         let header = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: header });
         this.rememberme = rememberme;
 
-        return this.http.post("/api/tokenauth/Register/"+rememberme, user, options).toPromise().then(
+        return this.http.post('/api/tokenauth/Register/' + rememberme, user, options).toPromise().then(
             res => {
                 let result = res.json();
                 if (result.State == 1 && result.Data && result.Data.accessToken) {
-                    if(this.rememberme)
-                    {
+                    if (this.rememberme) {
                         localStorage.setItem(this.tokeyKey, result.Data.accessToken);
                     }
                     sessionStorage.setItem(this.tokeyKey, result.Data.accessToken);
                     this.setAuthenticationComplited(true);
-                }
-                else
-                {
+                } else {
                     this.setAuthenticationComplited(false);
                 }
                 return result;
@@ -81,12 +74,10 @@ export class AuthService implements CanActivate {
             .catch(this.handleError);
     }
 
-    public setAuthenticationComplited(status: boolean)
-    {
+    public setAuthenticationComplited(status: boolean) {
         this.subjectAuthenticationComplited.next(status);
     }
-    public getAuthenticationComplited() : Observable<boolean>
-    {
+    public getAuthenticationComplited() : Observable<boolean> {
         return this.subjectAuthenticationComplited.asObservable();
     }
 
@@ -94,12 +85,11 @@ export class AuthService implements CanActivate {
         let token = this.getLocalToken();
         return token != null;
     }
-    public clearLoginToken()
-    {
+    public clearLoginToken() {
         sessionStorage.removeItem(this.tokeyKey);
     }
     public getUserInfo() {
-        return this.authGet("/api/tokenauth");
+        return this.authGet('/api/tokenauth');
     }
 
     public authPost$(url: string, body: any) {
@@ -116,18 +106,17 @@ export class AuthService implements CanActivate {
 
     public initAuthHeaders(): Headers {
         let token = this.getLocalToken();
-        if (token == null) throw "No token";
-
+        if (token == null) {
+            throw 'No token';
+        }
         let headers = new Headers({ 'Content-Type': 'application/json' });
-        headers.append("Authorization", "Bearer " + token);
+        headers.append('Authorization', 'Bearer ' + token);
         return headers;
     }
 
     private handleError(error: any) {
         console.error(error);
-        
-        if(error.status == 401)
-        {
+        if (error.status == 401) {
             this.clearLoginToken();
         }
         return Observable.throw(error);

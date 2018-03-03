@@ -1,34 +1,12 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PlaylistComponent }      from './modules/playlist/playlist.component';
-import { TracklistComponent } from './modules/tracklist/tracklist.component';
-import { SearchlistComponent } from './modules/searchlist/searchlist.component';
-import { MainComponent } from './modules/main/main.component';
-import { SpotifyPlaylistComponent } from './modules/spotifyplaylist/spotifyplaylist.component';
-import { SpotifyAlbumComponent } from './modules/spotifyAlbum/spotifyalbum.component';
-import { SpotifyArtistComponent } from './modules/spotifyartist/spotifyartist.component';
-import { BandcampAlbumComponent } from './modules/bandcampalbum/bandcampalbum.component';
-import { BandcampArtistComponent } from './modules/bandcampartist/bandcampartist.component';
 import { LoginComponent } from './modules/login/login.component';
-import { UserInfoComponent } from './modules/userinfo/userInfo.component';
-import { QueueComponent } from './modules/queue/queue.component';
 import { AuthService} from './services/auth.service';
 
 const routes: Routes = [
-    { path: "", redirectTo: "login", pathMatch: "full" },
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login',  component: LoginComponent },
-    { path: 'main',  component: MainComponent, canActivate: [ AuthService],
-    children: [
-        { path: 'tracklist/:id',  component: TracklistComponent, canActivate: [ AuthService]},
-        { path: 'searchlist/:id',  component: SearchlistComponent, canActivate: [ AuthService] },
-        { path: 'spotifylist/:id/:id2',  component: SpotifyPlaylistComponent, canActivate: [ AuthService] },
-        { path: 'spotifyalbum/:id',  component: SpotifyAlbumComponent, canActivate: [ AuthService] },
-        { path: 'spotifyartist/:id',  component: SpotifyArtistComponent, canActivate: [ AuthService] },
-        { path: 'bandcampalbum/:id',  component: BandcampAlbumComponent, canActivate: [ AuthService] },
-        { path: 'bandcampartist/:id/:id2/:id3',  component: BandcampArtistComponent, canActivate: [ AuthService] },
-        { path: 'userinfo',  component: UserInfoComponent, canActivate: [ AuthService] },
-        { path: 'queue',  component: QueueComponent, canActivate: [ AuthService] }
-    ]},
+    { path: 'main',  loadChildren: './modules/main/main.module#MainModule', canActivate: [ AuthService] }
 ];
 
 @NgModule({
