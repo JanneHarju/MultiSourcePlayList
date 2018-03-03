@@ -16,17 +16,17 @@ export interface YoutubeOptions {
 
 @Injectable()
 export class YoutubeAPIService {
-    baseUri: string = "https://www.googleapis.com/youtube/v3";
-    key: string = "AIzaSyCBJf1-O0F4J37lTx7Avlfk5hTWYBydWQE";
+    baseUri = 'https://www.googleapis.com/youtube/v3';
+    key = 'AIzaSyCBJf1-O0F4J37lTx7Avlfk5hTWYBydWQE';
     constructor(private http: Http) { }
-    
+
     search(q: string) {
         let options: YoutubeOptions;
         options = {};
         options.q = q;
-        options.type = "video";
+        options.type = 'video';
         options.key = this.key;
-        options.part = "snippet";
+        options.part = 'snippet';
         options.maxResults = 20;
         return this.api({
         method: 'get',
@@ -36,7 +36,7 @@ export class YoutubeAPIService {
     }
 
     private toQueryString(obj: Object): string {
-        var parts : string[] = [];
+        let parts: string[] = [];
         for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
             parts.push(encodeURIComponent(key) + '=' + encodeURIComponent((<any>obj)[key]));

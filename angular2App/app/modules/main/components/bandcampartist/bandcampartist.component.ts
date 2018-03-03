@@ -12,14 +12,14 @@ import 'rxjs/add/operator/toPromise';
     styleUrls: [ './bandcampartist.component.css' ],
 })
 export class BandcampArtistComponent implements OnInit {
-    
-    artistUrl: string = "";
-    artistLink: string = "";
+
+    artistUrl = '';
+    artistLink = '';
     albumUrls: string[] = [];
-    imageUrl: string = "";
-    albumCount: number = 0;
+    imageUrl = '';
+    albumCount = 0;
     bandCampAlbumInfos: AlbumInfo[] = [];
-    artistName: string = "";
+    artistName = '';
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -30,40 +30,33 @@ export class BandcampArtistComponent implements OnInit {
 
 
     ngOnInit() {
-        this.route.params.subscribe((params: Params) => 
-        {
-            setTimeout(()=> this.loadingService.setLoading(true));
+        this.route.params.subscribe((params: Params) => {
+            setTimeout(() => this.loadingService.setLoading(true));
             this.artistUrl = params['id'];
             this.artistLink = atob(this.artistUrl);
             this.imageUrl = atob(params['id2']);
             this.artistName = params['id3'];
             this.bandcampService.bandCampAlbumUrls(this.artistUrl)
-                .then( (res : string[]) => 
-                {
-                    this.albumUrls = res.filter(x => x.includes("/album/"));
+                .then( (res: string[]) => {
+                    this.albumUrls = res.filter(x => x.includes('/album/'));
                     this.albumCount = this.albumUrls.length;
-                    if(this.albumCount == 0)
-                    {
-                        setTimeout(()=> this.loadingService.setLoading(false));
+                    if (this.albumCount == 0) {
+                        setTimeout(() => this.loadingService.setLoading(false));
                         return;
                     }
-                    this.albumUrls.forEach(x => 
-                    {
+                    this.albumUrls.forEach(x => {
                         this.bandcampService.bandCampAlbumInfo(btoa(x))
-                            .then( (y : AlbumInfo) => 
-                            {
+                            .then( (y: AlbumInfo) => {
                                 this.bandCampAlbumInfos.push(y);
-                                if(this.bandCampAlbumInfos.length >= this.albumCount)
-                                {
-                                    setTimeout(()=> this.loadingService.setLoading(false));
+                                if (this.bandCampAlbumInfos.length >= this.albumCount) {
+                                    setTimeout(() => this.loadingService.setLoading(false));
                                 }
                             });
                     });
                 });
         });
     }
-    urlToBase64(url: string)
-    {
+    urlToBase64(url: string) {
         return btoa(url);
     }
 }

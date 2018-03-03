@@ -11,116 +11,87 @@ export class PlayerService {
 
     private subject = new Subject<Track>();
     track: Track = new Track();
-    lastOrder: number = -1;
+    lastOrder = -1;
     tracklist: Track[] = [];
     queueTracklist: Track[] = [];
-    random: number = 0;
+    random = 0;
     public shuffle: boolean;
     subscriptionTrackEnd: Subscription;
     constructor(
         private trackService: TrackService,
         private spotifyService: SpotifyService
-    )
-    {
-        this.subscriptionTrackEnd = this.spotifyService.getTrackEnd().subscribe(trackEnd =>
-        {
-            if(trackEnd)
-            {
+    ) {
+        this.subscriptionTrackEnd = this.spotifyService.getTrackEnd().subscribe(trackEnd => {
+            if (trackEnd) {
                 this.chooseNextTrack();
             }
         });
     }
 
-    setTrack(newTrack: Track)
-    {
+    setTrack(newTrack: Track) {
         this.track = newTrack;
         this.subject.next(this.track);
     }
-    getTrack() : Observable<Track>
-    {
+    getTrack() : Observable<Track> {
         return this.subject.asObservable();
     }
-    
-    getQueueTracks() : Track[]
-    {
+    getQueueTracks() : Track[] {
         return this.queueTracklist;
     }
-    setTrackList(tracklist : Track[])
-    {
+    setTrackList(tracklist: Track[]) {
         this.tracklist = tracklist;
     }
-    setCurrentTrackOrder()
-    {
-        if(this.track && this.tracklist)
-        {
-            var newTrack = this.tracklist.find(t=> t.Id == this.track.Id);
-            if(newTrack)
-            {
-                var currentTrackNewOrder = newTrack.Order;
+    setCurrentTrackOrder() {
+        if (this.track && this.tracklist) {
+            let newTrack = this.tracklist.find(t => t.Id == this.track.Id);
+            if (newTrack) {
+                let currentTrackNewOrder = newTrack.Order;
                 this.track.Order = currentTrackNewOrder;
             }
         }
     }
-    chooseNextTrack()
-    {
-        if(this.queueTracklist.length > 0)
-        {
-            if(this.tracklist.find(x=>x.Id == this.track.Id))
-            {
+    chooseNextTrack() {
+        if (this.queueTracklist.length > 0) {
+            if (this.tracklist.find(x => x.Id == this.track.Id)) {
                 this.lastOrder = this.track.Order;
             }
             this.setTrack(this.queueTracklist.shift());
             //this.setQueue(this.queueTracklist);
-        }
-        else
-        {
-            if(!this.shuffle)
-            {
-            
+        } else {
+            if (!this.shuffle) {
+
                 let order = this.lastOrder == -1 ? this.track.Order : this.lastOrder;
-                let nextTracks = this.tracklist.filter(x=>x.Order > order);
-                if(nextTracks != null && nextTracks.length > 0)
-                {
+                let nextTracks = this.tracklist.filter(x => x.Order > order);
+                if (nextTracks != null && nextTracks.length > 0) {
                     this.setTrack(nextTracks[0]);
-                }
-                else
-                {
+                } else {
                     this.setTrack(this.tracklist[0]);
                 }
                 this.lastOrder = -1;
-            
-            }
-            else
-            {
+
+            } else {
                 this.chooseNextRandomTrack();
             }
         }
     }
-    choosePreviousTrack()
-    {
-        let nextTracks = this.tracklist.filter(x=>x.Order < this.track.Order);
-        if(nextTracks != null && nextTracks.length > 0)
-        {
-            this.setTrack(nextTracks[nextTracks.length-1]);
-        }
-        else
-        {
-            this.setTrack(this.tracklist[this.tracklist.length-1]);
+    choosePreviousTrack() {
+        let nextTracks = this.tracklist.filter(x => x.Order < this.track.Order);
+        if (nextTracks != null && nextTracks.length > 0) {
+            this.setTrack(nextTracks[nextTracks.length - 1]);
+        } else {
+            this.setTrack(this.tracklist[this.tracklist.length - 1]);
         }
     }
-    chooseNextRandomTrack()
-    {
+    chooseNextRandomTrack() {
         this.random = Math.floor(Math.random() * this.tracklist.length);
         this.setTrack(this.tracklist[this.random]);
     }
-    isCurrentlyPlayingTrackThisPlaylistTrack(playlistId: number): boolean
-    {
-        return (this.track && 
-                this.track.Playlist && 
+    isCurrentlyPlayingTrackThisPlaylistTrack(playlistId: number): boolean {
+        return (this.track &&
+                this.track.Playlist &&
                 this.track.Playlist.Id == playlistId)
     }
-    addTrackToQueue(track: Track)
-    {
+    addTrackToQueue(track: Track) {
         this.queueTracklist.push(track);
         //this.setQueue(this.queueTracklist);
     }

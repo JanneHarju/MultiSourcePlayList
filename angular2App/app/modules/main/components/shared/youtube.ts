@@ -1,4 +1,4 @@
 declare module 'youtube-player' {
-    var YouTubePlayer: any;
+    let YouTubePlayer: any;
     export = YouTubePlayer;
 }

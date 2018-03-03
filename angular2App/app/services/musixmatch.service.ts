@@ -17,16 +17,16 @@ export interface MusixMatchOptions {
 
 @Injectable()
 export class MusixMatchAPIService {
-    baseUri: string = "http://api.musixmatch.com/ws/1.1/";
-    key: string = "4580db683fb8c0d7073ec8fc7ce2c474";
+    baseUri = 'http://api.musixmatch.com/ws/1.1/';
+    key = '4580db683fb8c0d7073ec8fc7ce2c474';
     constructor(private http: Http) { }
     search(q: string) {
         let artist = this.getArtistFromQuery(q);
         let track = this.getTrackFromQuery(q);
         let options: MusixMatchOptions;
         options = {};
-        options.format = "jsonp";
-        options.callback = "callback";
+        options.format = 'jsonp';
+        options.callback = 'callback';
         options.apikey = this.key;
         options.q_artist = artist;
         options.q_track = track;
@@ -36,17 +36,17 @@ export class MusixMatchAPIService {
         search: options
     }).map(res => {
         let body = res.text();
-        let callback = "callback(";
-        let callbackEnd =");";
+        let callback = 'callback(';
+        let callbackEnd = ');';
         let part1 = body.split(callback)[1];
         let part2 =  part1.split(callbackEnd)[0];
         //return part2;
         return JSON.parse(part2).message.body.lyrics as MusixMatchLyric;
-    });//.message.body.lyrics as MusixMatchLyric);
+    }); //.message.body.lyrics as MusixMatchLyric);
     }
 
     private toQueryString(obj: Object): string {
-        var parts : string[] = [];
+        let parts: string[] = [];
         for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
             parts.push(encodeURIComponent(key) + '=' + encodeURIComponent((<any>obj)[key]));
@@ -85,20 +85,18 @@ export class MusixMatchAPIService {
         //headers: requestOptions.headers
         }));
     }
-    getArtistFromQuery(q: string) : string{
-        let parts = q.split(" - ");
-        let artist = "";
-        if(parts != null && parts.length > 0)
-        {
+    getArtistFromQuery(q: string) : string {
+        let parts = q.split(' - ');
+        let artist = '';
+        if (parts != null && parts.length > 0) {
             artist = parts[0];
         }
         return artist;
     }
-    getTrackFromQuery(q: string) : string{
-        let parts = q.split(" - ");
-        let track = "";
-        if(parts != null && parts.length > 1)
-        {
+    getTrackFromQuery(q: string) : string {
+        let parts = q.split(' - ');
+        let track = '';
+        if (parts != null && parts.length > 1) {
             track = parts[1];
         }
         return track;

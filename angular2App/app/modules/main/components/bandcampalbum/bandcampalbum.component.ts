@@ -15,9 +15,9 @@ import 'rxjs/add/operator/toPromise';
 
 export class BandcampAlbumComponent implements OnInit {
     albumInfo: AlbumInfo;
-    albumDuration: number = 0;
-    trackCount: number = 0;;
-    albumUrl: string = "";
+    albumDuration = 0;
+    trackCount = 0;
+    albumUrl = '';
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -27,17 +27,15 @@ export class BandcampAlbumComponent implements OnInit {
         ) { }
 
     ngOnInit() {
-        
-        this.route.params.subscribe((params: Params) => 
-        {
-            setTimeout(()=> this.loadingService.setLoading(true));
+
+        this.route.params.subscribe((params: Params) => {
+            setTimeout(() => this.loadingService.setLoading(true));
             this.albumUrl = params['id'];
             this.bandcampService.bandCampAlbumInfo(this.albumUrl)
-                .then( (res : AlbumInfo) => 
-                {
+                .then( (res: AlbumInfo) => {
                     this.albumInfo = res;
                     this.trackCount = this.albumInfo.tracks.length;
-                    setTimeout(()=> this.loadingService.setLoading(false));
+                    setTimeout(() => this.loadingService.setLoading(false));
                 });
         });
     }

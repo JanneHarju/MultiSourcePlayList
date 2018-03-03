@@ -11,29 +11,26 @@ import { PlayerService } from '../../../../services/player.service';
 export class QueueComponent implements OnInit {
     tracklist: Track[] = [];
     constructor(
-        private playerService: PlayerService)
-    {
+        private playerService: PlayerService) {
         this.tracklist = this.playerService.getQueueTracks();
     }
 
-    ngOnInit() 
-    {
-        
+    ngOnInit() {
+
     }
 
-    delete(track: Track)
-    {
-        var index = this.tracklist.indexOf(track, 0);
+    delete(track: Track) {
+        let index = this.tracklist.indexOf(track, 0);
         if (index > -1) {
             this.tracklist.splice(index, 1);
         }
     }
-    
+
     onSelect(track: Track): void {
 
         //Maybe select track to play
         /*this.playerService.setTrackList(this.tracklist);
         this.playerService.setTrack(track);*/
-        
+
     }
 }

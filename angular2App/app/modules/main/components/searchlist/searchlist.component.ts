@@ -19,7 +19,7 @@ import 'rxjs/add/operator/toPromise';
 
 //var bandcamp = require('../../../../../../../../../node_modules/bandcamp-scraper/lib/index.js');
 //var bandcamp = require('../../../../../../../../node_modules/bandcamp-scraper/lib/index');
-var bandcamp = require('bandcamp-scraper');
+let bandcamp = require('bandcamp-scraper');
 
 /*var req         = require("tinyreq"),
     urlHelper   = require('url'),
@@ -34,19 +34,19 @@ declare function search(params: any, cb: any) : Observable<any>;*/
 })
 
 export class SearchlistComponent implements OnInit, OnDestroy {
-    spotifyTracks : SpotifyTrack[] = [];
-    youtubeVideos : YoutubeVideo[] = [];
-    bandcampArtists : Artist[] = [];
-    bandcampAlbums : Album[] = [];
-    bandcampTracks : BandCampTrack[] = [];
+    spotifyTracks: SpotifyTrack[] = [];
+    youtubeVideos: YoutubeVideo[] = [];
+    bandcampArtists: Artist[] = [];
+    bandcampAlbums: Album[] = [];
+    bandcampTracks: BandCampTrack[] = [];
     playlists: Playlist[] = [];
-    query: string = "";
+    query = '';
     selectedSpotifyTrack: SpotifyTrack = new SpotifyTrack();
     selectedYoutubeVideo: YoutubeVideo = new YoutubeVideo();
     subscriptionTrack: Subscription;
     subscriptionPlaylistsModified: Subscription;
-    tempSpotifyPlaylistId: number = -4;
-    tempYoutubePlaylistId: number = -5;
+    tempSpotifyPlaylistId = -4;
+    tempYoutubePlaylistId = -5;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -62,101 +62,84 @@ export class SearchlistComponent implements OnInit, OnDestroy {
 
 
     ngOnInit() {
-        
-        this.route.params.subscribe((params: Params) => 
-        {
 
-            setTimeout(()=> this.loadingService.setLoading(true));
+        this.route.params.subscribe((params: Params) => {
+
+            setTimeout(() => this.loadingService.setLoading(true));
             this.query = params['id'];
-            this.spotifyService.search(params['id'],"track")
-                .then((tracklist: SpotifyTrack[]) => 
-                {
+            this.spotifyService.search(params['id'], 'track')
+                .then((tracklist: SpotifyTrack[]) => {
                     this.spotifyTracks = tracklist;
                     this.selectCurrentTrack(this.playerService.track);
                 });
             this.youtubeApiService.search(params['id'])
-                .subscribe((youtubeVideos: YoutubeVideo[]) => 
-                {
+                .subscribe((youtubeVideos: YoutubeVideo[]) => {
                     this.youtubeVideos = youtubeVideos;
                     this.selectCurrentTrack(this.playerService.track);
                 });
-            
+
             this.bcsearch(params['id']);
         });
 
-        this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
-        {
+        this.subscriptionTrack = this.playerService.getTrack().subscribe(track => {
             this.selectCurrentTrack(track);
         });
-        
+
         this.getUsersPlaylists();
-        this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated =>
-        {
+        this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated => {
             this.getUsersPlaylists();
         });
      }
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         this.subscriptionPlaylistsModified.unsubscribe();
         this.subscriptionTrack.unsubscribe();
     }
-    getUsersPlaylists()
-    {
+    getUsersPlaylists() {
         this.playlistService.getUsersPlaylists()
-        .then((playlists : Playlist[])=> 
-        {
+        .then((playlists: Playlist[]) => {
             this.playlists = playlists;
         })
-        .catch(err =>
-        {
-            console.log("Some error occured" + err);
-            if(err.status == 401)
-            {
-                console.log("Unauthorized");
+        .catch(err => {
+            console.log('Some error occured' + err);
+            if (err.status == 401) {
+                console.log('Unauthorized');
                 this.authService.clearLoginToken();
                 this.router.navigate(['login']);
             }
         });
     }
-    bcsearch(query: string)
-    {
-        var params : BandcampOptions = {
+    bcsearch(query: string) {
+        let params: BandcampOptions = {
             q: query,
             page: 1
         };
         this.bandcampService.bandCampSearch(params)
-        .then( (ret : SearchResult[]) =>
-        {
-            this.bandcampAlbums = ret.filter(x=>x.type == "album") as Album[];
-            this.bandcampArtists = ret.filter(x=>x.type == "artist") as Artist[];
-            this.bandcampTracks = ret.filter(x=>x.type == "track") as BandCampTrack[];
-            setTimeout(()=> this.loadingService.setLoading(false));
+        .then( (ret: SearchResult[]) => {
+            this.bandcampAlbums = ret.filter(x => x.type == 'album') as Album[];
+            this.bandcampArtists = ret.filter(x => x.type == 'artist') as Artist[];
+            this.bandcampTracks = ret.filter(x => x.type == 'track') as BandCampTrack[];
+            setTimeout(() => this.loadingService.setLoading(false));
         })
-        .catch(err =>
-        {
+        .catch(err => {
             console.error(err);
-            setTimeout(()=> this.loadingService.setLoading(false));
+            setTimeout(() => this.loadingService.setLoading(false));
         });
     }
-    urlToBase64(url: string)
-    {
+    urlToBase64(url: string) {
         return btoa(url);
     }
     doBandcampCall(q: Object) {
         return new Promise(function(resolve, reject) {
-            bandcamp.search(q, function(err:any, result:any) {
-                if (err) return reject(err);
+            bandcamp.search(q, function(err: any, result: any) {
+                if (err) { return reject(err); }
                 resolve(result);
             });
         });
     }
-    selectCurrentTrack(track: Track)
-    {
-        let temptrack = this.spotifyTracks.find(x=>x.uri == track.Address);
-        if(temptrack)
-        {
-            if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempSpotifyPlaylistId))
-            {
+    selectCurrentTrack(track: Track) {
+        let temptrack = this.spotifyTracks.find(x => x.uri == track.Address);
+        if (temptrack) {
+            if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempSpotifyPlaylistId)) {
                 this.selectedSpotifyTrack = temptrack;
                 this.selectedYoutubeVideo = null;
                 //this doesn't work because of two divs which have own scrollbars.
@@ -165,14 +148,10 @@ export class SearchlistComponent implements OnInit, OnDestroy {
                 if(element)
                     element.scrollIntoView()*/
             }
-        }
-        else
-        {
-            let tempvideo = this.youtubeVideos.find(x=>x.id.videoId == track.Address);
-            if(tempvideo)
-            {
-                if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempYoutubePlaylistId))
-                {
+        } else {
+            let tempvideo = this.youtubeVideos.find(x => x.id.videoId == track.Address);
+            if (tempvideo) {
+                if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempYoutubePlaylistId)) {
                     this.selectedYoutubeVideo = tempvideo;
                     this.selectedSpotifyTrack = null;
                     //this doesn't work because of two divs which have own scrollbars.
@@ -184,29 +163,25 @@ export class SearchlistComponent implements OnInit, OnDestroy {
             }
         }
     }
-    addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
-    {
+    addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack) {
 
         this.loadingService.setLoading(true);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
         newTrack.Address = track.uri;
-        newTrack.Name = track.artists[0].name +" - "+ track.name;
+        newTrack.Name = track.artists[0].name + ' - ' + track.name;
         newTrack.Type = 2;
         newTrack.Playlist = playlist;
         trackList.push(newTrack);
-        this.trackService.createMany(trackList).then(ret =>
-        {
+        this.trackService.createMany(trackList).then(ret => {
             this.loadingService.setLoading(false);
 
         })
-        .catch(err=>
-        {
+        .catch(err => {
             this.loadingService.setLoading(false);
         });
     }
-    addVideoToPlaylist(playlist: Playlist, video: YoutubeVideo)
-    {
+    addVideoToPlaylist(playlist: Playlist, video: YoutubeVideo) {
         this.loadingService.setLoading(true);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
@@ -215,13 +190,11 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         newTrack.Type = 1;
         newTrack.Playlist = playlist;
         trackList.push(newTrack);
-        this.trackService.createMany(trackList).then(ret =>
-        {
+        this.trackService.createMany(trackList).then(ret => {
             this.loadingService.setLoading(false);
 
         })
-        .catch(err=>
-        {
+        .catch(err => {
             this.loadingService.setLoading(false);
         });
      }
@@ -230,19 +203,17 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         {
         });
     }*/
-    onSpotifySelect(track: SpotifyTrack)
-    {
+    onSpotifySelect(track: SpotifyTrack) {
         let trackList: Track[] = [];
-        let order: number = 0;
+        let order = 0;
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempSpotifyPlaylistId;
-        newPlaylist.Name = "Spotify Search : "+this.query;
-        this.spotifyTracks.forEach(st =>
-        {
+        newPlaylist.Name = 'Spotify Search : ' + this.query;
+        this.spotifyTracks.forEach(st => {
 
             let newTrack: Track = new Track();
             newTrack.Address = st.uri;
-            newTrack.Name = st.artists[0].name +" - "+ st.name;
+            newTrack.Name = st.artists[0].name + ' - ' + st.name;
             newTrack.Type = 2;
             newTrack.Playlist = newPlaylist;
             newTrack.Order = order;
@@ -254,15 +225,13 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         this.playerService.setTrack(tempTrack);
 
     }
-    onYoutubeSelect(video: YoutubeVideo)
-    {
+    onYoutubeSelect(video: YoutubeVideo) {
         let trackList: Track[] = [];
-        let order: number = 0;
+        let order = 0;
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempYoutubePlaylistId;
-        newPlaylist.Name = "Youtube Search : "+this.query;
-        this.youtubeVideos.forEach(ytv =>
-        {
+        newPlaylist.Name = 'Youtube Search : ' + this.query;
+        this.youtubeVideos.forEach(ytv => {
 
             let newTrack: Track = new Track();
             newTrack.Address = ytv.id.videoId;
@@ -278,24 +247,22 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         let tempTrack = trackList.find(tr => tr.Address == video.id.videoId);
         this.playerService.setTrack(tempTrack);
     }
-    addSpotifyToQueue(track: SpotifyTrack)
-    {
+    addSpotifyToQueue(track: SpotifyTrack) {
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempSpotifyPlaylistId;
-        newPlaylist.Name = "Spotify Search : "+this.query;
+        newPlaylist.Name = 'Spotify Search : ' + this.query;
         let newTrack: Track = new Track();
             newTrack.Address = track.uri;
-            newTrack.Name = track.artists[0].name +" - "+ track.name;
+            newTrack.Name = track.artists[0].name + ' - ' + track.name;
             newTrack.Type = 2;
             newTrack.Playlist = newPlaylist;
             newTrack.Order = 0;
         this.playerService.addTrackToQueue(newTrack);
     }
-    addYoutubeToQueue(video: YoutubeVideo)
-    {
+    addYoutubeToQueue(video: YoutubeVideo) {
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempSpotifyPlaylistId;
-        newPlaylist.Name = "YouTube Search : "+this.query;
+        newPlaylist.Name = 'YouTube Search : ' + this.query;
         let newTrack: Track = new Track();
             newTrack.Address = video.id.videoId;
             newTrack.Name = video.snippet.title;

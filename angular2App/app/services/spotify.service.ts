@@ -57,11 +57,29 @@ export interface HttpRequestOptions {
 
 @Injectable()
 export class SpotifyService {
-    constructor(@Inject("SpotifyConfig") private config: SpotifyConfig, 
+    trackEnd = false;
+    playStatusTimerId: string;
+    refreshTokenTimerId: string;
+    tokenFallBackTimerId: string;
+    tokenRefreshedLastTime: Date = new Date();
+    tokenRefreshed = false;
+    currentTrackUri: string;
+    lastCurrentTrackUri: string;
+    lastProgress: number;
+    currentUser: SpotifyUser;
+    playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
+    tempPlaylist: SpotifyPlaylistTrack[] = [];
+    authenticationComplited = '';
+    ignore = false;
+    public authCompleted = false;
+    private subjectPlayStatus = new Subject<SpotifyPlayStatus>();
+    private subjectTrackEnded = new Subject<boolean>();
+    private subjectAuthenticationComplited = new Subject<string>();
+
+    constructor(@Inject('SpotifyConfig') private config: SpotifyConfig,
         private http: Http,
         private st: SimpleTimer,
-        private authService: AuthService)
-    {
+        private authService: AuthService) {
 
         config.apiBase = 'https://api.spotify.com/v1';
         config.accountApiBase = 'https://accounts.spotify.com';
@@ -69,36 +87,12 @@ export class SpotifyService {
         this.st.newTimer('tokenFallback', 2);
         this.tokenFallBackTimerId = this.st.subscribe('tokenFallback', e => this.tokenfallback());
     }
-
-    trackEnd: boolean = false;
-    playStatusTimerId: string;
-    refreshTokenTimerId: string;
-    tokenFallBackTimerId: string;
-    tokenRefreshedLastTime: Date = new Date();
-    tokenRefreshed: boolean = false;
-    currentTrackUri: string;
-    lastCurrentTrackUri: string;
-    lastProgress: number;
-    currentUser: SpotifyUser;
-    playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
-    tempPlaylist: SpotifyPlaylistTrack[] = [];
-    authenticationComplited: string = "";
-    ignore: boolean = false;
-
-    public authCompleted = false;
-    private subjectPlayStatus = new Subject<SpotifyPlayStatus>();
-    private subjectTrackEnded = new Subject<boolean>();
-    private subjectAuthenticationComplited = new Subject<string>();
-    callback()
-    {
-        this.checkPlayerState().then(playState => 
-        {
-            if(playState.progress_ms == 0 &&
+    callback() {
+        this.checkPlayerState().then(playState => {
+            if (playState.progress_ms == 0 &&
                 this.playStatus.is_playing &&
                 !playState.is_playing &&
-                this.lastCurrentTrackUri == this.currentTrackUri )
-            {
-                
+                this.lastCurrentTrackUri == this.currentTrackUri ) {
                 this.st.delTimer('spotify');
                 this.setTrackEnd(true);
                 //kappale loppui. onko tämä tilanne aukoton?
@@ -107,54 +101,43 @@ export class SpotifyService {
             this.lastCurrentTrackUri = this.currentTrackUri;
         });
     }
-    tokenfallback()
-    {
+    tokenfallback() {
         let currentTime = new Date();
-        if ((currentTime > this.tokenRefreshedLastTime) && this.tokenRefreshed)
-        {
-            console.log("New token please");
+        if ((currentTime > this.tokenRefreshedLastTime) && this.tokenRefreshed) {
+            console.log('New token please');
             this.tokenRefreshed = false;
             this.login(false);
         }
     }
-    setAuthenticationComplited(status: string)
-    {
+    setAuthenticationComplited(status: string) {
         this.authenticationComplited = status;
         this.subjectAuthenticationComplited.next(status);
     }
-    getAuthenticationComplited() : Observable<string>
-    {
+    getAuthenticationComplited() : Observable<string> {
         return this.subjectAuthenticationComplited.asObservable();
     }
 
-    setPlayStatus(playStatus: SpotifyPlayStatus)
-    {
+    setPlayStatus(playStatus: SpotifyPlayStatus) {
         this.playStatus = playStatus;
         this.subjectPlayStatus.next(playStatus);
     }
-    
-    getPlayStatus() : Observable<SpotifyPlayStatus>
-    {
+    getPlayStatus() : Observable<SpotifyPlayStatus> {
         return this.subjectPlayStatus.asObservable();
     }
-    setTrackEnd(trackEnd: boolean)
-    {
+    setTrackEnd(trackEnd: boolean) {
         this.trackEnd = trackEnd;
         this.subjectTrackEnded.next(this.trackEnd);
     }
-    getTrackEnd() : Observable<boolean>
-    {
+    getTrackEnd() : Observable<boolean> {
         return this.subjectTrackEnded.asObservable();
     }
-    startTimer()
-    {
+    startTimer() {
         this.st.delTimer('spotify');
         this.st.newTimer('spotify', 1);
         this.playStatusTimerId = this.st.subscribe('spotify', e => this.callback());
     }
-    startRefreshTokenTimer(expires_in: number)
-    {
-        console.log("settimer");
+    startRefreshTokenTimer(expires_in: number) {
+        console.log('settimer');
         //this.st.delTimer('spotify_refresh_token');
         this.st.newTimer('spotify_refresh_token', expires_in - 60);
         this.setTokenRefreshedLastTime(expires_in);
@@ -171,8 +154,7 @@ export class SpotifyService {
         this.setTrackEnd(false);
         //Only one of either context_uri or uris can be specified. If neither are present, calling /play will resume playback.
         this.startTimer();
-        if(trackUri)
-        {
+        if (trackUri) {
             return this.api({
                 method: 'put',
                 url: `/me/player/play`,
@@ -180,31 +162,24 @@ export class SpotifyService {
                 headers: this.getHeaders(true),
                 body: {
                     uris :
-                    ["spotify:track:"+ this.getIdFromUri(trackUri)]}
-            
+                    ['spotify:track:' + this.getIdFromUri(trackUri)]}
             }).toPromise()
             .then(res => res.json())
-            .catch(err=> this.handlePromiseError(err));
-        }
-        else
-        {
+            .catch(err => this.handlePromiseError(err));
+        } else {
             return this.api({
                 method: 'put',
                 url: `/me/player/play`,
                 search: options,
                 headers: this.getHeaders(true)
-            
             }).toPromise()
             .then(res => res.json())
-            .catch(err=> this.handlePromiseError(err));
+            .catch(err => this.handlePromiseError(err));
         }
-        
     }
-    
     pause(options?: SpotifyOptions) {
         options = options || {};
-        if( this.playStatus.is_playing )
-        {
+        if ( this.playStatus.is_playing ) {
             this.playStatus.is_playing = false;
             this.setPlayStatus(this.playStatus);
             this.st.delTimer('spotify');
@@ -215,10 +190,8 @@ export class SpotifyService {
                 headers: this.getHeaders(true)
             }).toPromise()
             .then(res => res.json())
-            .catch(err=> this.handlePromiseError(err));
-        }
-        else
-        {
+            .catch(err => this.handlePromiseError(err));
+        } else {
             return new Promise<Response>((resolve, reject) => {
                 resolve();
                 // the resolve / reject functions control the fate of the promise
@@ -236,7 +209,7 @@ export class SpotifyService {
         })
         .toPromise()
         .then(res => res.json())
-        .catch(err=> this.handlePromiseError(err));
+        .catch(err => this.handlePromiseError(err));
     }
     setVolume(options?: SpotifyOptions) {
         options = options || {};
@@ -248,7 +221,7 @@ export class SpotifyService {
         })
         .toPromise()
         .then(res => res.json())
-        .catch(err=> this.handlePromiseError(err));
+        .catch(err => this.handlePromiseError(err));
     }
     checkPlayerState(options?: SpotifyOptions) {
         options = options || {};
@@ -260,7 +233,7 @@ export class SpotifyService {
             headers: this.getHeaders(true)
         }).toPromise()
         .then(res => res.json() as SpotifyPlayStatus)
-        .catch(err=> this.handlePromiseError(err)); 
+        .catch(err => this.handlePromiseError(err));
     }
     //#region search
 
@@ -282,11 +255,10 @@ export class SpotifyService {
         })
         .toPromise()
         .then(res => res.json().tracks.items as SpotifyTrack[])
-        .catch(err=> this.handlePromiseError(err));
+        .catch(err => this.handlePromiseError(err));
     }
 
     //#endregion
-    
     getUsersPlaylist( options?: SpotifyOptions) {
         options = options || {};
 
@@ -298,141 +270,132 @@ export class SpotifyService {
         })
         .toPromise()
         .then(res => res.json().items as SpotifyPlaylist[])
-        .catch(err=> this.handlePromiseError(err));
-        
+        .catch(err => this.handlePromiseError(err));
     }
-    getUser() :SpotifyUser
-    {
-        if(this.currentUser)
+    getUser() : SpotifyUser {
+        if (this.currentUser) {
             return this.currentUser;
-        else
+        } else {
             return new SpotifyUser();
+        }
     }
-    getPlaylistTracks(playlistId: string, ownerId:string, options?: SpotifyOptions) {
+    getPlaylistTracks(playlistId: string, ownerId: string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
-        
         return this.api({
             method: 'get',
-            url: '/users/'+ownerId+'/playlists/'+playlistId+'/tracks',
+            url: '/users/' + ownerId + '/playlists/' + playlistId + '/tracks',
             search: options,
             headers: this.getHeaders(true)
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return res.json() as SpotifyTracklist;
         })
-        .catch(err=> this.handlePromiseError(err));
-        
+        .catch(err => this.handlePromiseError(err));
+
     }
     getArtist(artistId: string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
-        
+
         return this.api({
             method: 'get',
-            url: '/artists/'+artistId,
+            url: '/artists/' + artistId,
             search: options,
             headers: this.getHeaders(true)
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return res.json() as SpotifyArtist;
         })
-        .catch(err=> this.handlePromiseError(err));
-        
+        .catch(err => this.handlePromiseError(err));
+
     }
     getArtistsAlbum(artistId: string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
-        options.album_type = "album";
+        options.album_type = 'album';
         options.limit = 50;
         return this.api({
             method: 'get',
-            url: '/artists/'+artistId+'/albums',
+            url: '/artists/' + artistId + '/albums',
             search: options,
             headers: this.getHeaders(true)
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return res.json().items as SpotifyAlbum[];
         })
-        .catch(err=> this.handlePromiseError(err));
-        
+        .catch(err => this.handlePromiseError(err));
+
     }
     getArtistsTopTracks(artistId: string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
         return this.api({
             method: 'get',
-            url: '/artists/'+artistId+'/top-tracks',
+            url: '/artists/' + artistId + '/top-tracks',
             search: options,
             headers: this.getHeaders(true)
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return res.json().tracks as SpotifyTrack[];
         })
-        .catch(err=> this.handlePromiseError(err));
-        
+        .catch(err => this.handlePromiseError(err));
+
     }
     getAlbumTracks(albumId: string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
-        
+
         return this.api({
             method: 'get',
-            url: '/albums/'+albumId+'/tracks',
+            url: '/albums/' + albumId + '/tracks',
             search: options,
             headers: this.getHeaders(true)
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return res.json().items as SpotifyTrack[];
         })
-        .catch(err=> this.handlePromiseError(err));
-        
+        .catch(err => this.handlePromiseError(err));
+
     }
     getAlbum(albumId: string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
-        
+
         return this.api({
             method: 'get',
-            url: '/albums/'+albumId,
+            url: '/albums/' + albumId,
             search: options,
             headers: this.getHeaders(true)
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return res.json() as SpotifyAlbum;
         })
-        .catch(err=> this.handlePromiseError(err));
-        
+        .catch(err => this.handlePromiseError(err));
+
     }
-    getPlaylistInfo(playlistId: string, ownerId:string, options?: SpotifyOptions) {
+    getPlaylistInfo(playlistId: string, ownerId: string, options?: SpotifyOptions) {
         this.tempPlaylist = [];
         options = options || {};
         options.limit = 1;
         return this.api({
             method: 'get',
-            url: '/users/'+ownerId+'/playlists/'+playlistId,
+            url: '/users/' + ownerId + '/playlists/' + playlistId,
             search: options,
             headers: this.getHeaders(true)
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return res.json() as SpotifyPlaylistInfo;
         })
-        .catch(err=> this.handlePromiseError(err));
-        
+        .catch(err => this.handlePromiseError(err));
+
     }
 
     getCurrentUser( options?: SpotifyOptions) {
@@ -445,82 +408,71 @@ export class SpotifyService {
         headers: this.getHeaders(true)
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             let user = res.json() as SpotifyUser;
             this.currentUser = user;
             return user;
         })
-        .catch(err=> this.handlePromiseError(err));
+        .catch(err => this.handlePromiseError(err));
     }
 
-    getTokens(code?: string)
-    {
+    getTokens(code?: string) {
         let headers = this.authService.initAuthHeaders();
-        let address = "api/spotifyaccount/code/"+code;
+        let address = 'api/spotifyaccount/code/' + code;
 
         return this.http
             .get(address, {headers: headers})
             .toPromise()
-            .then((res: Response) => 
-            {
+            .then((res: Response) => {
                 let body = res.json();
                 this.config.authToken = body.access_token;
                 localStorage.setItem('spotify-access-token', body.access_token);
                 localStorage.setItem('spotify-refresh-token', body.refresh_token);
-                var expiresIn = +body.expires_in;
+                let expiresIn = +body.expires_in;
                 this.startRefreshTokenTimer(expiresIn);
                 return true;
             })
-            .catch(err=>
-            {
+            .catch(err => {
                 this.handlePromiseError(err);
                 return false;
             } );
-            
+
     }
-    setTokenRefreshedLastTime(expiresIn: number)
-    {
+    setTokenRefreshedLastTime(expiresIn: number) {
         let current = new Date();
         let time = current.getTime();
         time += (expiresIn * 1000);
         this.tokenRefreshedLastTime = new Date(time);
         this.tokenRefreshed = true;
     }
-    getTokensByRefreshToken()
-    {
-        if(!this.ignore)
-        {
-            
+    getTokensByRefreshToken() {
+        if (!this.ignore) {
+
             this.st.delTimer('spotify_refresh_token');
             let headers = this.authService.initAuthHeaders();
-            let address = "api/spotifyaccount/refreshtoken/"+localStorage.getItem('spotify-refresh-token');
-            console.log("getTokensByRefreshToken");
+            let address = 'api/spotifyaccount/refreshtoken/' + localStorage.getItem('spotify-refresh-token');
+            console.log('getTokensByRefreshToken');
             return this.http
                 .get(address, {headers: headers})
                 .toPromise()
-                .then((res: Response) => 
-                {
+                .then((res: Response) => {
                     console.log(res);
                     let body = res.json();
                     this.config.authToken = body.access_token;
                     localStorage.setItem('spotify-access-token', body.access_token);
-                    if(body.refresh_token)
-                    {
+                    if (body.refresh_token) {
                         localStorage.setItem('spotify-refresh-token', body.refresh_token);
                     }
-                    
-                    var expiresIn = +body.expires_in;
+
+                    let expiresIn = +body.expires_in;
                     this.startRefreshTokenTimer(expiresIn);
                     this.authCompleted = true;
-                    if(!this.authenticationComplited)
-                    {
-                        this.setAuthenticationComplited("success");
+                    if (!this.authenticationComplited) {
+                        this.setAuthenticationComplited('success');
                     }
                     return true;
                 })
-                .catch(err=>
-                {
+                .catch(err => {
                     //localStorage.removeItem('spotify-refresh-token');
                     this.authCompleted = false;
                     this.setAuthenticationComplited(null);
@@ -528,9 +480,7 @@ export class SpotifyService {
                     return false;
                 } );
 
-        }
-        else
-        {
+        } else {
             this.ignore = false;
         }
     }
@@ -539,16 +489,16 @@ export class SpotifyService {
 
     login(relogin: boolean) : Promise<Object> {
         return (new Promise((resolve, reject) => {
-        var w = 400,
+        let w = 400,
             h = 500,
             left = (screen.width / 2) - (w / 2),
             top = (screen.height / 2) - (h / 2);
-        var state = this.generateRandomString(16);
+        let state = this.generateRandomString(16);
 
         localStorage.setItem('spotify_auth_state', state);
         localStorage.removeItem('spotify-access-token');
         localStorage.removeItem('spotify-refresh-token');
-        var params = {
+        let params = {
             client_id: this.config.clientId,
             redirect_uri: this.config.redirectUri,
             scope: this.config.scope.join(' ') || '',
@@ -557,7 +507,7 @@ export class SpotifyService {
             state: state
         };
         this.authCompleted = false;
-        var authWindow = this.openDialog(
+        let authWindow = this.openDialog(
             'https://accounts.spotify.com/authorize?' + this.toQueryString(params),
             'Spotify',
             'menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,width=' + w + ',height=' + h + ',top=' + top + ',left=' + left,
@@ -568,24 +518,21 @@ export class SpotifyService {
             }
         );
 
-        var storageChanged = (e: any) => {
+        let storageChanged = (e: any) => {
 
-            if (e.key === 'spotify-code') 
-            {
+            if (e.key === 'spotify-code') {
                 if (authWindow) {
                     authWindow.close();
                 }
-                var code = localStorage.getItem('spotify-code');
+                let code = localStorage.getItem('spotify-code');
                 this.getTokens(code)
-                .then(ret=>
-                {
+                .then(ret => {
                     this.authCompleted = true;
-                    this.setAuthenticationComplited("success");
-                    return resolve("success");
-                    
+                    this.setAuthenticationComplited('success');
+                    return resolve('success');
+
                 })
-                .catch(err=>
-                {
+                .catch(err => {
                     this.authCompleted = false;
                     this.setAuthenticationComplited(null);
                     return reject('Login rejected error');
@@ -596,13 +543,13 @@ export class SpotifyService {
         };
         window.addEventListener('storage', storageChanged, false);
         })).then(() => null)
-                .catch(this.handleError);;
+                .catch(this.handleError); ;
     }
     generateRandomString(length: number) {
-        var text = '';
-        var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let text = '';
+        let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-        for (var i = 0; i < length; i++) {
+        for (let i = 0; i < length; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         return text;
@@ -612,7 +559,7 @@ export class SpotifyService {
     //#region utils
 
     private toQueryString(obj: Object): string {
-        var parts : string[] = [];
+        let parts: string[] = [];
         for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
             parts.push(encodeURIComponent(key) + '=' + encodeURIComponent((<any>obj)[key]));
@@ -622,8 +569,8 @@ export class SpotifyService {
     };
 
     private openDialog(uri: string, name: string, options: string, cb: any) {
-        var win = window.open(uri, name, options);
-        var interval = window.setInterval(() => {
+        let win = window.open(uri, name, options);
+        let interval = window.setInterval(() => {
         try {
             if (!win || win.closed) {
             window.clearInterval(interval);
@@ -633,9 +580,9 @@ export class SpotifyService {
         }, 1000000);
         return win;
     }
-    
+
     private auth(isJson?: boolean): Object {
-        var auth = {
+        let auth = {
         'Authorization': 'Bearer ' + localStorage.getItem('spotify-access-token')
         };
         if (isJson) {
@@ -653,7 +600,7 @@ export class SpotifyService {
     }
 
     private mountItemList(items: string | Array<string>): Array<string> {
-        var itemList = Array.isArray(items) ? items : items.split(',');
+        let itemList = Array.isArray(items) ? items : items.split(',');
         itemList.forEach((value, index) => {
         itemList[index] = this.getIdFromUri(value);
         });
@@ -666,8 +613,7 @@ export class SpotifyService {
     }
     private handlePromiseError(error: any): Promise<any> {
         console.error('An error occurred', error); // for demo purposes only
-        if(error.statusText == "Unauthorized")
-        {
+        if (error.statusText == 'Unauthorized') {
             console.error('Unauthorized', error);
             /*if(localStorage.getItem('spotify-refresh-token') !== null)
             {
@@ -690,7 +636,7 @@ export class SpotifyService {
         headers: requestOptions.headers
         }));
     }
-    
+
     //#endregion
 
 }

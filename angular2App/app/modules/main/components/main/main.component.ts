@@ -23,29 +23,24 @@ import { Subscription } from 'rxjs/Subscription';
         })),
     ])]
 })
-export class MainComponent implements OnInit, OnDestroy
-{
-    loading: boolean = false;
+export class MainComponent implements OnInit, OnDestroy {
+    loading = false;
     subscriptionLoading: Subscription;
-    menuState:string = 'in';
-    menuStateIn:boolean = true;
+    menuState = 'in';
+    menuStateIn = true;
     constructor(
         private spotifyService: SpotifyService,
         private loadingService: LoadingService) { }
-    ngOnInit(): void 
-    {
-        this.subscriptionLoading = this.loadingService.getLoading().subscribe(loading => 
-        {
+    ngOnInit(): void {
+        this.subscriptionLoading = this.loadingService.getLoading().subscribe(loading => {
             this.loading = loading;
         });
-        if(localStorage.getItem('spotify-refresh-token'))
-        {
-            console.log("Page reload.");
+        if (localStorage.getItem('spotify-refresh-token')) {
+            console.log('Page reload.');
             this.spotifyService.getTokensByRefreshToken();
         }
     }
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         this.subscriptionLoading.unsubscribe();
     }
     toggleMenu() {

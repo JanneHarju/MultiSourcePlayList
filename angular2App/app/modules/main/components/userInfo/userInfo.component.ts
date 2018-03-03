@@ -8,34 +8,27 @@ import { Router } from '@angular/router';
     templateUrl: 'userinfo.component.html',
     styleUrls: [ './userinfo.component.css' ],
 })
-
 export class UserInfoComponent implements OnInit {
     userInfo: UserInfo = new UserInfo();
-    disckUsageProcent: number = 0.0;
+    disckUsageProcent = 0.0;
     constructor(
         private authService: AuthService,
-        private router: Router)
-    { }
+        private router: Router) { }
 
-    ngOnInit() 
-    {
+    ngOnInit() {
         this.getUserInfo();
     }
 
-    getUserInfo()
-    {
-        this.authService.getUserInfo().then(res =>
-        {
-            var info = res.Data as UserInfo;
+    getUserInfo() {
+        this.authService.getUserInfo().then(res => {
+            let info = res.Data as UserInfo;
             this.userInfo = info;
-            this.disckUsageProcent = (this.userInfo.UsedDiscSpace / this.userInfo.MaxDiscSpace)*100;
+            this.disckUsageProcent = (this.userInfo.UsedDiscSpace / this.userInfo.MaxDiscSpace) * 100;
         })
-        .catch(err=>
-        {
-            if(err.status == 401)
-            {
+        .catch(err => {
+            if (err.status == 401) {
                 this.authService.clearLoginToken();
-                this.router.navigate(["login"]);
+                this.router.navigate(['login']);
             }
         });
     }

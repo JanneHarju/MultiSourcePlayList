@@ -10,10 +10,9 @@ export class TrackService {
     private tracksUrl = 'api/tracks';  // URL to web api
 
     //private headers = new Headers({'Content-Type': 'application/json'});
-    constructor( 
+    constructor(
         private http: Http,
-        private authService: AuthService) 
-    { }
+        private authService: AuthService) { }
 
     getTracks(): Promise<Track[]> {
 
@@ -25,7 +24,7 @@ export class TrackService {
                 .catch(this.handleError);
     }
     getPlaylistTracks(id: number): Promise<Track[]> {
-        const playlist = "true";
+        const playlist = 'true';
         /*let params: URLSearchParams = new URLSearchParams();
         params.set('playlist', playlist);
         let requestOptions = new RequestOptions();
@@ -54,8 +53,7 @@ export class TrackService {
         return Promise.reject(error.message || error);
     }
 
-    updatePlaylistOrder(tracks: Track[])
-    {
+    updatePlaylistOrder(tracks: Track[]) {
 
         let headers = this.authService.initAuthHeaders();
         return this.http

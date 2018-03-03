@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Renderer,OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Renderer, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TrackService } from '../../../../services/track.service';
 import { PlayerService } from '../../../../services/player.service';
@@ -22,14 +22,14 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
 
     timerId: string;
     tracklist: Track[] = [];
-    notFirstTime: boolean = false;
+    notFirstTime = false;
     trackName: string;
-    private id: string = 'yz8i6A6BTiA';
-    counter: number = 0;
+    private id = 'yz8i6A6BTiA';
+    counter = 0;
     closeResult: string;
-    lyric: string = "";
-    lyricHeader: string = "";
-    lyricImageUrl: string = "";
+    lyric = '';
+    lyricHeader = '';
+    lyricImageUrl = '';
     currentTrack: Track = new Track();
     currrentPlaylist: Playlist = new Playlist();
     subscriptionTrack: Subscription;
@@ -47,106 +47,84 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         private st: SimpleTimer,
         private el: ElementRef,
         private router: Router,
-        private loadingService: LoadingService)
-    { }
+        private loadingService: LoadingService) { }
 
     ngOnInit() {
         this.getPlaylistTracks();
 
         this.route.params
-            .switchMap((params: Params) => 
-            {
+            .switchMap((params: Params) => {
                 return this.playlistService.getPlaylist(+params['id']);
             })
-            .subscribe((playlist: Playlist) => 
-            {
+            .subscribe((playlist: Playlist) => {
                 this.currrentPlaylist = playlist;
             });
-        this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
-        {
+        this.subscriptionTrack = this.playerService.getTrack().subscribe(track => {
             this.selectCurrentTrack(track);
         });
 
         this.getUsersPlaylistsasync();
-        this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated =>
-        {
+        this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated => {
             this.getUsersPlaylists();
         });
      }
-     getPlaylistTracks()
-     {
+     getPlaylistTracks() {
         this.route.params
-            .switchMap((params: Params) => 
-            {
-                setTimeout(()=> this.loadingService.setLoading(true));
+            .switchMap((params: Params) => {
+                setTimeout(() => this.loadingService.setLoading(true));
                 return this.trackService.getPlaylistTracks(+params['id']);
             })
-            .subscribe((tracklist: Track[]) => 
-            {
+            .subscribe((tracklist: Track[]) => {
                 this.tracklist = tracklist;
-                if(this.tracklist.length > 0)
-                {
-                    if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tracklist[0].Playlist.Id))
-                    {
+                if (this.tracklist.length > 0) {
+                    if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tracklist[0].Playlist.Id)) {
                         this.playerService.setTrackList(this.tracklist);
                         this.selectCurrentTrack(this.playerService.track);
                         this.playerService.setCurrentTrackOrder();
                     }
                 }
-                setTimeout(()=> this.loadingService.setLoading(false));
-            },error =>
-            {
-                setTimeout(()=> this.loadingService.setLoading(false));
+                setTimeout(() => this.loadingService.setLoading(false));
+            }, error => {
+                setTimeout(() => this.loadingService.setLoading(false));
             });
      }
-     getUsersPlaylists()
-     {
+     getUsersPlaylists() {
          this.playlistService.getUsersPlaylists()
-            .then((playlists : Playlist[])=> 
-            {
+            .then((playlists: Playlist[]) => {
                 this.playlists = playlists;
                 this.playlists = this.playlists.filter(h => h.Id !== this.currrentPlaylist.Id);
             })
-            .catch(err =>
-            {
-                console.log("Some error occured" + err);
-                if(err.status == 401)
-                {
-                    console.log("Unauthorized");
+            .catch(err => {
+                console.log('Some error occured' + err);
+                if (err.status == 401) {
+                    console.log('Unauthorized');
                     this.authService.clearLoginToken();
                     this.router.navigate(['login']);
                 }
             });
      }
-     getUsersPlaylistsasync()
-     {
+     getUsersPlaylistsasync() {
          this.route.params
             .switchMap((params: Params) =>
                 this.playlistService.getUsersPlaylists())
-                .subscribe((playlists : Playlist[])=> 
-                {
+                .subscribe((playlists: Playlist[]) => {
                     this.playlists = playlists;
                     this.playlists = this.playlists.filter(h => h.Id !== this.currrentPlaylist.Id);
                 });
      }
-     ngOnDestroy(): void
-     {
+     ngOnDestroy(): void {
          this.subscriptionPlaylistsModified.unsubscribe();
          this.subscriptionTrack.unsubscribe();
         this.st.delTimer('5sec');
      }
-     selectCurrentTrack(track: Track)
-     {
-         if(this.tracklist[0] && this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tracklist[0].Playlist.Id))
-         {
-            let temptrack = this.tracklist.find(x=>x.Address == track.Address);
-            if(temptrack)
-            {
+     selectCurrentTrack(track: Track) {
+         if (this.tracklist[0] && this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tracklist[0].Playlist.Id)) {
+            let temptrack = this.tracklist.find(x => x.Address == track.Address);
+            if (temptrack) {
                 this.currentTrack = temptrack;
-                let trackElement : HTMLElement = document.getElementById(this.getTrackElementName(this.currentTrack.Id));
-                if(trackElement && !this.isElementInViewport(trackElement))
-                {
-                    trackElement.scrollIntoView({behavior: "smooth"});
+                let trackElement: HTMLElement = document.getElementById(this.getTrackElementName(this.currentTrack.Id));
+                if (trackElement && !this.isElementInViewport(trackElement)) {
+                    trackElement.scrollIntoView({behavior: 'smooth'});
                 }
             }
          }
@@ -159,11 +137,10 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         this.playerService.setTrackList(this.tracklist);
         this.currentTrack = track;
         this.playerService.setTrack(this.currentTrack);
-        
+
     }
-    
-    delete(track: Track)
-    {
+
+    delete(track: Track) {
         this.loadingService.setLoading(true);
         this.trackService
             .delete(track.Id)
@@ -173,30 +150,26 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.ngOnInit();
                 this.loadingService.setLoading(false);
             })
-            .catch(err=>
-            {
+            .catch(err => {
                 this.loadingService.setLoading(false);
             });
     }
     lyrics(track: Track) {
         this.lyricHeader = track.Name;
-        this.lyric = "";
-        this.lyricImageUrl = "";
+        this.lyric = '';
+        this.lyricImageUrl = '';
         this.musixmatchService.search(track.Name)
-            .subscribe(lyrics => 
-            {
+            .subscribe(lyrics => {
 
-                if(lyrics)
-                {
+                if (lyrics) {
                     this.lyric = lyrics.lyrics_body;
                     this.lyricImageUrl = lyrics.pixel_tracking_url;
+                } else {
+                    this.lyric = 'Lyrics could not be found.';
                 }
-                else
-                    this.lyric = "Lyrics could not be found.";
             });
     }
-    orderedTrack()
-    {
+    orderedTrack() {
 
         this.loadingService.setLoading(true);
         this.trackService
@@ -205,17 +178,14 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.loadingService.setLoading(false);
                 this.getPlaylistTracks();
             })
-            .catch(error =>
-            {
+            .catch(error => {
                 this.loadingService.setLoading(false);
             });
     }
-    loadComplited(e: any)
-    {
+    loadComplited(e: any) {
         this.ngOnInit();
     }
-    addTrackToPlaylist(playlist: Playlist, track: Track)
-    {
+    addTrackToPlaylist(playlist: Playlist, track: Track) {
         let trc = new Track();
         trc.Address = track.Address;
         trc.Name = track.Name;
@@ -223,25 +193,21 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         trc.Type = track.Type;
         let trackList: Track[] = [];
         trackList.push(trc);
-        this.trackService.createMany(trackList).then(ret =>
-        {
+        this.trackService.createMany(trackList).then(ret => {
 
         });
     }
-    addToQueue(track: Track)
-    {
+    addToQueue(track: Track) {
         this.playerService.addTrackToQueue(track);
     }
 
-    getTrackElementName(trackId : Number)
-    {
+    getTrackElementName(trackId: Number) {
         return 'track_' + trackId;
     }
 
-    isElementInViewport (el: HTMLElement) : boolean
-    {
+    isElementInViewport (el: HTMLElement) : boolean {
         let rect = el.getBoundingClientRect();
-        let viewPortElement = document.getElementById("body-content");
+        let viewPortElement = document.getElementById('body-content');
         let viewPortElementRect = viewPortElement.getBoundingClientRect();
         return (
             rect.top >= viewPortElementRect.top &&

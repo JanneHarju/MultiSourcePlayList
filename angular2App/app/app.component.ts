@@ -9,12 +9,10 @@ import '../style/app.css';
   encapsulation: ViewEncapsulation.None,
   styleUrls: [ './app3.component.css', './app2.component.css']
 })
-export class AppComponent
-{
+export class AppComponent {
 
     title = 'Multisource playlist';
     constructor() { }
-    
 }
 
 

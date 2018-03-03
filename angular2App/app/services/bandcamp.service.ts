@@ -7,7 +7,7 @@ import { AlbumInfo } from '../json_schema/BandCampAlbumInfo';
 import { AuthService } from './auth.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-var bandcamp = require('../../../node_modules/bandcamp-scraper/lib/index'),
+let bandcamp = require('../../../node_modules/bandcamp-scraper/lib/index'),
     htmlParser  = require('../../../node_modules/bandcamp-scraper/lib/htmlParser.js'),
     utils       = require('../../../node_modules/bandcamp-scraper/lib/utils.js');
 export interface BandcampOptions {
@@ -16,7 +16,7 @@ export interface BandcampOptions {
 }
 @Injectable()
 export class BandcampService {
-    baseUri : string = "api/bandcamp";
+    baseUri = 'api/bandcamp';
     constructor(
         private authService: AuthService,
         private http: Http) { }
@@ -30,8 +30,7 @@ export class BandcampService {
             headers: this.authService.initAuthHeaders()
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return htmlParser.parseSearchResults(res.text()) as SearchResult[];
         })
         .catch(this.handlePromiseError);
@@ -45,8 +44,7 @@ export class BandcampService {
             headers: this.authService.initAuthHeaders()
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return htmlParser.parseAlbumInfo(res.text(), decodedUrl) as AlbumInfo;
         })
         .catch(this.handlePromiseError);
@@ -61,15 +59,14 @@ export class BandcampService {
             headers: this.authService.initAuthHeaders()
         })
         .toPromise()
-        .then(res => 
-        {
+        .then(res => {
             return htmlParser.parseAlbumUrls(res.text(), decodedUrl) as string[];
         })
         .catch(this.handlePromiseError);
     }
 
     private toQueryString(obj: Object): string {
-        var parts : string[] = [];
+        let parts: string[] = [];
         for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
             parts.push(encodeURIComponent(key) + '=' + encodeURIComponent((<any>obj)[key]));

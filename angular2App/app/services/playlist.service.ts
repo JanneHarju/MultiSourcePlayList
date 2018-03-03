@@ -13,17 +13,14 @@ export class PlaylistService {
 
     private playlistsModified = new Subject<boolean>();
     //private headers = new Headers({'Content-Type': 'application/json'});
-    
     constructor(
         private http: Http,
         private authService: AuthService,
         private router: Router) { }
-    setPlaylistsModified(modified: boolean)
-    {
+    setPlaylistsModified(modified: boolean) {
         this.playlistsModified.next(modified);
     }
-    getPlaylistsModified() : Observable<boolean>
-    {
+    getPlaylistsModified() : Observable<boolean> {
         return this.playlistsModified.asObservable();
     }
     getPlaylists(): Promise<Playlist[]> {
@@ -39,8 +36,7 @@ export class PlaylistService {
 
         let headers = this.authService.initAuthHeaders();
         let options = new RequestOptions({ headers: headers });
-        
-        let url = this.PlaylistsUrl + "/GetUsersPlaylists";
+        let url = this.PlaylistsUrl + '/GetUsersPlaylists';
         return this.http.get(url, options)
                 .toPromise()
                 .then((response: Response) => response.json() as Playlist[])
@@ -56,11 +52,10 @@ export class PlaylistService {
             .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {
-        
+
         console.error('An error occurred', error); // for demo purposes only
-        if(error.status == 401)
-        {
-            console.log("Unauthorized");
+        if (error.status == 401) {
+            console.log('Unauthorized');
         }
         return Promise.reject(error);
     }
@@ -72,17 +67,15 @@ export class PlaylistService {
         return this.http
             .put(url, Playlist, {headers: headers})
             .toPromise()
-            .then(() => 
-            {
+            .then(() => {
                 this.setPlaylistsModified(true);
-                Playlist
             })
             .catch(this.handleError);
     }
     shuffle(Playlist: Playlist): Promise<Playlist> {
 
         let headers = this.authService.initAuthHeaders();
-        const url = this.PlaylistsUrl + "/Shuffle/"+Playlist.Id;
+        const url = this.PlaylistsUrl + '/Shuffle/' + Playlist.Id;
         return this.http
             .put(url, Playlist, {headers: headers})
             .toPromise()
@@ -97,8 +90,7 @@ export class PlaylistService {
         return this.http
             .post(this.PlaylistsUrl, tmpPlaylist, {headers: headers})
             .toPromise()
-            .then((res: Response) => 
-            {
+            .then((res: Response) => {
                 this.setPlaylistsModified(true);
                 res.json();
             })
@@ -110,10 +102,8 @@ export class PlaylistService {
         const url = `${this.PlaylistsUrl}/${id}`;
         return this.http.delete(url, {headers: headers})
             .toPromise()
-            .then(() => 
-            {
+            .then(() => {
                 this.setPlaylistsModified(true);
-                null;
             })
             .catch(this.handleError);
     }

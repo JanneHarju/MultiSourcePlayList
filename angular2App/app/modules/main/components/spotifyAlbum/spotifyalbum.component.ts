@@ -25,17 +25,17 @@ import 'rxjs/add/operator/toPromise';
 })
 
 export class SpotifyAlbumComponent implements OnInit, OnDestroy {
-    spotifyTracks : SpotifyTrack[] = [];
-    spotifyAlbum : SpotifyAlbum = new SpotifyAlbum();
-    albumDuration: number = 0;
-    trackCount: number = 0;;
+    spotifyTracks: SpotifyTrack[] = [];
+    spotifyAlbum: SpotifyAlbum = new SpotifyAlbum();
+    albumDuration = 0;
+    trackCount = 0;
     playlists: Playlist[] = [];
     playlistInfo: SpotifyPlaylistInfo = new SpotifyPlaylistInfo();
-    query: string = "";
+    query = '';
     selectedTrack: SpotifyTrack = new SpotifyTrack();
     subscriptionTrack: Subscription;
     subscriptionPlaylistsModified: Subscription;
-    tempPlaylistId: number = -3;
+    tempPlaylistId = -3;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -50,77 +50,64 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
 
 
     ngOnInit() {
-        
-        
+
+
         this.route.params.subscribe((params: Params) => this.query = params['id']);
         //bring here ownerId as well playlist id
         let limit = 50;
         this.spotifyTracks  = [];
-        
+
         this.route.params
-            .switchMap((params: Params) => 
-            {
-                setTimeout(()=> this.loadingService.setLoading(true));
+            .switchMap((params: Params) => {
+                setTimeout(() => this.loadingService.setLoading(true));
                 return this.spotifyService.getAlbum(params['id'],
                 {
                     limit: limit
                 });
             })
-            .subscribe((album: SpotifyAlbum) => 
-            {
+            .subscribe((album: SpotifyAlbum) => {
                 this.spotifyTracks  = [];
-                
+
                 this.spotifyTracks = album.tracks.items;
                 this.selectCurrentTrack(this.playerService.track);
                 this.spotifyAlbum = album;
-                
-                album.tracks.items.forEach(track =>this.albumDuration = this.albumDuration + track.duration_ms);
+
+                album.tracks.items.forEach(track => this.albumDuration = this.albumDuration + track.duration_ms);
                 this.trackCount = album.tracks.items.length;
-                setTimeout(()=> this.loadingService.setLoading(false));
-            },error=>
-            {
-                setTimeout(()=> this.loadingService.setLoading(false));
+                setTimeout(() => this.loadingService.setLoading(false));
+            }, error => {
+                setTimeout(() => this.loadingService.setLoading(false));
             });
-        this.subscriptionTrack = this.playerService.getTrack().subscribe(track => 
-        {
+        this.subscriptionTrack = this.playerService.getTrack().subscribe(track => {
             this.selectCurrentTrack(track);
         });
         this.getUsersPlaylists();
-        this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated =>
-        {
+        this.subscriptionPlaylistsModified = this.playlistService.getPlaylistsModified().subscribe(updated => {
             this.getUsersPlaylists();
         });
     }
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         this.subscriptionTrack.unsubscribe();
         this.subscriptionPlaylistsModified.unsubscribe();
     }
-     getUsersPlaylists()
-     {
+     getUsersPlaylists() {
          this.playlistService.getUsersPlaylists()
-            .then((playlists : Playlist[])=> 
-            {
+            .then((playlists: Playlist[]) => {
                 this.playlists = playlists;
             })
-            .catch(err =>
-            {
-                console.log("Some error occured" + err);
-                if(err.status == 401)
-                {
-                    console.log("Unauthorized");
+            .catch(err => {
+                console.log('Some error occured' + err);
+                if (err.status == 401) {
+                    console.log('Unauthorized');
                     this.authService.clearLoginToken();
                     this.router.navigate(['login']);
                 }
             });
      }
-     selectCurrentTrack(track: Track)
-     {
-        let temptrack = this.spotifyTracks.find(x=>x.uri == track.Address);
-        if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempPlaylistId))
-        {
-            if(temptrack)
-            {
+     selectCurrentTrack(track: Track) {
+        let temptrack = this.spotifyTracks.find(x => x.uri == track.Address);
+        if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempPlaylistId)) {
+            if (temptrack) {
                 this.selectedTrack = temptrack;
                 //this doesn't work because of two divs which have own scrollbars.
                 //This scrolls only left one not the right one.
@@ -130,64 +117,55 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
             }
         }
      }
-     addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack)
-     {
+     addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack) {
 
         this.loadingService.setLoading(true);
         let newTrack: Track = new Track();
         let trackList: Track[] = [];
         newTrack.Address = track.uri;
-        newTrack.Name = track.artists[0].name +" - "+ track.name;
+        newTrack.Name = track.artists[0].name + ' - ' + track.name;
         newTrack.Type = 2;
         newTrack.Playlist = playlist;
         trackList.push(newTrack);
-        this.trackService.createMany(trackList).then(ret =>
-        {
+        this.trackService.createMany(trackList).then(ret => {
             this.loadingService.setLoading(false);
 
         })
-        .catch(err=>
-        {
+        .catch(err => {
             this.loadingService.setLoading(false);
         });
      }
-     addAllSpotifyTrackToPlaylist(playlist: Playlist)
-     {
+     addAllSpotifyTrackToPlaylist(playlist: Playlist) {
 
         this.loadingService.setLoading(true);
         let trackList: Track[] = [];
-        this.spotifyTracks.forEach(st =>
-        {
+        this.spotifyTracks.forEach(st => {
 
             let newTrack: Track = new Track();
             newTrack.Address = st.uri;
-            newTrack.Name = st.artists[0].name +" - "+ st.name;
+            newTrack.Name = st.artists[0].name + ' - ' + st.name;
             newTrack.Type = 2;
             newTrack.Playlist = playlist;
             trackList.push(newTrack);
         });
-        this.trackService.createMany(trackList).then(ret =>
-        {
+        this.trackService.createMany(trackList).then(ret => {
             this.loadingService.setLoading(false);
         })
-        .catch(err=>
-        {
+        .catch(err => {
             this.loadingService.setLoading(false);
         });
      }
-    onSpotifySelect(track: SpotifyTrack)
-    {
+    onSpotifySelect(track: SpotifyTrack) {
         let trackList: Track[] = [];
-        let order: number = 0;
+        let order = 0;
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempPlaylistId;
-        newPlaylist.Name = this.spotifyAlbum.artists[0].name + " - " + this.spotifyAlbum.name;
-        this.spotifyTracks.forEach(st =>
-        {
+        newPlaylist.Name = this.spotifyAlbum.artists[0].name + ' - ' + this.spotifyAlbum.name;
+        this.spotifyTracks.forEach(st => {
 
             let newTrack: Track = new Track();
             newTrack.Address = st.uri;
-            newTrack.Name = st.artists[0].name +" - "+ st.name;
+            newTrack.Name = st.artists[0].name + ' - ' + st.name;
             newTrack.Type = 2;
             newTrack.Playlist = newPlaylist;
             newTrack.Order = order;
@@ -199,14 +177,13 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
         this.playerService.setTrack(tempTrack);
 
     }
-    addToQueue(track: SpotifyTrack)
-    {
+    addToQueue(track: SpotifyTrack) {
         let newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempPlaylistId;
-        newPlaylist.Name = "Spotify : "+this.playlistInfo.name;
+        newPlaylist.Name = 'Spotify : ' + this.playlistInfo.name;
         let newTrack: Track = new Track();
             newTrack.Address = track.uri;
-            newTrack.Name = track.artists[0].name +" - "+ track.name;
+            newTrack.Name = track.artists[0].name + ' - ' + track.name;
             newTrack.Type = 2;
             newTrack.Playlist = newPlaylist;
             newTrack.Order = 0;

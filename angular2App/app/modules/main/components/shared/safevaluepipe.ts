@@ -4,10 +4,11 @@ import { DomSanitizer} from '@angular/platform-browser';
 @Pipe({ name: 'safevalue' })
 export class SafeValuePipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
-  transform(value : number) {
-    if(value)
+  transform(value: number) {
+    if (value) {
       return value;
-    else
+    } else {
       return 0;
+    }
   }
-} 
+}
