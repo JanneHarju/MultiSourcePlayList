@@ -80,7 +80,25 @@ namespace PlayList
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => 
                 {
+                    options.Cookie.Domain = "musiple.azurewebsites.net";
                     options.Cookie.Name = "access_token";
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.LoginPath = "/login";
+                    options.LogoutPath = "/login";
+                })
+                .AddCookie("localhost", options => 
+                {
+                    options.Cookie.Domain = "http://localhost:4200";
+                    options.Cookie.Name = "localhost_access_token";
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.LoginPath = "/login";
+                    options.LogoutPath = "/login";
+                })
+                .AddCookie("musiple", options => 
+                {
+                    options.Cookie.Domain = "musiple.com";
+                    options.Cookie.Name = "musiple_access_token";
+                    options.Cookie.SameSite = SameSiteMode.None;
                     options.LoginPath = "/login";
                     options.LogoutPath = "/login";
                 })
@@ -88,6 +106,10 @@ namespace PlayList
                 {
                     options.TokenValidationParameters = tokenValidationParameters;
                 });
+            /*services.AddSession(options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+            });*/
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
@@ -96,8 +118,26 @@ namespace PlayList
                         builder
                             .AllowAnyOrigin()
                             .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });
+                /*options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder
+                            .WithOrigins("http://musiple.azurewebsites.net")
+                            .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
+                options.AddPolicy("AllowAllOriginsForMusiple",
+                    builder =>
+                    {
+                        builder
+                            .WithOrigins("http://localhost:4200")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });*/
             });
             services.AddScoped<IMultiSourcePlaylistRepository, MultiSourcePlaylistRepository>();
 
@@ -142,7 +182,7 @@ namespace PlayList
             });
 
             app.UseCors("AllowAllOrigins");
-
+            //app.UseCors("AllowAllOriginsForMusiple");
             app.UseDefaultFiles();
             app.UseStaticFiles();
 

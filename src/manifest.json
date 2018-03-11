@@ -1,0 +1,19 @@
+{
+  "name": "Musiple",
+  "short_name": "Musiple",
+  "description": "Musiple playlist application",  
+  "icons": [
+    {
+      "src": "assets/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    }, {
+      "src": "assets/icon-196.png",
+      "sizes": "196x196",
+      "type": "image/png"
+    }],
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#242021"
+}
