@@ -1,6 +1,6 @@
-import { NgModule }             from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PlaylistComponent }      from './components/playlist/playlist.component';
+import { PlaylistComponent } from './components/playlist/playlist.component';
 import { TracklistComponent } from './components/tracklist/tracklist.component';
 import { SearchlistComponent } from './components/searchlist/searchlist.component';
 import { MainComponent } from './components/main/main.component';

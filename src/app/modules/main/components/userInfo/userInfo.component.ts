@@ -21,12 +21,12 @@ export class UserInfoComponent implements OnInit {
 
     getUserInfo() {
         this.authService.getUserInfo().then(res => {
-            let info = res.Data as UserInfo;
+            const info = res.Data as UserInfo;
             this.userInfo = info;
             this.disckUsageProcent = (this.userInfo.UsedDiscSpace / this.userInfo.MaxDiscSpace) * 100;
         })
         .catch(err => {
-            if (err.status == 401) {
+            if (err.status === 401) {
                 this.authService.clearLoginToken();
                 this.router.navigate(['login']);
             }

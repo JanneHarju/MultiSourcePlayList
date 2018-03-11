@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PlaylistService} from '../../../../services/playlist.service';
 import { SpotifyService } from '../../../../services/spotify.service';
-import { Playlist } from '../../../../models/playlist'
+import { Playlist } from '../../../../models/playlist';
 import { SpotifyPlaylist } from '../../../../models/spotifyplaylist';
 import { AuthService } from '../../../../services/auth.service';
-import { LoadingService }         from '../../../../services/loading.service';
+import { LoadingService } from '../../../../services/loading.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -61,7 +61,7 @@ export class PlaylistComponent implements OnInit, OnDestroy {
             })
             .catch(err => {
                 console.log('Some error occured' + err);
-                if (err.status == 401) {
+                if (err.status === 401) {
                     console.log('Unauthorized');
                     this.authService.clearLoginToken();
                     this.router.navigate(['login']);
@@ -94,14 +94,14 @@ export class PlaylistComponent implements OnInit, OnDestroy {
 
         this.loadingService.setLoading(true);
         this.playlistService.delete(this.removetarget.Id).then(result => {
-            if (this.selectedPlaylist.Id == this.removetarget.Id) {
+            if (this.selectedPlaylist.Id === this.removetarget.Id) {
                 let selectedPlaylist = this.playlists.find(x => x.Order > this.removetarget.Order);
                 if (!selectedPlaylist) {
                     selectedPlaylist = this.playlists.find(x => x.Order < this.removetarget.Order);
                 }
                 this.router.navigate(['/main/tracklist', selectedPlaylist.Id]);
             }
-            this.playlists.splice(this.playlists.findIndex(pl => pl.Id == this.removetarget.Id), 1);
+            this.playlists.splice(this.playlists.findIndex(pl => pl.Id === this.removetarget.Id), 1);
             this.loadingService.setLoading(false);
         }).catch(err => {
             this.loadingService.setLoading(false);

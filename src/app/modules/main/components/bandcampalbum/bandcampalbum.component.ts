@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router }   from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { BandcampService } from '../../../..//services/bandcamp.service';
 import { AlbumInfo } from '../../../../json_schema/BandCampAlbumInfo';
-import { LoadingService }         from '../../../../services/loading.service';
+import { LoadingService } from '../../../../services/loading.service';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 

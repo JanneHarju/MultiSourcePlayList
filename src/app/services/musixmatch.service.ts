@@ -8,11 +8,11 @@ import 'rxjs/add/operator/catch';
 
 export interface MusixMatchOptions {
     apikey?: string;
-    q_track?: string,
-    q_artist?: string,
-    maxResults?: number,
-    format?: string,
-    callback?: string
+    q_track?: string;
+    q_artist?: string;
+    maxResults?: number;
+    format?: string;
+    callback?: string;
 }
 
 @Injectable()
@@ -21,8 +21,8 @@ export class MusixMatchAPIService {
     key = '4580db683fb8c0d7073ec8fc7ce2c474';
     constructor(private http: Http) { }
     search(q: string) {
-        let artist = this.getArtistFromQuery(q);
-        let track = this.getTrackFromQuery(q);
+        const artist = this.getArtistFromQuery(q);
+        const track = this.getTrackFromQuery(q);
         let options: MusixMatchOptions;
         options = {};
         options.format = 'jsonp';
@@ -35,25 +35,25 @@ export class MusixMatchAPIService {
         url: `matcher.lyrics.get`,
         search: options
     }).map(res => {
-        let body = res.text();
-        let callback = 'callback(';
-        let callbackEnd = ');';
-        let part1 = body.split(callback)[1];
-        let part2 =  part1.split(callbackEnd)[0];
-        //return part2;
+        const body = res.text();
+        const callback = 'callback(';
+        const callbackEnd = ');';
+        const part1 = body.split(callback)[1];
+        const part2 =  part1.split(callbackEnd)[0];
+        // return part2;
         return JSON.parse(part2).message.body.lyrics as MusixMatchLyric;
-    }); //.message.body.lyrics as MusixMatchLyric);
+    }); // .message.body.lyrics as MusixMatchLyric);
     }
 
     private toQueryString(obj: Object): string {
-        let parts: string[] = [];
-        for (let key in obj) {
+        const parts: string[] = [];
+        for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
             parts.push(encodeURIComponent(key) + '=' + encodeURIComponent((<any>obj)[key]));
         }
-        };
+        }
         return parts.join('&');
-    };
+    }
 
     /*private getHeaders(isJson?: boolean): any {
         return new Headers(this.auth(isJson));
@@ -81,20 +81,20 @@ export class MusixMatchAPIService {
         url: this.baseUri + requestOptions.url,
         method: requestOptions.method || 'get',
         search: this.toQueryString(requestOptions.search),
-        body: JSON.stringify(requestOptions.body)//,
-        //headers: requestOptions.headers
+        body: JSON.stringify(requestOptions.body)// ,
+        // headers: requestOptions.headers
         }));
     }
-    getArtistFromQuery(q: string) : string {
-        let parts = q.split(' - ');
+    getArtistFromQuery(q: string): string {
+        const parts = q.split(' - ');
         let artist = '';
         if (parts != null && parts.length > 0) {
             artist = parts[0];
         }
         return artist;
     }
-    getTrackFromQuery(q: string) : string {
-        let parts = q.split(' - ');
+    getTrackFromQuery(q: string): string {
+        const parts = q.split(' - ');
         let track = '';
         if (parts != null && parts.length > 1) {
             track = parts[1];

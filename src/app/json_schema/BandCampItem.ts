@@ -10,7 +10,7 @@
 export type SearchResult = Artist | Album | Track | Fan | Label;
 
 export interface Artist {
-  type: "artist";
+  type: 'artist';
   name: string;
   url: string;
   imageUrl: string;
@@ -19,7 +19,7 @@ export interface Artist {
   location: string;
 }
 export interface Album {
-  type: "album";
+  type: 'album';
   name: string;
   url: string;
   imageUrl: string;
@@ -30,7 +30,7 @@ export interface Album {
   numMinutes: number;
 }
 export interface Track {
-  type: "track";
+  type: 'track';
   name: string;
   url: string;
   imageUrl: string;
@@ -40,7 +40,7 @@ export interface Track {
   artist: string;
 }
 export interface Fan {
-  type: "fan";
+  type: 'fan';
   name: string;
   url: string;
   imageUrl: string;

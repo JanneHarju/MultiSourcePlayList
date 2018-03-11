@@ -7,7 +7,7 @@ export class DisplayTimePipe  implements PipeTransform {
             let secs = Math.round((0 + input) / 1000);
             let mins = Math.floor(secs / 60);
             secs -= mins * 60;
-            let hours = Math.floor(mins / 60);
+            const hours = Math.floor(mins / 60);
             mins -= hours * 60;
             if (hours > 0) {
                 return hours + ':' + this.twodigit(mins) + ':' + this.twodigit(secs);

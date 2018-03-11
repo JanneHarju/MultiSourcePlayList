@@ -24,14 +24,14 @@ export class AuthService implements CanActivate {
         }
     }
     public login(rememberme: boolean, user: User) {
-        let header = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: header, withCredentials: true });
-        //let options = new RequestOptions({ headers: header });
+        const header = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: header, withCredentials: true });
+        // let options = new RequestOptions({ headers: header });
         this.rememberme = rememberme;
         return this.http.put(`${this.BaseUrl}/Login/` + rememberme, user, options).toPromise().then(
             res => {
-                let result = res.json();
-                if (result.State == 1 && result.Data && result.Data.accessToken.Value) {
+                const result = res.json();
+                if (result.State === 1 && result.Data && result.Data.accessToken.Value) {
                     if (this.rememberme) {
                         localStorage.setItem(this.tokeyKey, result.Data.accessToken.Value);
                     }
@@ -46,14 +46,14 @@ export class AuthService implements CanActivate {
     }
 
     public register(rememberme: boolean, user: User) {
-        let header = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: header });
+        const header = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: header });
         this.rememberme = rememberme;
 
         return this.http.post(`${this.BaseUrl}/Register/` + rememberme, user, options).toPromise().then(
             res => {
-                let result = res.json();
-                if (result.State == 1 && result.Data && result.Data.accessToken) {
+                const result = res.json();
+                if (result.State === 1 && result.Data && result.Data.accessToken) {
                     if (this.rememberme) {
                         localStorage.setItem(this.tokeyKey, result.Data.accessToken);
                     }
@@ -68,8 +68,8 @@ export class AuthService implements CanActivate {
     }
 
     public authGet(url: string) {
-        let headers = this.initAuthHeaders();
-        let options = new RequestOptions({ headers: headers });
+        const headers = this.initAuthHeaders();
+        const options = new RequestOptions({ headers: headers });
         return this.http.get(url, options)
             .toPromise().then(
                 response => response.json())
@@ -79,12 +79,12 @@ export class AuthService implements CanActivate {
     public setAuthenticationComplited(status: boolean) {
         this.subjectAuthenticationComplited.next(status);
     }
-    public getAuthenticationComplited() : Observable<boolean> {
+    public getAuthenticationComplited(): Observable<boolean> {
         return this.subjectAuthenticationComplited.asObservable();
     }
 
     public checkLogin(): boolean {
-        let token = this.getLocalToken();
+        const token = this.getLocalToken();
         return token != null;
     }
     public clearLoginToken() {
@@ -95,7 +95,7 @@ export class AuthService implements CanActivate {
     }
 
     public authPost$(url: string, body: any) {
-        let headers = this.initAuthHeaders();
+        const headers = this.initAuthHeaders();
         return this.http.post(url, body, { headers: headers })
             .toPromise()
             .then(response => response.json())
@@ -107,18 +107,18 @@ export class AuthService implements CanActivate {
     }
 
     public initAuthHeaders(): Headers {
-        let token = this.getLocalToken();
+        const token = this.getLocalToken();
         if (token == null) {
-            throw 'No token';
+            throw new Error('No token');
         }
-        let headers = new Headers({ 'Content-Type': 'application/json' });
+        const headers = new Headers({ 'Content-Type': 'application/json' });
         headers.append('Authorization', 'Bearer ' + token);
         return headers;
     }
 
     private handleError(error: any) {
         console.error(error);
-        if (error.status == 401) {
+        if (error.status === 401) {
             this.clearLoginToken();
         }
         return Observable.throw(error);

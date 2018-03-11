@@ -20,7 +20,7 @@ export class QueueComponent implements OnInit {
     }
 
     delete(track: Track) {
-        let index = this.tracklist.indexOf(track, 0);
+        const index = this.tracklist.indexOf(track, 0);
         if (index > -1) {
             this.tracklist.splice(index, 1);
         }
@@ -28,7 +28,7 @@ export class QueueComponent implements OnInit {
 
     onSelect(track: Track): void {
 
-        //Maybe select track to play
+        // Maybe select track to play
         /*this.playerService.setTrackList(this.tracklist);
         this.playerService.setTrack(track);*/
 

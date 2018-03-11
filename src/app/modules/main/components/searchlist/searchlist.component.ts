@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Params, Router }   from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { SpotifyService } from '../../../../services/spotify.service';
 import { YoutubeAPIService } from '../../../../services/youtubeapi.service';
 import { SpotifyTrack } from '../../../../models/spotifytrack';
 import { YoutubeVideo } from '../../../../models/youtubeVideo';
 import { PlaylistService} from '../../../../services/playlist.service';
 import { AuthService } from '../../../../services/auth.service';
-import { Playlist } from '../../../../models/playlist'
-import { Track } from '../../../../models/track'
+import { Playlist } from '../../../../models/playlist';
+import { Track } from '../../../../models/track';
 import { TrackService } from '../../../../services/track.service';
 import { PlayerService } from '../../../../services/player.service';
 import { BandcampService, BandcampOptions } from '../../../..//services/bandcamp.service';
@@ -91,7 +91,7 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         })
         .catch(err => {
             console.log('Some error occured' + err);
-            if (err.status == 401) {
+            if (err.status === 401) {
                 console.log('Unauthorized');
                 this.authService.clearLoginToken();
                 this.router.navigate(['login']);
@@ -99,15 +99,15 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         });
     }
     bcsearch(query: string) {
-        let params: BandcampOptions = {
+        const params: BandcampOptions = {
             q: query,
             page: 1
         };
         this.bandcampService.bandCampSearch(params)
         .then( (ret: SearchResult[]) => {
-            this.bandcampAlbums = ret.filter(x => x.type == 'album') as Album[];
-            this.bandcampArtists = ret.filter(x => x.type == 'artist') as Artist[];
-            this.bandcampTracks = ret.filter(x => x.type == 'track') as BandCampTrack[];
+            this.bandcampAlbums = ret.filter(x => x.type === 'album') as Album[];
+            this.bandcampArtists = ret.filter(x => x.type === 'artist') as Artist[];
+            this.bandcampTracks = ret.filter(x => x.type === 'track') as BandCampTrack[];
             setTimeout(() => this.loadingService.setLoading(false));
         })
         .catch(err => {
@@ -119,25 +119,25 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         return btoa(url);
     }
     selectCurrentTrack(track: Track) {
-        let temptrack = this.spotifyTracks.find(x => x.uri == track.Address);
+        const temptrack = this.spotifyTracks.find(x => x.uri === track.Address);
         if (temptrack) {
             if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempSpotifyPlaylistId)) {
                 this.selectedSpotifyTrack = temptrack;
                 this.selectedYoutubeVideo = null;
-                //this doesn't work because of two divs which have own scrollbars.
-                //This scrolls only left one not the right one.
+                // this doesn't work because of two divs which have own scrollbars.
+                // This scrolls only left one not the right one.
                 /*var element = document.getElementsByClassName("active")[0];
                 if(element)
                     element.scrollIntoView()*/
             }
         } else {
-            let tempvideo = this.youtubeVideos.find(x => x.id.videoId == track.Address);
+            const tempvideo = this.youtubeVideos.find(x => x.id.videoId === track.Address);
             if (tempvideo) {
                 if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempYoutubePlaylistId)) {
                     this.selectedYoutubeVideo = tempvideo;
                     this.selectedSpotifyTrack = null;
-                    //this doesn't work because of two divs which have own scrollbars.
-                    //This scrolls only left one not the right one.
+                    // this doesn't work because of two divs which have own scrollbars.
+                    // This scrolls only left one not the right one.
                     /*var element = document.getElementsByClassName("active")[0];
                     if(element)
                         element.scrollIntoView()*/
@@ -148,8 +148,8 @@ export class SearchlistComponent implements OnInit, OnDestroy {
     addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack) {
 
         this.loadingService.setLoading(true);
-        let newTrack: Track = new Track();
-        let trackList: Track[] = [];
+        const newTrack: Track = new Track();
+        const trackList: Track[] = [];
         newTrack.Address = track.uri;
         newTrack.Name = track.artists[0].name + ' - ' + track.name;
         newTrack.Type = 2;
@@ -165,8 +165,8 @@ export class SearchlistComponent implements OnInit, OnDestroy {
     }
     addVideoToPlaylist(playlist: Playlist, video: YoutubeVideo) {
         this.loadingService.setLoading(true);
-        let newTrack: Track = new Track();
-        let trackList: Track[] = [];
+        const newTrack: Track = new Track();
+        const trackList: Track[] = [];
         newTrack.Address = video.id.videoId;
         newTrack.Name = video.snippet.title;
         newTrack.Type = 1;
@@ -186,14 +186,14 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         });
     }*/
     onSpotifySelect(track: SpotifyTrack) {
-        let trackList: Track[] = [];
+        const trackList: Track[] = [];
         let order = 0;
-        let newPlaylist: Playlist = new Playlist();
+        const newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempSpotifyPlaylistId;
         newPlaylist.Name = 'Spotify Search : ' + this.query;
         this.spotifyTracks.forEach(st => {
 
-            let newTrack: Track = new Track();
+            const newTrack: Track = new Track();
             newTrack.Address = st.uri;
             newTrack.Name = st.artists[0].name + ' - ' + st.name;
             newTrack.Type = 2;
@@ -203,22 +203,22 @@ export class SearchlistComponent implements OnInit, OnDestroy {
             trackList.push(newTrack);
         });
         this.playerService.setTrackList(trackList);
-        let tempTrack = trackList.find(tr => tr.Address == track.uri);
+        const tempTrack = trackList.find(tr => tr.Address === track.uri);
         this.playerService.setTrack(tempTrack);
 
     }
     onYoutubeSelect(video: YoutubeVideo) {
-        let trackList: Track[] = [];
+        const trackList: Track[] = [];
         let order = 0;
-        let newPlaylist: Playlist = new Playlist();
+        const newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempYoutubePlaylistId;
         newPlaylist.Name = 'Youtube Search : ' + this.query;
         this.youtubeVideos.forEach(ytv => {
 
-            let newTrack: Track = new Track();
+            const newTrack: Track = new Track();
             newTrack.Address = ytv.id.videoId;
             newTrack.Id = 99999;
-            newTrack.Name = ytv.snippet.title
+            newTrack.Name = ytv.snippet.title;
             newTrack.Type = 1;
             newTrack.Playlist = newPlaylist;
             newTrack.Order = order;
@@ -226,14 +226,14 @@ export class SearchlistComponent implements OnInit, OnDestroy {
             trackList.push(newTrack);
         });
         this.playerService.setTrackList(trackList);
-        let tempTrack = trackList.find(tr => tr.Address == video.id.videoId);
+        const tempTrack = trackList.find(tr => tr.Address === video.id.videoId);
         this.playerService.setTrack(tempTrack);
     }
     addSpotifyToQueue(track: SpotifyTrack) {
-        let newPlaylist: Playlist = new Playlist();
+        const newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempSpotifyPlaylistId;
         newPlaylist.Name = 'Spotify Search : ' + this.query;
-        let newTrack: Track = new Track();
+        const newTrack: Track = new Track();
             newTrack.Address = track.uri;
             newTrack.Name = track.artists[0].name + ' - ' + track.name;
             newTrack.Type = 2;
@@ -242,10 +242,10 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         this.playerService.addTrackToQueue(newTrack);
     }
     addYoutubeToQueue(video: YoutubeVideo) {
-        let newPlaylist: Playlist = new Playlist();
+        const newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempSpotifyPlaylistId;
         newPlaylist.Name = 'YouTube Search : ' + this.query;
-        let newTrack: Track = new Track();
+        const newTrack: Track = new Track();
             newTrack.Address = video.id.videoId;
             newTrack.Name = video.snippet.title;
             newTrack.Id = 99999;

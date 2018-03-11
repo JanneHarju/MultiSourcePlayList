@@ -9,15 +9,15 @@ import { AuthService } from './auth.service';
 export class TrackService {
     private tracksUrl = 'http://musiple.azurewebsites.net/api/tracks';  // URL to web api
 
-    //private headers = new Headers({'Content-Type': 'application/json'});
+    // private headers = new Headers({'Content-Type': 'application/json'});
     constructor(
         private http: Http,
         private authService: AuthService) { }
 
     getTracks(): Promise<Track[]> {
 
-        let headers = this.authService.initAuthHeaders();
-        let options = new RequestOptions({ headers: headers });
+        const headers = this.authService.initAuthHeaders();
+        const options = new RequestOptions({ headers: headers });
         return this.http.get(this.tracksUrl, options)
                 .toPromise()
                 .then((response: Response) => response.json() as Track[])
@@ -30,8 +30,8 @@ export class TrackService {
         let requestOptions = new RequestOptions();
         requestOptions.search = params;*/
 
-        let headers = this.authService.initAuthHeaders();
-        let options = new RequestOptions({ headers: headers });
+        const headers = this.authService.initAuthHeaders();
+        const options = new RequestOptions({ headers: headers });
         const url = `${this.tracksUrl}/${id}/${playlist}`;
         return this.http.get(url, options)
                 .toPromise()
@@ -40,8 +40,8 @@ export class TrackService {
     }
     getTrack(id: number): Promise<Track> {
 
-        let headers = this.authService.initAuthHeaders();
-        let options = new RequestOptions({ headers: headers });
+        const headers = this.authService.initAuthHeaders();
+        const options = new RequestOptions({ headers: headers });
         const url = `${this.tracksUrl}/${id}`;
         return this.http.get(url, options)
             .toPromise()
@@ -55,7 +55,7 @@ export class TrackService {
 
     updatePlaylistOrder(tracks: Track[]) {
 
-        let headers = this.authService.initAuthHeaders();
+        const headers = this.authService.initAuthHeaders();
         return this.http
             .put(this.tracksUrl, tracks, {headers: headers})
             .toPromise()
@@ -64,7 +64,7 @@ export class TrackService {
     }
     update(track: Track): Promise<Track> {
 
-        let headers = this.authService.initAuthHeaders();
+        const headers = this.authService.initAuthHeaders();
         const url = `${this.tracksUrl}/${track.Id}`;
         return this.http
             .put(url, track, {headers: headers})
@@ -74,8 +74,8 @@ export class TrackService {
     }
     create(track: Track): Promise<void> {
 
-        let headers = this.authService.initAuthHeaders();
-        //tmpHero.name = name;
+        const headers = this.authService.initAuthHeaders();
+        // tmpHero.name = name;
         return this.http
             .post(this.tracksUrl, track, {headers: headers})
             .toPromise()
@@ -84,8 +84,8 @@ export class TrackService {
     }
     createMany(tracks: Track[]): Promise<void> {
 
-        let headers = this.authService.initAuthHeaders();
-        //tmpHero.name = name;
+        const headers = this.authService.initAuthHeaders();
+        // tmpHero.name = name;
         return this.http
             .post(this.tracksUrl, tracks, {headers: headers})
             .toPromise()
@@ -94,7 +94,7 @@ export class TrackService {
     }
     delete(id: number): Promise<void> {
 
-        let headers = this.authService.initAuthHeaders();
+        const headers = this.authService.initAuthHeaders();
         const url = `${this.tracksUrl}/${id}`;
         return this.http.delete(url, {headers: headers})
             .toPromise()

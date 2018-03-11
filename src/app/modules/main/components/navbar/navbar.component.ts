@@ -46,7 +46,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
     getUserInfo() {
         this.authService.getUserInfo().then(res => {
-            let info = res.Data as UserInfo;
+            const info = res.Data as UserInfo;
             if (res != null && info) {
                 if (info && info.UserName) {
                     this.userName = info.UserName;
@@ -57,7 +57,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
             }
         })
         .catch(err => {
-            if (err.status == 401) {
+            if (err.status === 401) {
                 this.authService.clearLoginToken();
                 this.router.navigate(['login']);
             }
@@ -77,12 +77,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
         localStorage.removeItem(this.authService.tokeyKey);
     }
     search(q: string): void {
-        //naigoidaan tässä
         this.router.navigate(['main/searchlist', q]);
-        //this.router.navigate(['/searchlist', q]);
     }
     fullScreen() {
-        let body = document.documentElement;
+        const body = document.documentElement;
         if (body.requestFullscreen) {
             body.requestFullscreen();
         } else if (body.webkitRequestFullscreen) {

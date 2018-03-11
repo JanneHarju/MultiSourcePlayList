@@ -5,7 +5,7 @@ import { PlayerService } from '../../../../services/player.service';
 import { PlaylistService } from '../../../../services/playlist.service';
 import { AuthService } from '../../../../services/auth.service';
 import { MusixMatchAPIService } from '../../../../services/musixmatch.service';
-import { LoadingService }         from '../../../../services/loading.service';
+import { LoadingService } from '../../../../services/loading.service';
 import { Track } from '../../../../models/track';
 import { Playlist } from '../../../../models/playlist';
 import { MusixMatchLyric } from '../../../../models/musixmatchlyric';
@@ -96,7 +96,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             })
             .catch(err => {
                 console.log('Some error occured' + err);
-                if (err.status == 401) {
+                if (err.status === 401) {
                     console.log('Unauthorized');
                     this.authService.clearLoginToken();
                     this.router.navigate(['login']);
@@ -119,10 +119,10 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      }
      selectCurrentTrack(track: Track) {
          if (this.tracklist[0] && this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tracklist[0].Playlist.Id)) {
-            let temptrack = this.tracklist.find(x => x.Address == track.Address);
+            const temptrack = this.tracklist.find(x => x.Address === track.Address);
             if (temptrack) {
                 this.currentTrack = temptrack;
-                let trackElement: HTMLElement = document.getElementById(this.getTrackElementName(this.currentTrack.Id));
+                const trackElement: HTMLElement = document.getElementById(this.getTrackElementName(this.currentTrack.Id));
                 if (trackElement && !this.isElementInViewport(trackElement)) {
                     trackElement.scrollIntoView({behavior: 'smooth'});
                 }
@@ -186,12 +186,12 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         this.ngOnInit();
     }
     addTrackToPlaylist(playlist: Playlist, track: Track) {
-        let trc = new Track();
+        const trc = new Track();
         trc.Address = track.Address;
         trc.Name = track.Name;
         trc.Playlist = playlist;
         trc.Type = track.Type;
-        let trackList: Track[] = [];
+        const trackList: Track[] = [];
         trackList.push(trc);
         this.trackService.createMany(trackList).then(ret => {
 
@@ -205,10 +205,10 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         return 'track_' + trackId;
     }
 
-    isElementInViewport (el: HTMLElement) : boolean {
-        let rect = el.getBoundingClientRect();
-        let viewPortElement = document.getElementById('body-content');
-        let viewPortElementRect = viewPortElement.getBoundingClientRect();
+    isElementInViewport (el: HTMLElement): boolean {
+        const rect = el.getBoundingClientRect();
+        const viewPortElement = document.getElementById('body-content');
+        const viewPortElementRect = viewPortElement.getBoundingClientRect();
         return (
             rect.top >= viewPortElementRect.top &&
             rect.bottom <= viewPortElementRect.bottom

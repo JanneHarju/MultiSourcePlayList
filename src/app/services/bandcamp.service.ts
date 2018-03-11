@@ -14,8 +14,8 @@ import * as utils from '../../../node_modules/bandcamp-scraper/lib/utils.js';*/
     htmlParser  = require('../../../node_modules/bandcamp-scraper/lib/htmlParser.js'),
     utils       = require('../../../node_modules/bandcamp-scraper/lib/utils.js');*/
 export interface BandcampOptions {
-  page: number,
-  q: string
+  page: number;
+  q: string;
 }
 @Injectable()
 export class BandcampService {
@@ -35,12 +35,12 @@ export class BandcampService {
         .toPromise()
         .then(res => {
             return [];
-            //return htmlParser.parseSearchResults(res.text()) as SearchResult[];
+            // return htmlParser.parseSearchResults(res.text()) as SearchResult[];
         })
         .catch(this.handlePromiseError);
     }
     bandCampAlbumInfo(url: string) {
-        let decodedUrl = atob(url);
+        const decodedUrl = atob(url);
         const fullUrl = `/albuminfo/${url}`;
         return this.api({
             method: 'get',
@@ -49,13 +49,13 @@ export class BandcampService {
         })
         .toPromise()
         .then(res => {
-            //return htmlParser.parseAlbumInfo(res.text(), decodedUrl) as AlbumInfo;
+            // return htmlParser.parseAlbumInfo(res.text(), decodedUrl) as AlbumInfo;
         })
         .catch(this.handlePromiseError);
     }
 
     bandCampAlbumUrls(url: string) {
-        let decodedUrl = atob(url);
+        const decodedUrl = atob(url);
         const fullUrl = `/albumurls/${url}`;
         return this.api({
             method: 'get',
@@ -64,20 +64,20 @@ export class BandcampService {
         })
         .toPromise()
         .then(res => {
-            //return htmlParser.parseAlbumUrls(res.text(), decodedUrl) as string[];
+            // return htmlParser.parseAlbumUrls(res.text(), decodedUrl) as string[];
         })
         .catch(this.handlePromiseError);
     }
 
     private toQueryString(obj: Object): string {
-        let parts: string[] = [];
-        for (let key in obj) {
+        const parts: string[] = [];
+        for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
             parts.push(encodeURIComponent(key) + '=' + encodeURIComponent((<any>obj)[key]));
         }
-        };
+        }
         return parts.join('&');
-    };
+    }
     private api(requestOptions: HttpRequestOptions) {
         return this.http.request(new Request({
         url: this.baseUri + requestOptions.url,

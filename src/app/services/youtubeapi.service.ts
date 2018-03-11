@@ -7,11 +7,11 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 export interface YoutubeOptions {
-  part?: string,
-  type?: string,
-  q?: string,
-  key?: string,
-  maxResults?: number
+  part?: string;
+  type?: string;
+  q?: string;
+  key?: string;
+  maxResults?: number;
 }
 
 @Injectable()
@@ -36,14 +36,14 @@ export class YoutubeAPIService {
     }
 
     private toQueryString(obj: Object): string {
-        let parts: string[] = [];
-        for (let key in obj) {
+        const parts: string[] = [];
+        for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
             parts.push(encodeURIComponent(key) + '=' + encodeURIComponent((<any>obj)[key]));
         }
-        };
+        }
         return parts.join('&');
-    };
+    }
 
     /*private getHeaders(isJson?: boolean): any {
         return new Headers(this.auth(isJson));

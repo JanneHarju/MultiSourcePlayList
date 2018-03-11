@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SpotifyService } from '../../../../services/spotify.service';
-import { Router }                 from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'my-search',
@@ -15,9 +15,7 @@ export class SearchComponent implements OnInit {
 
     ngOnInit() { }
     search(q: string): void {
-        //naigoidaan tässä
 
         this.router.navigate(['../main/searchlist', q]);
-        //this.router.navigate(['/main/searchlist', q], { relativeTo: this.route});
     }
 }

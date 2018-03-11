@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { UploadOutput, UploadInput, UploadFile, humanizeBytes } from 'ngx-uploader';
 import { AuthService } from '../../../../services/auth.service';
-import { LoadingService }         from '../../../../services/loading.service';
+import { LoadingService } from '../../../../services/loading.service';
 import { Playlist } from '../../../../models/playlist';
 
 @Component({
@@ -38,7 +38,7 @@ export class FileUploadComponent implements OnInit {
         if (output.type === 'allAddedToQueue') { // when all files added in queue
         // uncomment this if you want to auto upload files when added
             this.loadingService.setLoading(true);
-            let token = this.authService.getLocalToken();
+            const token = this.authService.getLocalToken();
             const event: UploadInput = {
                 type: 'uploadAll',
                 url: '/api/fileupload/' + this.currentPlaylist.Id,
@@ -72,8 +72,8 @@ export class FileUploadComponent implements OnInit {
                 this.loadingService.setLoading(false);
                 this.loadComplited.emit(null);
             }
-            if (output.file.response == 'NO_DISC_SPACE') {
-                let message = 'No more disc space for you anymore';
+            if (output.file.response === 'NO_DISC_SPACE') {
+                const message = 'No more disc space for you anymore';
                 alert(message);
             } else {
                 console.log(output.file.response);
@@ -81,14 +81,14 @@ export class FileUploadComponent implements OnInit {
         }
     }
     startUpload(): void {  // manually start uploading
-        let token = this.authService.getLocalToken();
+        const token = this.authService.getLocalToken();
         const event: UploadInput = {
             type: 'uploadAll',
             url: '/api/fileupload/' + this.currentPlaylist.Id,
             fieldName: 'files',
             method: 'POST',
             headers: { 'Authorization': 'Bearer ' + token},
-        }
+        };
 
         this.uploadInput.emit(event);
     }

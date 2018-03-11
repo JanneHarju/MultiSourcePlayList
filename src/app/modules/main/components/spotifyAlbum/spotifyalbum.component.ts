@@ -1,20 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Params, Router }   from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { SpotifyService, SpotifyOptions } from '../../../../services/spotify.service';
 import { YoutubeAPIService } from '../../../../services/youtubeapi.service';
 import { SpotifyTrack } from '../../../../models/spotifytrack';
 import { YoutubeVideo } from '../../../../models/youtubeVideo';
 import { PlaylistService} from '../../../../services/playlist.service';
 import { AuthService } from '../../../../services/auth.service';
-import { Playlist } from '../../../../models/playlist'
-import { Track } from '../../../../models/track'
-import { SpotifyPlaylistTrack } from '../../../../models/spotifyplaylisttrack'
+import { Playlist } from '../../../../models/playlist';
+import { Track } from '../../../../models/track';
+import { SpotifyPlaylistTrack } from '../../../../models/spotifyplaylisttrack';
 import { SpotifyPlaylistInfo } from '../../../../models/spotifyplaylistinfo';
 import { SpotifyAlbum } from '../../../../models/spotifyalbum';
 import { SpotifyTracklist } from '../../../../models/spotifytracklist';
-import { TrackService }         from '../../../../services/track.service';
+import { TrackService } from '../../../../services/track.service';
 import { PlayerService } from '../../../../services/player.service';
-import { LoadingService }         from '../../../../services/loading.service';
+import { LoadingService } from '../../../../services/loading.service';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/toPromise';
 
@@ -53,8 +53,8 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
 
 
         this.route.params.subscribe((params: Params) => this.query = params['id']);
-        //bring here ownerId as well playlist id
-        let limit = 50;
+        // bring here ownerId as well playlist id
+        const limit = 50;
         this.spotifyTracks  = [];
 
         this.route.params
@@ -97,7 +97,7 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
             })
             .catch(err => {
                 console.log('Some error occured' + err);
-                if (err.status == 401) {
+                if (err.status === 401) {
                     console.log('Unauthorized');
                     this.authService.clearLoginToken();
                     this.router.navigate(['login']);
@@ -105,12 +105,12 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
             });
      }
      selectCurrentTrack(track: Track) {
-        let temptrack = this.spotifyTracks.find(x => x.uri == track.Address);
+        const temptrack = this.spotifyTracks.find(x => x.uri === track.Address);
         if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempPlaylistId)) {
             if (temptrack) {
                 this.selectedTrack = temptrack;
-                //this doesn't work because of two divs which have own scrollbars.
-                //This scrolls only left one not the right one.
+                // this doesn't work because of two divs which have own scrollbars.
+                // This scrolls only left one not the right one.
                 /*var element = document.getElementsByClassName("active")[0];
                 if(element)
                     element.scrollIntoView()*/
@@ -120,8 +120,8 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
      addSpotifyTrackToPlaylist(playlist: Playlist, track: SpotifyTrack) {
 
         this.loadingService.setLoading(true);
-        let newTrack: Track = new Track();
-        let trackList: Track[] = [];
+        const newTrack: Track = new Track();
+        const trackList: Track[] = [];
         newTrack.Address = track.uri;
         newTrack.Name = track.artists[0].name + ' - ' + track.name;
         newTrack.Type = 2;
@@ -138,10 +138,10 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
      addAllSpotifyTrackToPlaylist(playlist: Playlist) {
 
         this.loadingService.setLoading(true);
-        let trackList: Track[] = [];
+        const trackList: Track[] = [];
         this.spotifyTracks.forEach(st => {
 
-            let newTrack: Track = new Track();
+            const newTrack: Track = new Track();
             newTrack.Address = st.uri;
             newTrack.Name = st.artists[0].name + ' - ' + st.name;
             newTrack.Type = 2;
@@ -156,14 +156,14 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
         });
      }
     onSpotifySelect(track: SpotifyTrack) {
-        let trackList: Track[] = [];
+        const trackList: Track[] = [];
         let order = 0;
-        let newPlaylist: Playlist = new Playlist();
+        const newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempPlaylistId;
         newPlaylist.Name = this.spotifyAlbum.artists[0].name + ' - ' + this.spotifyAlbum.name;
         this.spotifyTracks.forEach(st => {
 
-            let newTrack: Track = new Track();
+            const newTrack: Track = new Track();
             newTrack.Address = st.uri;
             newTrack.Name = st.artists[0].name + ' - ' + st.name;
             newTrack.Type = 2;
@@ -173,15 +173,15 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
             trackList.push(newTrack);
         });
         this.playerService.setTrackList(trackList);
-        let tempTrack = trackList.find(tr => tr.Address == track.uri);
+        const tempTrack = trackList.find(tr => tr.Address === track.uri);
         this.playerService.setTrack(tempTrack);
 
     }
     addToQueue(track: SpotifyTrack) {
-        let newPlaylist: Playlist = new Playlist();
+        const newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempPlaylistId;
         newPlaylist.Name = 'Spotify : ' + this.playlistInfo.name;
-        let newTrack: Track = new Track();
+        const newTrack: Track = new Track();
             newTrack.Address = track.uri;
             newTrack.Name = track.artists[0].name + ' - ' + track.name;
             newTrack.Type = 2;

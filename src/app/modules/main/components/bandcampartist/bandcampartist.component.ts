@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router }   from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
-import { LoadingService }         from '../../../../services/loading.service';
+import { LoadingService } from '../../../../services/loading.service';
 import { BandcampService } from '../../../..//services/bandcamp.service';
 import { AlbumInfo } from '../../../../json_schema/BandCampAlbumInfo';
 import 'rxjs/add/operator/toPromise';
@@ -40,7 +40,7 @@ export class BandcampArtistComponent implements OnInit {
                 .then( (res: string[]) => {
                     this.albumUrls = res.filter(x => x.includes('/album/'));
                     this.albumCount = this.albumUrls.length;
-                    if (this.albumCount == 0) {
+                    if (this.albumCount === 0) {
                         setTimeout(() => this.loadingService.setLoading(false));
                         return;
                     }

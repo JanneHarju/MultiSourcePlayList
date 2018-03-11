@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
     public loginUser: User;
     public register: boolean;
     rememberMe = false;
-    //private postStream: Subscription;
+
     constructor(
         private authService: AuthService,
         private spotifyService: SpotifyService,
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
         this.loginUser = new User();
         this.register = false;
-        let longtermToken = localStorage.getItem(this.authService.tokeyKey)
+        const longtermToken = localStorage.getItem(this.authService.tokeyKey);
         if (longtermToken) {
             sessionStorage.setItem(this.authService.tokeyKey, longtermToken);
             this.authService.getUserInfo().then(res => {
@@ -46,10 +46,10 @@ export class LoginComponent implements OnInit {
             if (this.register) {
                 this.authService.register(this.rememberMe, this.loginUser).then(
                 result => {
-                    if (result.State == 1) {
+                    if (result.State === 1) {
 
                         this.router.navigate(['/main']).then(navi => {
-                            this.spotifyService.login(false).then(result => {
+                            this.spotifyService.login(false).then(res => {
                             });
                         });
                     } else {
@@ -59,9 +59,9 @@ export class LoginComponent implements OnInit {
             } else {
                 this.authService.login(this.rememberMe, this.loginUser).then(
                     result => {
-                        if (result.State == 1) {
+                        if (result.State === 1) {
                             this.router.navigate(['/main']).then(navi => {
-                                this.spotifyService.login(false).then(result => {
+                                this.spotifyService.login(false).then(res => {
                                 });
                             });
 

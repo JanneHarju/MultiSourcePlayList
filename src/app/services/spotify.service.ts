@@ -18,41 +18,41 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 export interface SpotifyConfig {
-  clientId: string,
-  redirectUri: string,
-  scope: string[],
-  authToken?: string,
-  apiBase: string,
-  clientSecret: string,
-  accountApiBase: string
+  clientId: string;
+  redirectUri: string;
+  scope: string[];
+  authToken?: string;
+  apiBase: string;
+  clientSecret: string;
+  accountApiBase: string;
 }
 
 export interface SpotifyOptions {
-  limit?: number,
-  offset?: number,
-  market?: string,
-  album_type?: string,
-  country?: string,
-  type?: string,
-  q?: string,
-  timestamp?: string,
-  locale?: string,
-  public?: boolean,
-  name?: string,
-  position_ms?: number,
-  volume_percent?: number,
-  code?: string,
-  redirect_uri?: string,
-  grant_type?: string,
-  refresh_token?: string
+  limit?: number;
+  offset?: number;
+  market?: string;
+  album_type?: string;
+  country?: string;
+  type?: string;
+  q?: string;
+  timestamp?: string;
+  locale?: string;
+  public?: boolean;
+  name?: string;
+  position_ms?: number;
+  volume_percent?: number;
+  code?: string;
+  redirect_uri?: string;
+  grant_type?: string;
+  refresh_token?: string;
 }
 
 export interface HttpRequestOptions {
-  method?: string,
-  url: string,
-  search?: Object,
-  body?: Object,
-  headers?: Headers,
+  method?: string;
+  url: string;
+  search?: Object;
+  body?: Object;
+  headers?: Headers;
 }
 
 @Injectable()
@@ -90,20 +90,20 @@ export class SpotifyService {
     }
     callback() {
         this.checkPlayerState().then(playState => {
-            if (playState.progress_ms == 0 &&
+            if (playState.progress_ms === 0 &&
                 this.playStatus.is_playing &&
                 !playState.is_playing &&
-                this.lastCurrentTrackUri == this.currentTrackUri ) {
+                this.lastCurrentTrackUri === this.currentTrackUri ) {
                 this.st.delTimer('spotify');
                 this.setTrackEnd(true);
-                //kappale loppui. onko tämä tilanne aukoton?
+                // kappale loppui. onko tämä tilanne aukoton?
             }
             this.setPlayStatus(playState);
             this.lastCurrentTrackUri = this.currentTrackUri;
         });
     }
     tokenfallback() {
-        let currentTime = new Date();
+        const currentTime = new Date();
         if ((currentTime > this.tokenRefreshedLastTime) && this.tokenRefreshed) {
             console.log('New token please');
             this.tokenRefreshed = false;
@@ -114,7 +114,7 @@ export class SpotifyService {
         this.authenticationComplited = status;
         this.subjectAuthenticationComplited.next(status);
     }
-    getAuthenticationComplited() : Observable<string> {
+    getAuthenticationComplited(): Observable<string> {
         return this.subjectAuthenticationComplited.asObservable();
     }
 
@@ -122,14 +122,14 @@ export class SpotifyService {
         this.playStatus = playStatus;
         this.subjectPlayStatus.next(playStatus);
     }
-    getPlayStatus() : Observable<SpotifyPlayStatus> {
+    getPlayStatus(): Observable<SpotifyPlayStatus> {
         return this.subjectPlayStatus.asObservable();
     }
     setTrackEnd(trackEnd: boolean) {
         this.trackEnd = trackEnd;
         this.subjectTrackEnded.next(this.trackEnd);
     }
-    getTrackEnd() : Observable<boolean> {
+    getTrackEnd(): Observable<boolean> {
         return this.subjectTrackEnded.asObservable();
     }
     startTimer() {
@@ -139,21 +139,21 @@ export class SpotifyService {
     }
     startRefreshTokenTimer(expires_in: number) {
         console.log('settimer');
-        //this.st.delTimer('spotify_refresh_token');
+        // this.st.delTimer('spotify_refresh_token');
         this.st.newTimer('spotify_refresh_token', expires_in - 60);
         this.setTokenRefreshedLastTime(expires_in);
-        //this.st.newTimer('spotify_refresh_token', 30);
+        // this.st.newTimer('spotify_refresh_token', 30);
         this.ignore = true;
         this.refreshTokenTimerId = this.st.subscribe('spotify_refresh_token', e => this.getTokensByRefreshToken());
     }
-    //if Spotify result is something like no rights i.e. then login. Don't login at start if you already have working token.
+    // if Spotify result is something like no rights i.e. then login. Don't login at start if you already have working token.
     play(trackUri?: string, options?: SpotifyOptions) {
         options = options || {};
         this.currentTrackUri = trackUri;
         this.playStatus.is_playing = true;
         this.setPlayStatus(this.playStatus);
         this.setTrackEnd(false);
-        //Only one of either context_uri or uris can be specified. If neither are present, calling /play will resume playback.
+        // Only one of either context_uri or uris can be specified. If neither are present, calling /play will resume playback.
         this.startTimer();
         if (trackUri) {
             return this.api({
@@ -273,7 +273,7 @@ export class SpotifyService {
         .then(res => res.json().items as SpotifyPlaylist[])
         .catch(err => this.handlePromiseError(err));
     }
-    getUser() : SpotifyUser {
+    getUser(): SpotifyUser {
         if (this.currentUser) {
             return this.currentUser;
         } else {
@@ -410,7 +410,7 @@ export class SpotifyService {
         })
         .toPromise()
         .then(res => {
-            let user = res.json() as SpotifyUser;
+            const user = res.json() as SpotifyUser;
             this.currentUser = user;
             return user;
         })
@@ -418,18 +418,18 @@ export class SpotifyService {
     }
 
     getTokens(code?: string) {
-        let headers = this.authService.initAuthHeaders();
-        let address = 'api/spotifyaccount/code/' + code;
+        const headers = this.authService.initAuthHeaders();
+        const address = 'api/spotifyaccount/code/' + code;
 
         return this.http
             .get(address, {headers: headers})
             .toPromise()
             .then((res: Response) => {
-                let body = res.json();
+                const body = res.json();
                 this.config.authToken = body.access_token;
                 localStorage.setItem('spotify-access-token', body.access_token);
                 localStorage.setItem('spotify-refresh-token', body.refresh_token);
-                let expiresIn = +body.expires_in;
+                const expiresIn = +body.expires_in;
                 this.startRefreshTokenTimer(expiresIn);
                 return true;
             })
@@ -440,7 +440,7 @@ export class SpotifyService {
 
     }
     setTokenRefreshedLastTime(expiresIn: number) {
-        let current = new Date();
+        const current = new Date();
         let time = current.getTime();
         time += (expiresIn * 1000);
         this.tokenRefreshedLastTime = new Date(time);
@@ -450,22 +450,22 @@ export class SpotifyService {
         if (!this.ignore) {
 
             this.st.delTimer('spotify_refresh_token');
-            let headers = this.authService.initAuthHeaders();
-            let address = 'api/spotifyaccount/refreshtoken/' + localStorage.getItem('spotify-refresh-token');
+            const headers = this.authService.initAuthHeaders();
+            const address = 'api/spotifyaccount/refreshtoken/' + localStorage.getItem('spotify-refresh-token');
             console.log('getTokensByRefreshToken');
             return this.http
                 .get(address, {headers: headers})
                 .toPromise()
                 .then((res: Response) => {
                     console.log(res);
-                    let body = res.json();
+                    const body = res.json();
                     this.config.authToken = body.access_token;
                     localStorage.setItem('spotify-access-token', body.access_token);
                     if (body.refresh_token) {
                         localStorage.setItem('spotify-refresh-token', body.refresh_token);
                     }
 
-                    let expiresIn = +body.expires_in;
+                    const expiresIn = +body.expires_in;
                     this.startRefreshTokenTimer(expiresIn);
                     this.authCompleted = true;
                     if (!this.authenticationComplited) {
@@ -474,7 +474,7 @@ export class SpotifyService {
                     return true;
                 })
                 .catch(err => {
-                    //localStorage.removeItem('spotify-refresh-token');
+                    // localStorage.removeItem('spotify-refresh-token');
                     this.authCompleted = false;
                     this.setAuthenticationComplited(null);
                     this.handlePromiseError(err);
@@ -488,18 +488,18 @@ export class SpotifyService {
 
     //#region login
 
-    login(relogin: boolean) : Promise<Object> {
+    login(relogin: boolean): Promise<Object> {
         return (new Promise((resolve, reject) => {
-        let w = 400,
+        const w = 400,
             h = 500,
             left = (screen.width / 2) - (w / 2),
             top = (screen.height / 2) - (h / 2);
-        let state = this.generateRandomString(16);
+        const state = this.generateRandomString(16);
 
         localStorage.setItem('spotify_auth_state', state);
         localStorage.removeItem('spotify-access-token');
         localStorage.removeItem('spotify-refresh-token');
-        let params = {
+        const params = {
             client_id: this.config.clientId,
             redirect_uri: this.config.redirectUri,
             scope: this.config.scope.join(' ') || '',
@@ -508,7 +508,7 @@ export class SpotifyService {
             state: state
         };
         this.authCompleted = false;
-        let authWindow = this.openDialog(
+        const authWindow = this.openDialog(
             'https://accounts.spotify.com/authorize?' + this.toQueryString(params),
             'Spotify',
             'menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,width=' + w + ',height=' + h + ',top=' + top + ',left=' + left,
@@ -519,13 +519,13 @@ export class SpotifyService {
             }
         );
 
-        let storageChanged = (e: any) => {
+        const storageChanged = (e: any) => {
 
             if (e.key === 'spotify-code') {
                 if (authWindow) {
                     authWindow.close();
                 }
-                let code = localStorage.getItem('spotify-code');
+                const code = localStorage.getItem('spotify-code');
                 this.getTokens(code)
                 .then(ret => {
                     this.authCompleted = true;
@@ -544,11 +544,11 @@ export class SpotifyService {
         };
         window.addEventListener('storage', storageChanged, false);
         })).then(() => null)
-                .catch(this.handleError); ;
+                .catch(this.handleError);
     }
     generateRandomString(length: number) {
         let text = '';
-        let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         for (let i = 0; i < length; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -560,20 +560,20 @@ export class SpotifyService {
     //#region utils
 
     private toQueryString(obj: Object): string {
-        let parts: string[] = [];
-        for (let key in obj) {
+        const parts: string[] = [];
+        for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
             parts.push(encodeURIComponent(key) + '=' + encodeURIComponent((<any>obj)[key]));
         }
-        };
+        }
         return parts.join('&');
-    };
+    }
 
     private openDialog(uri: string, name: string, options: string, cb: any) {
-        let win = window.open(uri, name, options);
+        const win = window.open(uri, name, options);
         this.applicationRef.isStable.subscribe((s) => {
             if (s) {
-                let interval = window.setInterval(() => {
+                const interval = window.setInterval(() => {
                     try {
                         if (!win || win.closed) {
                         window.clearInterval(interval);
@@ -587,7 +587,7 @@ export class SpotifyService {
     }
 
     private auth(isJson?: boolean): Object {
-        let auth = {
+        const auth = {
         'Authorization': 'Bearer ' + localStorage.getItem('spotify-access-token')
         };
         if (isJson) {
@@ -605,7 +605,7 @@ export class SpotifyService {
     }
 
     private mountItemList(items: string | Array<string>): Array<string> {
-        let itemList = Array.isArray(items) ? items : items.split(',');
+        const itemList = Array.isArray(items) ? items : items.split(',');
         itemList.forEach((value, index) => {
         itemList[index] = this.getIdFromUri(value);
         });
@@ -618,7 +618,7 @@ export class SpotifyService {
     }
     private handlePromiseError(error: any): Promise<any> {
         console.error('An error occurred', error); // for demo purposes only
-        if (error.statusText == 'Unauthorized') {
+        if (error.statusText === 'Unauthorized') {
             console.error('Unauthorized', error);
             /*if(localStorage.getItem('spotify-refresh-token') !== null)
             {
@@ -628,7 +628,7 @@ export class SpotifyService {
             {*/
                 /*this.login(false).then(result => {
                 });*/
-            //}
+            // }
         }
         return Promise.reject(error.message || error);
     }

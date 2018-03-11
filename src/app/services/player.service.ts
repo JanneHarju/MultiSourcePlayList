@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Track } from '../models/track';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { TrackService } from '../services/track.service';
 import { SpotifyService } from '../services/spotify.service';
@@ -32,10 +32,10 @@ export class PlayerService {
         this.track = newTrack;
         this.subject.next(this.track);
     }
-    getTrack() : Observable<Track> {
+    getTrack(): Observable<Track> {
         return this.subject.asObservable();
     }
-    getQueueTracks() : Track[] {
+    getQueueTracks(): Track[] {
         return this.queueTracklist;
     }
     setTrackList(tracklist: Track[]) {
@@ -43,25 +43,25 @@ export class PlayerService {
     }
     setCurrentTrackOrder() {
         if (this.track && this.tracklist) {
-            let newTrack = this.tracklist.find(t => t.Id == this.track.Id);
+            const newTrack = this.tracklist.find(t => t.Id === this.track.Id);
             if (newTrack) {
-                let currentTrackNewOrder = newTrack.Order;
+                const currentTrackNewOrder = newTrack.Order;
                 this.track.Order = currentTrackNewOrder;
             }
         }
     }
     chooseNextTrack() {
         if (this.queueTracklist.length > 0) {
-            if (this.tracklist.find(x => x.Id == this.track.Id)) {
+            if (this.tracklist.find(x => x.Id === this.track.Id)) {
                 this.lastOrder = this.track.Order;
             }
             this.setTrack(this.queueTracklist.shift());
-            //this.setQueue(this.queueTracklist);
+            // this.setQueue(this.queueTracklist);
         } else {
             if (!this.shuffle) {
 
-                let order = this.lastOrder == -1 ? this.track.Order : this.lastOrder;
-                let nextTracks = this.tracklist.filter(x => x.Order > order);
+                const order = this.lastOrder === -1 ? this.track.Order : this.lastOrder;
+                const nextTracks = this.tracklist.filter(x => x.Order > order);
                 if (nextTracks != null && nextTracks.length > 0) {
                     this.setTrack(nextTracks[0]);
                 } else {
@@ -75,7 +75,7 @@ export class PlayerService {
         }
     }
     choosePreviousTrack() {
-        let nextTracks = this.tracklist.filter(x => x.Order < this.track.Order);
+        const nextTracks = this.tracklist.filter(x => x.Order < this.track.Order);
         if (nextTracks != null && nextTracks.length > 0) {
             this.setTrack(nextTracks[nextTracks.length - 1]);
         } else {
@@ -89,10 +89,10 @@ export class PlayerService {
     isCurrentlyPlayingTrackThisPlaylistTrack(playlistId: number): boolean {
         return (this.track &&
                 this.track.Playlist &&
-                this.track.Playlist.Id == playlistId)
+                this.track.Playlist.Id === playlistId);
     }
     addTrackToQueue(track: Track) {
         this.queueTracklist.push(track);
-        //this.setQueue(this.queueTracklist);
+        // this.setQueue(this.queueTracklist);
     }
 }
