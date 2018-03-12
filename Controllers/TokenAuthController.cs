@@ -211,17 +211,8 @@ namespace PlayList
             }
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignOutAsync("localhost");
-            await HttpContext.SignOutAsync("musiple");
-            //await HttpContext.SignInAsync("Bearer",
-            //    new ClaimsPrincipal(identity));
+            
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity),
-                authProperties);
-            await HttpContext.SignInAsync("localhost",
-                new ClaimsPrincipal(identity),
-                authProperties);
-            await HttpContext.SignInAsync("musiple",
                 new ClaimsPrincipal(identity),
                 authProperties);
 

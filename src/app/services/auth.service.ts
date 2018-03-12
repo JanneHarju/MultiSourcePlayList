@@ -5,12 +5,13 @@ import { Subject } from 'rxjs/Subject';
 
 import { Observable } from 'rxjs/Observable';
 import { User } from '../models/user';
+import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class AuthService implements CanActivate {
     public tokeyKey = 'token';
-    private BaseUrl = 'http://musiple.azurewebsites.net/api/tokenauth';  // URL to web api
+    private BaseUrl = `${environment.backendUrl}/api/tokenauth`;  // URL to web api
     rememberme = false;
     private subjectAuthenticationComplited = new Subject<boolean>();
     constructor(private http: Http, private router: Router) { }
@@ -26,7 +27,7 @@ export class AuthService implements CanActivate {
     public login(rememberme: boolean, user: User) {
         const header = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: header, withCredentials: true });
-        // let options = new RequestOptions({ headers: header });
+        // const options = new RequestOptions({ headers: header });
         this.rememberme = rememberme;
         return this.http.put(`${this.BaseUrl}/Login/` + rememberme, user, options).toPromise().then(
             res => {

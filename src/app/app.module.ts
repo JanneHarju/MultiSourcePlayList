@@ -57,8 +57,7 @@ import { environment } from '../environments/environment';
         provide: 'SpotifyConfig',
         useValue: {
             clientId: '5ab10cb4fa9045fca2b92fcd0a97545c',
-            redirectUri: 'http://musiple.azurewebsites.net/callback.html',
-            // redirectUri: 'http://localhost:4200/callback.html',
+            redirectUri: `${environment.backendUrl}/callback.html`,
             scope: ['user-read-private',
             'user-modify-playback-state',
             'user-read-playback-state'],

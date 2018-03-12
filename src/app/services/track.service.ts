@@ -4,10 +4,11 @@ import 'rxjs/add/operator/toPromise';
 
 import { Track } from '../models/track';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class TrackService {
-    private tracksUrl = 'http://musiple.azurewebsites.net/api/tracks';  // URL to web api
+    private tracksUrl = `${environment.backendUrl}/api/tracks`;  // URL to web api
 
     // private headers = new Headers({'Content-Type': 'application/json'});
     constructor(

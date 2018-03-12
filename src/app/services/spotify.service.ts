@@ -10,6 +10,7 @@ import { SpotifyPlaylistInfo } from '../models/spotifyplaylistinfo';
 import { SpotifyPlayStatus } from '../models/spotifyPlayStatus';
 import { SpotifyAlbum } from '../models/spotifyalbum';
 import { SpotifyArtist } from '../models/spotifyartist';
+import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Subject } from 'rxjs/Subject';
 import { SimpleTimer } from 'ng2-simple-timer';
@@ -75,6 +76,7 @@ export class SpotifyService {
     private subjectPlayStatus = new Subject<SpotifyPlayStatus>();
     private subjectTrackEnded = new Subject<boolean>();
     private subjectAuthenticationComplited = new Subject<string>();
+    private spotifyUrl = `${environment.backendUrl}/api/spotifyaccount`;  // URL to web api
 
     constructor(@Inject('SpotifyConfig') private config: SpotifyConfig,
         private http: Http,
@@ -419,7 +421,7 @@ export class SpotifyService {
 
     getTokens(code?: string) {
         const headers = this.authService.initAuthHeaders();
-        const address = 'api/spotifyaccount/code/' + code;
+        const address = `${this.spotifyUrl}/code/${code}`;
 
         return this.http
             .get(address, {headers: headers})
@@ -451,7 +453,7 @@ export class SpotifyService {
 
             this.st.delTimer('spotify_refresh_token');
             const headers = this.authService.initAuthHeaders();
-            const address = 'api/spotifyaccount/refreshtoken/' + localStorage.getItem('spotify-refresh-token');
+            const address = `${this.spotifyUrl}/refreshtoken/${localStorage.getItem('spotify-refresh-token')}`;
             console.log('getTokensByRefreshToken');
             return this.http
                 .get(address, {headers: headers})

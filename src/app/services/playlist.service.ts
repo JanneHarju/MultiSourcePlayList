@@ -6,10 +6,11 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/toPromise';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class PlaylistService {
-    private PlaylistsUrl = 'http://musiple.azurewebsites.net/api/playlists';  // URL to web api
+    private PlaylistsUrl = `${environment.backendUrl}/api/playlists`;  // URL to web api
 
     private playlistsModified = new Subject<boolean>();
     constructor(

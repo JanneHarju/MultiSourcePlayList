@@ -11,6 +11,7 @@ import { SimpleTimer } from 'ng2-simple-timer';
 import { SpotifyPlayStatus } from '../../../../models/spotifyPlayStatus';
 import { MusixMatchAPIService } from '../../../../services/musixmatch.service';
 import { MusixMatchLyric } from '../../../../models/musixmatchlyric';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
     selector: 'my-player',
@@ -37,7 +38,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     isplaying = false;
     audioScale = 300;
     YTScale = 4;
-    localFilePath = 'http://musiple.azurewebsites.net/api/audio/';
+    localFilePath = `${environment.backendUrl}/api/audio/`;
     volume = 50;
     constructor(
         private infoService: TrackService,
