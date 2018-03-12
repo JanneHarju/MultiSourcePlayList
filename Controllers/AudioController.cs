@@ -86,9 +86,30 @@ namespace PlayList.Controllers
             else{
                 return null;
             }
-            
-            var stream = new MemoryStream(audioArray);
+                        long fSize = audioArray.Length;
+            long startbyte = 0;
+            long endbyte = fSize - 1;
+            int statusCode = 200;
+            var rangeRequest = Request.Headers["Range"].ToString();
 
+            if (rangeRequest != "")
+            {
+                string[] range = Request.Headers["Range"].ToString().Split(new char[] { '=', '-' });
+                startbyte = Convert.ToInt64(range[1]);
+                if (range.Length > 2 && range[2] != "") endbyte = Convert.ToInt64(range[2]);
+                if (startbyte != 0 || endbyte != fSize - 1 || range.Length > 2 && range[2] == "")
+                { statusCode = 206; }
+            }
+
+            long desSize = endbyte - startbyte + 1;
+            Response.StatusCode = statusCode;
+            Response.ContentType = "audio/mp3";
+            Response.Headers.Add("Content-Accept", Response.ContentType);
+            Response.Headers.Add("Content-Length", desSize.ToString());
+            Response.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}", startbyte, endbyte, fSize));
+            Response.Headers.Add("Accept-Ranges", "bytes");
+            Response.Headers.Remove("Cache-Control");
+            var stream = new MemoryStream(audioArray, (int)startbyte, (int)desSize);
             return new FileStreamResult(stream, "audio/mp3")
             {
                 FileDownloadName = track.Name

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Track } from '../../../../models/track';
 import { TrackService } from '../../../../services/track.service';
@@ -40,6 +40,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
     YTScale = 4;
     localFilePath = `${environment.backendUrl}/api/audio/`;
     volume = 50;
+    lastmp3trackAddress: string;
+    sameMp3AsLastTime: boolean;
+    @ViewChild('audio1') audioElementRef: ElementRef;
+    audioElement: HTMLAudioElement;
     constructor(
         private infoService: TrackService,
         private playerService: PlayerService,
@@ -51,11 +55,18 @@ export class PlayerComponent implements OnInit, OnDestroy {
         private st: SimpleTimer) { }
 
     ngOnInit(): void {
+        this.audioElement = (<HTMLAudioElement>this.audioElementRef.nativeElement);
         const vol = localStorage.getItem('musiple-volume');
         if (vol) {
             this.volume = +vol;
         }
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => {
+            if (this.track && this.track.Type === 3) {
+                this.lastmp3trackAddress = this.track.Address;
+            }
+
+            this.sameMp3AsLastTime = this.lastmp3trackAddress === track.Address;
+
             this.track = track;
             if (this.track) {
                 this.play(this.track.Address);
@@ -134,6 +145,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 switch (this.track.Type) {
                     case 1: // youtube
                         this.pauseSpotify();
+                        this.audioElement.pause();
                         if (this.player) {
                             if (trackUri) {
                                 this.player.loadVideoById(trackUri);
@@ -145,10 +157,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         break;
                     case 2: // spotify
                         this.player.pauseVideo();
-                        /*let iframe = document.getElementById('spotify');
-                        let doc = (<HTMLIFrameElement>iframe).contentDocument
-                        let playbutton = doc.getElementById("play-button");
-                        playbutton.click();*/
+                        this.audioElement.pause();
                         this.spotifyService.setVolume({volume_percent: this.volume}).then(res => {
                             // Onnistui
                         });
@@ -158,17 +167,21 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
                         this.player.pauseVideo();
                         this.pauseSpotify();
-                        const audio = (<HTMLAudioElement>document.getElementById('audio1'));
-                        if (audio) {
-                            audio.play();
-                            audio.volume = this.volume / this.audioScale;
+                        const address = this.localFileAddress(this.track);
+                        if (this.audioElement.src !== address) {
+                            this.audioElement.src = address;
+                        } else if (this.sameMp3AsLastTime) {
+                            this.progress = 0;
+                            this.changeprogressTo(this.progress);
+                            this.sameMp3AsLastTime = false;
                         }
+                        this.audioElement.play();
+                        this.audioElement.volume = this.volume / this.audioScale;
                         this.isplaying = true;
                         break;
                     default:
                         break;
                 }
-
             }
 
             this.st.delTimer('1sec');
@@ -186,7 +199,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 switch (this.track.Type) {
                     case 1: // youtube
                         if (this.player) {
-
                             this.player.setVolume(this.volume / this.YTScale);
                         }
                         break;
@@ -196,10 +208,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         });
                         break;
                     case 3: // mp3
-                        const audio = (<HTMLAudioElement>document.getElementById('audio1'));
-                        if (audio) {
-                            audio.volume = this.volume / this.audioScale;
-                        }
+                        this.audioElement.volume = this.volume / this.audioScale;
                         break;
                     default:
                         break;
@@ -213,23 +222,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
             if (this.track != null) {
                 switch (this.track.Type) {
                     case 1: // youtube
-
                         this.player.pauseVideo();
                         break;
                     case 2: // spotify
-
-                        /*let iframe = document.getElementById('spotify');
-                        let doc = (<HTMLIFrameElement>iframe).contentDocument
-                        let playbutton = doc.getElementById("play-button");
-                        playbutton.click();*/
                         this.pauseSpotify();
                         break;
                     case 3: // mp3
-
-                        const audio = (<HTMLAudioElement>document.getElementById('audio1'));
-                        if (audio) {
-                            audio.pause();
-                        }
+                        this.audioElement.pause();
                         break;
                     default:
                         break;
@@ -239,17 +238,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.st.delTimer('1sec');
         }
     }
-    /*audioloaded()
-    {
-        let audio = (<HTMLAudioElement>document.getElementById("audio1"));
-        //this.trackName = audio.audioTracks.length.toString();//[0].label + " " + audio.audioTracks[0].kind;
-        //audio.load();
 
-        this.duration = audio.duration*1000;
-        //audio.audioTracks[0].label;
-        audio.play();
-        //this.trackName = audio.audioTracks.toString();//[0].label + " " + audio.audioTracks[0].kind;
-    }*/
     lyrics() {
         if (this.track.Address) {
             this.lyricHeader = this.track.Name;
@@ -272,10 +261,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     loadedmeadata() {
 
-        const audio = (<HTMLAudioElement>document.getElementById('audio1'));
-        audio.volume = this.volume / this.audioScale;
+        this.audioElement.volume = this.volume / this.audioScale;
 
-        this.duration = audio.duration * 1000;
+        this.duration = this.audioElement.duration * 1000;
     }
     onAudioEnded() {
         this.playerService.chooseNextTrack();
@@ -295,7 +283,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.changeprogressTo(this.progress);
     }
     error() {
-        const audio = (<HTMLAudioElement>document.getElementById('audio1'));
+        const audio = this.audioElement;
         console.error(audio.error.code); // 4
         // console.error(audio.error.msExtendedCode);//undefined
         // console.error(audio.error.MEDIA_ERR_ABORTED);//1
@@ -306,12 +294,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
         alert('Some error occured when streaming mp3 file. Error code: ' + audio.error.code);
     }
     loadeddata() {
-        const audio = (<HTMLAudioElement>document.getElementById('audio1'));
+        const audio = this.audioElement;
         if (audio && audio.readyState >= 2) {
             audio.play();
         }
     }
     changeprogressTo(seek: number) {
+        console.log('seek: ' + seek);
         if (this.track.Type === 1) {
             this.player.seekTo(seek / 1000, true);
         } else if (this.track.Type === 2) {
@@ -319,11 +308,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 // Onnistui
             });
         } else if (this.track.Type === 3) {
-            const audio = (<HTMLAudioElement>document.getElementById('audio1'));
-            audio.currentTime = seek / 1000;
+            this.audioElement.currentTime = seek / 1000;
         }
 
         this.disableProgressUpdate = false;
+    }
+    durationChanged() {
+        console.log('durationChanged');
+        console.log(this.audioElement);
     }
     shuffleChanged() {
         this.playerService.shuffle = !this.shuffle;
@@ -332,10 +324,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         if (this.track.Type === 1) {
             this.setProgress(this.player.getCurrentTime() * 1000);
         } else if (this.track.Type === 3) {
-            const audio = (<HTMLAudioElement>document.getElementById('audio1'));
-            if (audio) {
-                this.setProgress(audio.currentTime * 1000);
-            }
+            this.setProgress(this.audioElement.currentTime * 1000);
         }
     }
 
