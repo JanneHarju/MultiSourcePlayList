@@ -57,7 +57,7 @@ import { environment } from '../environments/environment';
         provide: 'SpotifyConfig',
         useValue: {
             clientId: '5ab10cb4fa9045fca2b92fcd0a97545c',
-            redirectUri: `${environment.backendUrl}/callback.html`,
+            redirectUri: `${window.location.origin}/callback.html`,
             scope: ['user-read-private',
             'user-modify-playback-state',
             'user-read-playback-state'],

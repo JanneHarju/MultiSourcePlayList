@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  backendUrl: 'http://musiple.azurewebsites.net'
+  backendUrl: 'https://musiple.azurewebsites.net'
 };

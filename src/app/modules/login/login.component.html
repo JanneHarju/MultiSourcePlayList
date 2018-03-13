@@ -5,7 +5,7 @@
         <h2 class="form-signin-heading">Please log in</h2>
         <div>
             <label for="username" class="sr-only">User name</label>
-            <input [(ngModel)]="loginUser.Username" type="username" name="username" #userName="ngModel" id="inputEmail"
+            <input [(ngModel)]="loginUser.Username" type="username" name="username" #userName="ngModel" id="username"
                 class="form-control" placeholder="User name" minlength="4" required autofocus >
             <div *ngIf="userName.invalid && (userName.dirty || userName.touched)"
                 class="alert alert-danger">

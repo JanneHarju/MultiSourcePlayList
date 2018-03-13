@@ -27,7 +27,6 @@ export class AuthService implements CanActivate {
     public login(rememberme: boolean, user: User) {
         const header = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: header, withCredentials: true });
-        // const options = new RequestOptions({ headers: header });
         this.rememberme = rememberme;
         return this.http.put(`${this.BaseUrl}/Login/` + rememberme, user, options).toPromise().then(
             res => {
@@ -48,7 +47,7 @@ export class AuthService implements CanActivate {
 
     public register(rememberme: boolean, user: User) {
         const header = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: header });
+        const options = new RequestOptions({ headers: header, withCredentials: true });
         this.rememberme = rememberme;
 
         return this.http.post(`${this.BaseUrl}/Register/` + rememberme, user, options).toPromise().then(

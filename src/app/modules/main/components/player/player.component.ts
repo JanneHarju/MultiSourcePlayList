@@ -73,21 +73,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
             }
         });
 
-        /*this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth =>
-        {
-            if(auth)
-            {
-                this.spotifyService.checkPlayerState().then(status =>
-                {
-                    if(status.is_playing)
-                    {
-                        //Tämä ei riitä pitää hakea myös kappaleen tiedot yms.
-                        //entä soittolista?
-                        this.spotifyService.startTimer();
-                    }
-                });
-            }
-        });*/
         this.subscriptionPlayStatus = this.spotifyService.getPlayStatus().subscribe(playStatus => {
             this.playStatus = playStatus;
             if (this.track.Type === 2) {
@@ -300,7 +285,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
         }
     }
     changeprogressTo(seek: number) {
-        console.log('seek: ' + seek);
         if (this.track.Type === 1) {
             this.player.seekTo(seek / 1000, true);
         } else if (this.track.Type === 2) {
@@ -312,10 +296,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
         }
 
         this.disableProgressUpdate = false;
-    }
-    durationChanged() {
-        console.log('durationChanged');
-        console.log(this.audioElement);
     }
     shuffleChanged() {
         this.playerService.shuffle = !this.shuffle;

@@ -17,7 +17,7 @@ export interface MusixMatchOptions {
 
 @Injectable()
 export class MusixMatchAPIService {
-    baseUri = 'http://api.musixmatch.com/ws/1.1/';
+    baseUri = 'https://api.musixmatch.com/ws/1.1/';
     key = '4580db683fb8c0d7073ec8fc7ce2c474';
     constructor(private http: Http) { }
     search(q: string) {

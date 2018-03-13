@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System;
 using System.Text;
+using System.Net;
 
 namespace PlayList.Controllers
 {
@@ -21,9 +22,7 @@ namespace PlayList.Controllers
     [Route("api/spotifyaccount")]
     public class SpotifyAccountController : Controller
     {
-
-        //private string callbackUrl = "http://localhost:4200/callback.html";
-        private string callbackUrl = "http://musiple.azurewebsites.net/callback.html";
+        private string callbackUrl = "/callback.html";
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _environment;
         public SpotifyAccountController(
@@ -36,9 +35,9 @@ namespace PlayList.Controllers
             _logger = loggerFactory.CreateLogger("SpotifyAccountController");  
         }
 
-        [HttpGet("code/{code}")]
+        [HttpGet("code/{code}/{redirectUrl}")]
         [Authorize("Bearer")]
-        public async Task<string> code(string code)
+        public async Task<string> code(string code, string redirectUrl)
         {
             try
             {
@@ -49,11 +48,16 @@ namespace PlayList.Controllers
                     var auth = clientId + ":" + clientSecret;
                     var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(auth);
                     var authorization = System.Convert.ToBase64String(plainTextBytes);
+                    
+                    byte[] data = Convert.FromBase64String(redirectUrl);
+                    string decodedUrl = Encoding.UTF8.GetString(data);
                     client.BaseAddress = new Uri("https://accounts.spotify.com");
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
                     var url = "/api/token";
+                    string query = "redirect_uri="+ decodedUrl+ "&grant_type=authorization_code&code="+code;
+                    _logger.LogWarning("query: " + query);
                     HttpResponseMessage response = await client.PostAsync
-                        (url, new StringContent("redirect_uri="+callbackUrl+"&grant_type=authorization_code&code="+code, Encoding.UTF8, "application/x-www-form-urlencoded"));
+                        (url, new StringContent(query,Encoding.UTF8, "application/x-www-form-urlencoded"));
                     
                     var res = response.Content.ReadAsStringAsync().Result;
                     return res;
@@ -65,9 +69,9 @@ namespace PlayList.Controllers
             }
         }
 
-        [HttpGet("refreshtoken/{refreshtoken}")]
+        [HttpGet("refreshtoken/{refreshtoken}/{redirectUrl}")]
         [Authorize("Bearer")]
-        public async Task<string> refreshtoken(string refreshtoken)
+        public async Task<string> refreshtoken(string refreshtoken, string redirectUrl)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -79,9 +83,11 @@ namespace PlayList.Controllers
                 client.BaseAddress = new Uri("https://accounts.spotify.com");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
                 
+                byte[] data = Convert.FromBase64String(redirectUrl);
+                string decodedUrl = Encoding.UTF8.GetString(data);
                 var url = "/api/token";
                 HttpResponseMessage response = await client.PostAsync
-                    (url, new StringContent("redirect_uri="+callbackUrl+"&grant_type=refresh_token&refresh_token="+refreshtoken, Encoding.UTF8, "application/x-www-form-urlencoded"));
+                    (url, new StringContent("redirect_uri="+ decodedUrl + "&grant_type=refresh_token&refresh_token="+refreshtoken, Encoding.UTF8, "application/x-www-form-urlencoded"));
                 
                 var res = response.Content.ReadAsStringAsync().Result;
                 return res;
