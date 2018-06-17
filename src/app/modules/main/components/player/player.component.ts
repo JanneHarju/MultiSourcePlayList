@@ -35,7 +35,22 @@ export class PlayerComponent implements OnInit, OnDestroy {
     duration: number;
     shuffle = false;
     disableProgressUpdate = false;
-    isplaying = false;
+
+    private _isPlaying = false;
+    get IsPlaying(): boolean {
+        return this._isPlaying;
+    }
+    set IsPlaying(value: boolean) {
+        if ('mediaSession' in navigator) {
+            if (value) {
+                navigator.mediaSession.playbackState = 'playing';
+            } else {
+                navigator.mediaSession.playbackState = 'paused';
+            }
+        }
+        this._isPlaying = value;
+    }
+
     audioScale = 300;
     YTScale = 4;
     localFilePath = `${environment.backendUrl}/api/audio/`;
@@ -82,6 +97,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 }
             }
         });
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setActionHandler('play', () => this.play());
+            navigator.mediaSession.setActionHandler('pause', () => this.pause());
+            navigator.mediaSession.setActionHandler('previoustrack', () => this.previous());
+            navigator.mediaSession.setActionHandler('nexttrack', () => this.next());
+        }
     }
     setProgress(newprogress: number) {
         if (!this.disableProgressUpdate) {
@@ -137,7 +158,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                             }
                             this.player.setVolume(this.volume / this.YTScale);
                             this.player.playVideo();
-                            this.isplaying = true;
+                            this.IsPlaying = true;
                         }
                         break;
                     case 2: // spotify
@@ -162,10 +183,19 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         }
                         this.audioElement.play();
                         this.audioElement.volume = this.volume / this.audioScale;
-                        this.isplaying = true;
+                        this.IsPlaying = true;
                         break;
                     default:
                         break;
+                }
+                if ('mediaSession' in navigator) {
+                    const parts = this.track.Name.split(' - ');
+                    const artist = parts[0];
+                    const title = parts[1];
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: title,
+                        artist: artist,
+                      });
                 }
             }
 
@@ -203,7 +233,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     pause() {
         if (this.track.Address) {
-            this.isplaying = false;
+            this.IsPlaying = false;
             if (this.track != null) {
                 switch (this.track.Type) {
                     case 1: // youtube
@@ -256,7 +286,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     playSpotify(trackUri?: string) {
         this.spotifyService.play(trackUri).then(result => {
 
-            this.isplaying = true;
+            this.IsPlaying = true;
         });
     }
     pauseSpotify() {

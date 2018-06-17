@@ -26,6 +26,7 @@
     "@angular/service-worker": "^5.2.0",
     "@angular/upgrade": "^5.2.0",
     "@types/node": "^9.4.6",
+    "@types/wicg-mediasession": "^1.0.2",
     "bandcamp-scraper": "^1.2.2",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
