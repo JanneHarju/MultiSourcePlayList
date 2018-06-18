@@ -30,11 +30,13 @@ import './rxjs-extensions';
 import { AppComponent } from './app.component';
 
 import { environment } from '../environments/environment';
+import { CallbackComponent } from './modules/callback/callback.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
+    CallbackComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,7 +59,8 @@ import { environment } from '../environments/environment';
         provide: 'SpotifyConfig',
         useValue: {
             clientId: '5ab10cb4fa9045fca2b92fcd0a97545c',
-            redirectUri: `${window.location.origin}/callback.html`,
+            redirectPopupUri: `${window.location.origin}/callback.html`,
+            redirectUri: `${window.location.origin}/callback`,
             scope: ['user-read-private',
             'user-modify-playback-state',
             'user-read-playback-state'],

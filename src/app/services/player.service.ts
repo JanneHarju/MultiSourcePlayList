@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Track } from '../models/track';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { TrackService } from '../services/track.service';
 import { SpotifyService } from '../services/spotify.service';
 import { Subscription } from 'rxjs/Subscription';
@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 @Injectable()
 export class PlayerService {
 
-    private subject = new Subject<Track>();
+    private subject = new BehaviorSubject<Track>(new Track());
     track: Track = new Track();
     lastOrder = -1;
     tracklist: Track[] = [];

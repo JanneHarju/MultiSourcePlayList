@@ -16,7 +16,7 @@
             </button>
 
             <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
-                <li>
+                <li *ngIf="notMobile()">
                     <a (click)="loginToSpotify()">
                     Change spotify user
                     </a>
@@ -105,7 +105,7 @@
 <!--help modal-->
  <my-modal class="mymodal" #aboutModal>
     <div class="app-modal-header">
-        <h1>Musiple 0.11.2</h1>
+        <h1>Musiple 0.12.0</h1>
     </div>
     <div class="app-modal-body">
         <div class="infoarea">

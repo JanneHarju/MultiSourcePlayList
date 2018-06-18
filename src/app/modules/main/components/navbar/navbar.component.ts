@@ -69,9 +69,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.router.navigate(['login']);
     }
     loginToSpotify() {
-        this.spotifyService.login(true).then(result => {
-            });
+        this.spotifyService.loginPopup(true);
 
+    }
+    notMobile(): boolean {
+        return !this.spotifyService.detectmob();
     }
     forgetMe() {
         localStorage.removeItem(this.authService.tokeyKey);

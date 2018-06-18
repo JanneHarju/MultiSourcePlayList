@@ -29,10 +29,9 @@ export class LoginComponent implements OnInit {
         if (longtermToken) {
             sessionStorage.setItem(this.authService.tokeyKey, longtermToken);
             this.authService.getUserInfo().then(res => {
-                this.router.navigate(['/main']).then(navi => {
-                    this.spotifyService.login(false).then(result => {
-                    });
-                });
+                //this.router.navigate(['/main']).then(navi => {
+                    this.spotifyService.login();
+                //});
             })
             .catch(err => {
                 this.authService.clearLoginToken();
@@ -48,10 +47,9 @@ export class LoginComponent implements OnInit {
                 result => {
                     if (result.State === 1) {
 
-                        this.router.navigate(['/main']).then(navi => {
-                            this.spotifyService.login(false).then(res => {
-                            });
-                        });
+                        //this.router.navigate(['/main']).then(navi => {
+                            this.spotifyService.login();
+                        //});
                     } else {
                         alert(result.Msg);
                     }
@@ -60,12 +58,9 @@ export class LoginComponent implements OnInit {
                 this.authService.login(this.rememberMe, this.loginUser).then(
                     result => {
                         if (result.State === 1) {
-                            this.router.navigate(['/main']).then(navi => {
-                                this.spotifyService.login(false).then(res => {
-                                });
-                            });
-
-
+                            //this.router.navigate(['/main']).then(navi => {
+                                this.spotifyService.login();
+                            //});
                         } else {
                             alert(result.Msg);
                         }

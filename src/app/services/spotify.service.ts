@@ -13,6 +13,7 @@ import { SpotifyArtist } from '../models/spotifyartist';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { SimpleTimer } from 'ng2-simple-timer';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
@@ -26,6 +27,7 @@ export interface SpotifyConfig {
   apiBase: string;
   clientSecret: string;
   accountApiBase: string;
+  redirectPopupUri: string;
 }
 
 export interface SpotifyOptions {
@@ -73,9 +75,9 @@ export class SpotifyService {
     authenticationComplited = '';
     ignore = false;
     public authCompleted = false;
-    private subjectPlayStatus = new Subject<SpotifyPlayStatus>();
-    private subjectTrackEnded = new Subject<boolean>();
-    private subjectAuthenticationComplited = new Subject<string>();
+    private subjectPlayStatus = new BehaviorSubject<SpotifyPlayStatus>(new SpotifyPlayStatus());
+    private subjectTrackEnded = new BehaviorSubject<boolean>(false);
+    private subjectAuthenticationComplited = new BehaviorSubject<string>(null);
     private spotifyUrl = `${environment.backendUrl}/api/spotifyaccount`;  // URL to web api
 
     constructor(@Inject('SpotifyConfig') private config: SpotifyConfig,
@@ -84,11 +86,11 @@ export class SpotifyService {
         private authService: AuthService,
         private applicationRef: ApplicationRef) {
 
-        config.apiBase = 'https://api.spotify.com/v1';
-        config.accountApiBase = 'https://accounts.spotify.com';
+    config.apiBase = 'https://api.spotify.com/v1';
+    config.accountApiBase = 'https://accounts.spotify.com';
 
-        this.st.newTimer('tokenFallback', 2);
-        this.tokenFallBackTimerId = this.st.subscribe('tokenFallback', e => this.tokenfallback());
+    this.st.newTimer('tokenFallback', 2);
+    this.tokenFallBackTimerId = this.st.subscribe('tokenFallback', e => this.tokenfallback());
     }
     callback() {
         this.checkPlayerState().then(playState => {
@@ -109,7 +111,9 @@ export class SpotifyService {
         if ((currentTime > this.tokenRefreshedLastTime) && this.tokenRefreshed) {
             console.log('New token please');
             this.tokenRefreshed = false;
-            this.login(false);
+            if (!this.detectmob()) {
+                this.loginPopup(false);
+            }
         }
     }
     setAuthenticationComplited(status: string) {
@@ -488,9 +492,26 @@ export class SpotifyService {
         }
     }
 
+    login() {
+        const state = this.generateRandomString(16);
+
+        localStorage.setItem('spotify_auth_state', state);
+        localStorage.removeItem('spotify-access-token');
+        localStorage.removeItem('spotify-refresh-token');
+        const params = {
+            client_id: this.config.clientId,
+            redirect_uri: this.config.redirectUri,
+            scope: this.config.scope.join(' ') || '',
+            response_type: 'code',
+            show_dialog: false,
+            state: state
+        };
+        window.location.href = 'https://accounts.spotify.com/authorize?' + this.toQueryString(params);
+    }
+
     //#region login
 
-    login(relogin: boolean): Promise<Object> {
+    loginPopup(relogin: boolean): Promise<Object> {
         return (new Promise((resolve, reject) => {
         const w = 400,
             h = 500,
@@ -503,7 +524,7 @@ export class SpotifyService {
         localStorage.removeItem('spotify-refresh-token');
         const params = {
             client_id: this.config.clientId,
-            redirect_uri: this.config.redirectUri,
+            redirect_uri: this.config.redirectPopupUri,
             scope: this.config.scope.join(' ') || '',
             response_type: 'code',
             show_dialog: relogin,
@@ -520,7 +541,7 @@ export class SpotifyService {
             }
             }
         );
-
+    
         const storageChanged = (e: any) => {
 
             if (e.key === 'spotify-code') {
@@ -545,8 +566,10 @@ export class SpotifyService {
             }
         };
         window.addEventListener('storage', storageChanged, false);
+        
         })).then(() => null)
                 .catch(this.handleError);
+        
     }
     generateRandomString(length: number) {
         let text = '';
@@ -569,6 +592,21 @@ export class SpotifyService {
         }
         }
         return parts.join('&');
+    }
+    public startGetToken(code: string): Promise<Object> {
+        return (new Promise((resolve, reject) => {
+        this.getTokens(code)
+            .then(ret => {
+                this.authCompleted = true;
+                this.setAuthenticationComplited('success');
+                return resolve('success');
+            })
+            .catch(err => {
+                this.authCompleted = false;
+                this.setAuthenticationComplited(null);
+                return resolve('failed');
+            });
+        }));
     }
 
     private openDialog(uri: string, name: string, options: string, cb: any) {
@@ -645,5 +683,19 @@ export class SpotifyService {
     }
 
     //#endregion
-
+    detectmob() { 
+        if( navigator.userAgent.match(/Android/i)
+        || navigator.userAgent.match(/webOS/i)
+        || navigator.userAgent.match(/iPhone/i)
+        || navigator.userAgent.match(/iPad/i)
+        || navigator.userAgent.match(/iPod/i)
+        || navigator.userAgent.match(/BlackBerry/i)
+        || navigator.userAgent.match(/Windows Phone/i)
+        ){
+           return true;
+         }
+        else {
+           return false;
+         }
+       }
 }
