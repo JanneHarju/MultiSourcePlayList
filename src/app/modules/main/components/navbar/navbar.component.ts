@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { SpotifyUser } from '../../../../models/spotifyUser';
 import { UserInfo } from '../../../../models/userInfo';
+import { SpotifyPlaybackSdkService } from '../../../../services/spotify-playback-sdk.service';
 
 @Component({
     selector: 'my-navbar',
@@ -20,6 +21,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     constructor(
         private spotifyService: SpotifyService,
         private authService: AuthService,
+        private spotifyPlaybackService: SpotifyPlaybackSdkService,
         private router: Router) { }
 
     ngOnInit() {
@@ -88,5 +90,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
         } else if (body.webkitRequestFullscreen) {
             body.webkitRequestFullscreen();
         }
+    }
+    useSpotifySDK() {
+        this.spotifyPlaybackService.forceUsePlaybackSDK = !this.spotifyPlaybackService.forceUsePlaybackSDK;
+    }
+    forceUsePlaybackSDK() {
+        return this.spotifyPlaybackService.forceUsePlaybackSDK;
     }
 }

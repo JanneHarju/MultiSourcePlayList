@@ -24,7 +24,7 @@ export class PlayerService {
         private spotifyService: SpotifyService,
         private spotifyPlaybackService: SpotifyPlaybackSdkService
     ) {
-        if(this.spotifyService.isMobile()) {
+        if(this.spotifyService.isMobile() && !this.spotifyPlaybackService.forceUsePlaybackSDK) {
             this.subscriptionTrackEnd = this.spotifyService.getTrackEnd().subscribe(trackEnd => {
                 if (trackEnd) {
                     this.chooseNextTrack();
