@@ -73,7 +73,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     }
     notMobile(): boolean {
-        return !this.spotifyService.detectmob();
+        return !this.spotifyService.isMobile();
     }
     forgetMe() {
         localStorage.removeItem(this.authService.tokeyKey);

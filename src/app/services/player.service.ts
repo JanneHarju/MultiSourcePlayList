@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { TrackService } from '../services/track.service';
 import { SpotifyService } from '../services/spotify.service';
 import { Subscription } from 'rxjs/Subscription';
+import { SpotifyPlaybackSdkService } from './spotify-playback-sdk.service';
 
 @Injectable()
 export class PlayerService {
@@ -17,15 +18,25 @@ export class PlayerService {
     random = 0;
     public shuffle: boolean;
     subscriptionTrackEnd: Subscription;
+    subscriptionTrackEndFromSDK: Subscription;
     constructor(
         private trackService: TrackService,
-        private spotifyService: SpotifyService
+        private spotifyService: SpotifyService,
+        private spotifyPlaybackService: SpotifyPlaybackSdkService
     ) {
-        this.subscriptionTrackEnd = this.spotifyService.getTrackEnd().subscribe(trackEnd => {
-            if (trackEnd) {
-                this.chooseNextTrack();
-            }
-        });
+        if(this.spotifyService.isMobile()) {
+            this.subscriptionTrackEnd = this.spotifyService.getTrackEnd().subscribe(trackEnd => {
+                if (trackEnd) {
+                    this.chooseNextTrack();
+                }
+            });
+        } else {
+            this.subscriptionTrackEndFromSDK = this.spotifyPlaybackService.getTrackEnd().subscribe(trackEnd => {
+                if (trackEnd) {
+                    this.chooseNextTrack();
+                }
+            });
+        }
     }
 
     setTrack(newTrack: Track) {

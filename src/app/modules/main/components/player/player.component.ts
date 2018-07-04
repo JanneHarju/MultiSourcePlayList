@@ -12,6 +12,7 @@ import { SpotifyPlayStatus } from '../../../../models/spotifyPlayStatus';
 import { MusixMatchAPIService } from '../../../../services/musixmatch.service';
 import { MusixMatchLyric } from '../../../../models/musixmatchlyric';
 import { environment } from '../../../../../environments/environment';
+import { SpotifyPlaybackSdkService } from '../../../../services/spotify-playback-sdk.service';
 
 @Component({
     selector: 'my-player',
@@ -29,6 +30,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     lyricImageUrl = '';
     playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
     subscriptionPlayStatus: Subscription;
+    subscriptionPlayStateFromSDK: Subscription;
     subscriptionTrack: Subscription;
     subscriptionAuthenticationComplited: Subscription;
     progress: number;
@@ -63,6 +65,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         private infoService: TrackService,
         private playerService: PlayerService,
         private spotifyService: SpotifyService,
+        private spotifyPlaybackService: SpotifyPlaybackSdkService,
         private router: Router,
         private location: Location,
         private route: ActivatedRoute,
@@ -72,6 +75,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.audioElement = (<HTMLAudioElement>this.audioElementRef.nativeElement);
         const vol = localStorage.getItem('musiple-volume');
+        this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => {
+            if (auth) {
+                if(!this.spotifyService.isMobile()) {
+                    this.spotifyPlaybackService.addSpotifyPlaybackSdk();
+                }
+            }
+        });
         if (vol) {
             this.volume = +vol;
         }
@@ -87,16 +97,24 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 this.play(this.track.Address);
             }
         });
-
-        this.subscriptionPlayStatus = this.spotifyService.getPlayStatus().subscribe(playStatus => {
-            this.playStatus = playStatus;
-            if (this.track.Type === 2) {
-                this.setProgress(this.playStatus.progress_ms);
-                if (this.playStatus.item) {
-                    this.duration = this.playStatus.item.duration_ms;
+        if(this.spotifyService.isMobile()) {
+            this.subscriptionPlayStatus = this.spotifyService.getPlayStatus().subscribe(playStatus => {
+                this.playStatus = playStatus;
+                if (this.track.Type === 2) {
+                    this.setProgress(this.playStatus.progress_ms);
+                    if (this.playStatus.item) {
+                        this.duration = this.playStatus.item.duration_ms;
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            this.subscriptionPlayStateFromSDK = this.spotifyPlaybackService.getPlayStatus().subscribe(state => {
+                if (this.track.Type === 2 && state) {
+                    this.setProgress(state.position);
+                    this.duration = state.duration;
+                }
+            });
+        }
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', () => this.play());
             navigator.mediaSession.setActionHandler('pause', () => this.pause());
@@ -112,6 +130,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.subscriptionTrack.unsubscribe();
         this.subscriptionPlayStatus.unsubscribe();
+        this.subscriptionAuthenticationComplited.unsubscribe();
     }
 
     savePlayer (player: YT.Player) {
@@ -285,11 +304,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     playSpotify(trackUri?: string) {
         this.spotifyService.play(trackUri).then(result => {
-
+            this.spotifyPlaybackService.startTimer();
             this.IsPlaying = true;
         });
     }
     pauseSpotify() {
+
+        this.spotifyPlaybackService.removeTimer();
         this.spotifyService.pause().then(result => {
 
         });

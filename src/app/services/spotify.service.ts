@@ -48,6 +48,7 @@ export interface SpotifyOptions {
   redirect_uri?: string;
   grant_type?: string;
   refresh_token?: string;
+  device_id?: string;
 }
 
 export interface HttpRequestOptions {
@@ -64,6 +65,7 @@ export class SpotifyService {
     playStatusTimerId: string;
     refreshTokenTimerId: string;
     tokenFallBackTimerId: string;
+    deviceId: string;
     tokenRefreshedLastTime: Date = new Date();
     tokenRefreshed = false;
     currentTrackUri: string;
@@ -111,7 +113,7 @@ export class SpotifyService {
         if ((currentTime > this.tokenRefreshedLastTime) && this.tokenRefreshed) {
             console.log('New token please');
             this.tokenRefreshed = false;
-            if (!this.detectmob()) {
+            if (!this.isMobile()) {
                 this.loginPopup(false);
             }
         }
@@ -158,9 +160,14 @@ export class SpotifyService {
         this.currentTrackUri = trackUri;
         this.playStatus.is_playing = true;
         this.setPlayStatus(this.playStatus);
-        this.setTrackEnd(false);
+        if (this.deviceId) {
+            options.device_id = this.deviceId;
+        }
         // Only one of either context_uri or uris can be specified. If neither are present, calling /play will resume playback.
-        this.startTimer();
+        if(this.isMobile()) {
+            this.startTimer();
+            this.setTrackEnd(false);
+        }
         if (trackUri) {
             return this.api({
                 method: 'put',
@@ -220,6 +227,9 @@ export class SpotifyService {
     }
     setVolume(options?: SpotifyOptions) {
         options = options || {};
+        if (this.deviceId) {
+            options.device_id = this.deviceId;
+        }
         return this.api({
             method: 'put',
             url: `/me/player/volume`,
@@ -496,7 +506,7 @@ export class SpotifyService {
         const state = this.generateRandomString(16);
 
         localStorage.setItem('spotify_auth_state', state);
-        localStorage.removeItem('spotify-access-token');
+        //localStorage.removeItem('spotify-access-token');
         localStorage.removeItem('spotify-refresh-token');
         const params = {
             client_id: this.config.clientId,
@@ -520,7 +530,7 @@ export class SpotifyService {
         const state = this.generateRandomString(16);
 
         localStorage.setItem('spotify_auth_state', state);
-        localStorage.removeItem('spotify-access-token');
+        //localStorage.removeItem('spotify-access-token');
         localStorage.removeItem('spotify-refresh-token');
         const params = {
             client_id: this.config.clientId,
@@ -683,7 +693,7 @@ export class SpotifyService {
     }
 
     //#endregion
-    detectmob() { 
+    isMobile() { 
         if( navigator.userAgent.match(/Android/i)
         || navigator.userAgent.match(/webOS/i)
         || navigator.userAgent.match(/iPhone/i)

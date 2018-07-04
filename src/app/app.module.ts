@@ -31,6 +31,7 @@ import { AppComponent } from './app.component';
 
 import { environment } from '../environments/environment';
 import { CallbackComponent } from './modules/callback/callback.component';
+import { SpotifyPlaybackSdkService } from './services/spotify-playback-sdk.service';
 
 @NgModule({
   declarations: [
@@ -63,14 +64,18 @@ import { CallbackComponent } from './modules/callback/callback.component';
             redirectUri: `${window.location.origin}/callback`,
             scope: ['user-read-private',
             'user-modify-playback-state',
-            'user-read-playback-state'],
+            'user-read-playback-state',
+            "streaming",
+            "user-read-birthdate",
+            "user-read-email"],
             // If you already have an authToken
             authToken: localStorage.getItem('spotify-access-token')
         }
     },
     YoutubeAPIService,
     MusixMatchAPIService,
-    SimpleTimer
+    SimpleTimer,
+    SpotifyPlaybackSdkService
   ],
   bootstrap: [AppComponent]
 })

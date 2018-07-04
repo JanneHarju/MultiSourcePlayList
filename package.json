@@ -26,6 +26,7 @@
     "@angular/service-worker": "^5.2.0",
     "@angular/upgrade": "^5.2.0",
     "@types/node": "^9.4.6",
+    "@types/spotify-web-playback-sdk": "^0.1.2",
     "@types/wicg-mediasession": "^1.0.2",
     "bandcamp-scraper": "^1.2.2",
     "bootstrap": "^3.3.7",
@@ -39,15 +40,19 @@
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
-    "@angular/cli": "~1.7.2",
+    "@angular/cli": "^1.7.2",
     "@angular/compiler-cli": "^5.2.0",
     "@angular/language-service": "^5.2.0",
     "@types/jasmine": "~2.8.3",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
+    "@types/youtube": "^0.0.28",
     "codelyzer": "^4.0.1",
+    "concurrently": "^3.5.1",
+    "http-server": "^0.11.1",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
+    "jquery": "^3.2.1",
     "karma": "~2.0.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "^1.2.1",
@@ -57,10 +62,6 @@
     "ts-node": "~4.1.0",
     "tslint": "~5.9.1",
     "typescript": "~2.5.3",
-    "@types/youtube": "^0.0.28",
-    "concurrently": "^3.5.1",
-    "jquery": "^3.2.1",
-    "youtube-player": "^3.0.4",
-    "http-server": "^0.11.1"
+    "youtube-player": "^3.0.4"
   }
 }
