@@ -14,14 +14,14 @@
     </thead>
     <tbody>
         <tr *ngFor="let track of albumInfo.tracks; let idx = index" class="track" >
-            <td class="tdTracknumber" (dblclick)="onSpotifySelect(track)">
+            <td class="tdTracknumber" >
                 {{idx + 1}}
             </td>
             <td class="tdTrack" >
                 <a target="_blank" href="{{track.url}}"> {{track.name}} </a>
             </td>
             <td class="tdDuration" >
-                {{track.duration | bandcampdurationpipe}}
+                {{track.duration}}
             </td>
         </tr>
     </tbody>
