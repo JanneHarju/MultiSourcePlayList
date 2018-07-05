@@ -47,14 +47,6 @@
                     </a>
                 </li>
                 <li>
-                    <a (click)="useSpotifySDK()">
-                        Force use Spotify Playback SDK
-                        <div *ngIf="forceUsePlaybackSDK()" class="glyphicon glyphicon-ok text-success"></div>
-                        <div *ngIf="!forceUsePlaybackSDK()" class="glyphicon glyphicon-remove text-danger"></div>
-                    </a>
-                    
-                </li>
-                <li>
                     <a (click)="helpModal.show()">
                     Help
                     </a>
@@ -113,7 +105,7 @@
 <!--help modal-->
  <my-modal class="mymodal" #aboutModal>
     <div class="app-modal-header">
-        <h1>Musiple 0.13.0</h1>
+        <h1>Musiple 0.13.2</h1>
     </div>
     <div class="app-modal-body">
         <div class="infoarea">

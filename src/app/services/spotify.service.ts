@@ -164,10 +164,6 @@ export class SpotifyService {
             options.device_id = this.deviceId;
         }
         // Only one of either context_uri or uris can be specified. If neither are present, calling /play will resume playback.
-        if(this.isMobile()) {
-            this.startTimer();
-            this.setTrackEnd(false);
-        }
         if (trackUri) {
             return this.api({
                 method: 'put',

@@ -17,16 +17,6 @@ export class SpotifyPlaybackSdkService {
   private player: Spotify.SpotifyPlayer;
   private deviceId: string;
   private state: Spotify.PlaybackState;
-  public _forceUsePlaybackSDK: boolean = false;
-
-  public get forceUsePlaybackSDK(): boolean {
-    return this._forceUsePlaybackSDK;
-  }
-
-  public set forceUsePlaybackSDK(value: boolean) {
-    this._forceUsePlaybackSDK = value;
-    localStorage.setItem('forceUseSpotifyPlaybackSdk', JSON.stringify(value));
-  }
 
   private subjectPlayState = new BehaviorSubject<Spotify.PlaybackState>(null);
   private subjectTrackEnded = new BehaviorSubject<boolean>(false);
@@ -35,7 +25,6 @@ export class SpotifyPlaybackSdkService {
   constructor(
     private spotifyService: SpotifyService,
     private st: SimpleTimer) {
-    this._forceUsePlaybackSDK = localStorage.getItem('forceUseSpotifyPlaybackSdk') == 'true' ? true : false;
   }
   addSpotifyPlaybackSdk() {
     const script = document.createElement('script');

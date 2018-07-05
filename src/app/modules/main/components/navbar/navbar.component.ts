@@ -91,10 +91,4 @@ export class NavbarComponent implements OnInit, OnDestroy {
             body.webkitRequestFullscreen();
         }
     }
-    useSpotifySDK() {
-        this.spotifyPlaybackService.forceUsePlaybackSDK = !this.spotifyPlaybackService.forceUsePlaybackSDK;
-    }
-    forceUsePlaybackSDK() {
-        return this.spotifyPlaybackService.forceUsePlaybackSDK;
-    }
 }

@@ -79,9 +79,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         const vol = localStorage.getItem('musiple-volume');
         this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => {
             if (auth) {
-                if(!this.spotifyService.isMobile() || this.spotifyPlaybackService.forceUsePlaybackSDK) {
-                    this.spotifyPlaybackService.addSpotifyPlaybackSdk();
-                }
+                this.spotifyPlaybackService.addSpotifyPlaybackSdk();
             }
         });
         if (vol) {
@@ -99,24 +97,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 this.play(this.track.Address);
             }
         });
-        if(this.spotifyService.isMobile() && !this.spotifyPlaybackService.forceUsePlaybackSDK) {
-            this.subscriptionPlayStatus = this.spotifyService.getPlayStatus().subscribe(playStatus => {
-                this.playStatus = playStatus;
-                if (this.track.Type === 2) {
-                    this.setProgress(this.playStatus.progress_ms);
-                    if (this.playStatus.item) {
-                        this.duration = this.playStatus.item.duration_ms;
-                    }
-                }
-            });
-        } else {
-            this.subscriptionPlayStateFromSDK = this.spotifyPlaybackService.getPlayStatus().subscribe(state => {
-                if (this.track.Type === 2 && state) {
-                    this.setProgress(state.position);
-                    this.duration = state.duration;
-                }
-            });
-        }
+        
+        this.subscriptionPlayStateFromSDK = this.spotifyPlaybackService.getPlayStatus().subscribe(state => {
+            if (this.track.Type === 2 && state) {
+                this.setProgress(state.position);
+                this.duration = state.duration;
+            }
+        });
+        
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', () => this.play());
             navigator.mediaSession.setActionHandler('pause', () => this.pause());
@@ -163,7 +151,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
 
     play(trackUri?: string) {
-
         if (this.track.Address) {
             this.disableProgressUpdate = true;
             if (this.track != null) {

@@ -24,19 +24,11 @@ export class PlayerService {
         private spotifyService: SpotifyService,
         private spotifyPlaybackService: SpotifyPlaybackSdkService
     ) {
-        if(this.spotifyService.isMobile() && !this.spotifyPlaybackService.forceUsePlaybackSDK) {
-            this.subscriptionTrackEnd = this.spotifyService.getTrackEnd().subscribe(trackEnd => {
-                if (trackEnd) {
-                    this.chooseNextTrack();
-                }
-            });
-        } else {
-            this.subscriptionTrackEndFromSDK = this.spotifyPlaybackService.getTrackEnd().subscribe(trackEnd => {
-                if (trackEnd) {
-                    this.chooseNextTrack();
-                }
-            });
-        }
+        this.subscriptionTrackEndFromSDK = this.spotifyPlaybackService.getTrackEnd().subscribe(trackEnd => {
+            if (trackEnd) {
+                this.chooseNextTrack();
+            }
+        });
     }
 
     setTrack(newTrack: Track) {
