@@ -5,6 +5,7 @@ import { HttpRequestOptions} from './spotify.service';
 import { SearchResult } from '../json_schema/SearchResult';
 import { AlbumInfo } from '../json_schema/BandCampAlbumInfo';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 /*import * as bandcamp from '../../../node_modules/bandcamp-scraper/lib/index';
@@ -13,13 +14,15 @@ import * as utils from '../../../node_modules/bandcamp-scraper/lib/utils.js';*/
 /*let bandcamp = require('../../../node_modules/bandcamp-scraper/lib/index'),
     htmlParser  = require('../../../node_modules/bandcamp-scraper/lib/htmlParser.js'),
     utils       = require('../../../node_modules/bandcamp-scraper/lib/utils.js');*/
+import * as htmlParser from '../../../node_modules/bandcamp-scraper/lib/htmlParser.js';
+
 export interface BandcampOptions {
   page: number;
   q: string;
 }
 @Injectable()
 export class BandcampService {
-    baseUri = 'api/bandcamp';
+    baseUri = `${environment.backendUrl}/api/bandcamp`;
     constructor(
         private authService: AuthService,
         private http: Http) { }
@@ -34,8 +37,7 @@ export class BandcampService {
         })
         .toPromise()
         .then(res => {
-            return [];
-            // return htmlParser.parseSearchResults(res.text()) as SearchResult[];
+            return htmlParser.parseSearchResults(res.text()) as SearchResult[];
         })
         .catch(this.handlePromiseError);
     }
@@ -49,7 +51,7 @@ export class BandcampService {
         })
         .toPromise()
         .then(res => {
-            // return htmlParser.parseAlbumInfo(res.text(), decodedUrl) as AlbumInfo;
+            return htmlParser.parseAlbumInfo(res.text(), decodedUrl) as AlbumInfo;
         })
         .catch(this.handlePromiseError);
     }
@@ -64,7 +66,7 @@ export class BandcampService {
         })
         .toPromise()
         .then(res => {
-            // return htmlParser.parseAlbumUrls(res.text(), decodedUrl) as string[];
+            return htmlParser.parseAlbumUrls(res.text(), decodedUrl) as string[];
         })
         .catch(this.handlePromiseError);
     }
