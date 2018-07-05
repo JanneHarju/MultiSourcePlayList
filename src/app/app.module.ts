@@ -8,8 +8,6 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { ServiceWorkerModule } from '@angular/service-worker';
 
-
-import { YoutubePlayerModule } from 'ng2-youtube-player';
 import { DndModule } from 'ng2-dnd';
 import { NgUploaderModule } from 'ngx-uploader';
 

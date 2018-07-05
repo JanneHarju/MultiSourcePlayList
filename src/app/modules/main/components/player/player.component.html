@@ -37,7 +37,7 @@
             </div>
         </div>
         <youtube-player
-            style="visibility: hidden"
+            style="display: none;"
             [videoId]="track.Address"
             (ready)="savePlayer($event)"
             (change)="onStateChange($event)"

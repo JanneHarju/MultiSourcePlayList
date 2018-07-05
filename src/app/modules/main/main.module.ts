@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MainRoutingModule } from './main-routing.module';
 
-import { YoutubePlayerModule } from 'ng2-youtube-player';
+import { YoutubePlayerModule } from 'ngx-youtube-player';
 import { DndModule } from 'ng2-dnd';
 
 import { NgUploaderModule } from 'ngx-uploader';

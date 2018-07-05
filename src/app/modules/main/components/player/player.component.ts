@@ -14,6 +14,8 @@ import { MusixMatchLyric } from '../../../../models/musixmatchlyric';
 import { environment } from '../../../../../environments/environment';
 import { SpotifyPlaybackSdkService } from '../../../../services/spotify-playback-sdk.service';
 
+/// <reference path="../node_modules/@types/youtube/index.d.ts"/>
+
 @Component({
     selector: 'my-player',
     templateUrl: 'player.component.html',
@@ -135,16 +137,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     savePlayer (player: YT.Player) {
         this.player = player;
-        }
-    onStateChange(event: YT.EventArgs) {
+    }
+    onStateChange(event: YT.OnStateChangeEvent) {
         if (event.data === 0) {
             this.playerService.chooseNextTrack();
         } else {
-            const data = this.player.getVideoData();
             this.duration = this.player.getDuration() * 1000;
         }
     }
-
     next() {
         if (this.track.Address) {
             this.playerService.chooseNextTrack();
