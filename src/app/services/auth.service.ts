@@ -20,7 +20,7 @@ export class AuthService implements CanActivate {
         if (this.checkLogin()) {
             return true;
         } else {
-            this.router.navigate(['login']);
+            this.router.navigate(['/login']);
             return false;
         }
     }

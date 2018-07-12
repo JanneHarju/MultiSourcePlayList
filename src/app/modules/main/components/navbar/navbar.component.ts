@@ -54,21 +54,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
                     this.userName = info.UserName;
                 } else {
                     this.userName = '';
-                    this.router.navigate(['login']);
+                    this.router.navigate(['/login']);
                 }
             }
         })
         .catch(err => {
             if (err.status === 401) {
                 this.authService.clearLoginToken();
-                this.router.navigate(['login']);
+                this.router.navigate(['/login']);
             }
         });
     }
     logout() {
         this.authService.setAuthenticationComplited(false);
         this.authService.clearLoginToken();
-        this.router.navigate(['login']);
+        this.router.navigate(['/login']);
     }
     loginToSpotify() {
         this.spotifyService.loginPopup(true);

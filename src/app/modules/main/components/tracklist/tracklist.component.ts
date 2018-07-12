@@ -35,7 +35,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     subscriptionTrack: Subscription;
     subscriptionPlaylistsModified: Subscription;
     playlists: Playlist[] = [];
-
+    newTrack: Track = new Track();
     constructor(
         private trackService: TrackService,
         private playerService: PlayerService,
@@ -99,7 +99,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (err.status === 401) {
                     console.log('Unauthorized');
                     this.authService.clearLoginToken();
-                    this.router.navigate(['login']);
+                    this.router.navigate(['/login']);
                 }
             });
      }
@@ -133,11 +133,9 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
 
      }
      onSelect(track: Track): void {
-
         this.playerService.setTrackList(this.tracklist);
         this.currentTrack = track;
         this.playerService.setTrack(this.currentTrack);
-
     }
 
     delete(track: Track) {
@@ -170,7 +168,6 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             });
     }
     orderedTrack() {
-
         this.loadingService.setLoading(true);
         this.trackService
             .updatePlaylistOrder(this.tracklist)
@@ -213,5 +210,21 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             rect.top >= viewPortElementRect.top &&
             rect.bottom <= viewPortElementRect.bottom
         );
+    }
+
+    clearNewTrack() {
+        this.newTrack = new Track();
+        this.newTrack.Type = 4;
+        this.newTrack.Playlist = this.currrentPlaylist;
+    }
+    addNewTrack() {
+        console.log(this.newTrack);
+        if(this.newTrack.Address != '' && this.newTrack.Name != '') {
+            const trackList: Track[] = [];
+            trackList.push(this.newTrack);
+            this.trackService.createMany(trackList).then(ret => {
+                this.getPlaylistTracks();
+            });
+        }
     }
 }

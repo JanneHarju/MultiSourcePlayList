@@ -94,7 +94,7 @@ export class SearchlistComponent implements OnInit, OnDestroy {
             if (err.status === 401) {
                 console.log('Unauthorized');
                 this.authService.clearLoginToken();
-                this.router.navigate(['login']);
+                this.router.navigate(['/login']);
             }
         });
     }

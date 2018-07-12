@@ -141,11 +141,6 @@ namespace PlayList.Controllers
                 {
                     newtrack.Playlist = pl;
                 }
-                if(newtrack.Type == 3)
-                {
-                    //hae tässä kappale koneelta tai kaikki kappaleet kansiosta ja lisää ne
-                    // miten kappaleitten nimet silloin kun lisätään kansiosta
-                }
                 ++lastOrder;
                 newTracks.Add(newtrack);
             }

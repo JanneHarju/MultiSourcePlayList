@@ -4,6 +4,7 @@ import { UploadOutput, UploadInput, UploadFile, humanizeBytes } from 'ngx-upload
 import { AuthService } from '../../../../services/auth.service';
 import { LoadingService } from '../../../../services/loading.service';
 import { Playlist } from '../../../../models/playlist';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
     selector: 'my-fileupload',
@@ -33,7 +34,7 @@ export class FileUploadComponent implements OnInit {
     ngOnInit() { }
 
     onUploadOutput(output: UploadOutput): void {
-        console.log(output); // lets output to see what's going on in the console
+        console.log('upload output: ' ,output); // lets output to see what's going on in the console
 
         if (output.type === 'allAddedToQueue') { // when all files added in queue
         // uncomment this if you want to auto upload files when added
@@ -41,7 +42,7 @@ export class FileUploadComponent implements OnInit {
             const token = this.authService.getLocalToken();
             const event: UploadInput = {
                 type: 'uploadAll',
-                url: '/api/fileupload/' + this.currentPlaylist.Id,
+                url: `${environment.backendUrl}/api/fileupload/${this.currentPlaylist.Id}`,
                 method: 'POST',
                 fieldName: 'files',
                 headers: { 'Authorization': 'Bearer ' + token}

@@ -1,5 +1,8 @@
 
-<my-fileupload (loadComplited)="loadComplited($event)" [currentPlaylist]="currrentPlaylist" ></my-fileupload>
+<div class="use-flex">
+    <my-fileupload (loadComplited)="loadComplited($event)" [currentPlaylist]="currrentPlaylist" ></my-fileupload>
+    <button class="addbutton btn btn-primary glyphicon glyphicon-plus" (click)="clearNewTrack();addNewTrackModal.show()" data-toggle="tooltip" title="Add new track"></button>
+</div>
 <table class="tracks list-group" dnd-sortable-container (dragend)="orderedTrack()" [sortableData]="tracklist">
     <thead>
         <th></th>
@@ -17,7 +20,7 @@
                 <div class="logos" >
                     <img *ngIf="track.Type == 1" src="assets/YouTube-social-squircle_red_128px.png" data-toggle="tooltip" title="Track from YouTube" width="30" align="left">
                     <img *ngIf="track.Type == 2" src="assets/Spotify_Logo_RGB_Green.png" data-toggle="tooltip" title="Track from Spotify" width="30" align="left">
-                    <img *ngIf="track.Type == 3" src="assets/128px-MP3_logo_white.png" data-toggle="tooltip" title="Local Mp3 file" width="30" align="left">
+                    <img *ngIf="track.Type == 3 || track.Type == 4" src="assets/128px-MP3_logo_white.png" data-toggle="tooltip" title="Local Mp3 file" width="30" align="left">
                 </div>
             </td>
             <td class="trackname">
@@ -63,5 +66,23 @@
     <div class="app-modal-footer">
         <img class="pull-left" [src]="lyricImageUrl | safe">
         <button class="btn btn-primary" (click)="myModal.hide()">Close</button>
+    </div>
+</my-modal>
+
+
+<!-- add new Playlist modal-->
+<my-modal class="mymodal" #addNewTrackModal>
+    <div class="app-modal-header">
+        <h1>Create a new playlist</h1>
+    </div>
+    <div class="app-modal-body">
+        <label>Track name:</label>
+        <input class="form-control" [(ngModel)]="newTrack.Name" ng-focus="true" />
+        <label>Track address:</label>
+        <input class="form-control" [(ngModel)]="newTrack.Address" />
+    </div>
+    <div class="app-modal-footer">
+        <button class="btn btn-primary confirmbutton" (click)="addNewTrackModal.hide(); addNewTrack();">Create</button>
+        <button class="btn btn-primary" (click)="addNewTrackModal.hide()">Cancel</button>
     </div>
 </my-modal>

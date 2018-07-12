@@ -2,6 +2,21 @@ a.selected {
     background-color: #BBD8DC !important;
     color: white;
 }
+label {
+    color: #333;
+    font-size: initial;
+    text-align: left;
+}
+.use-flex {
+    display: flex;
+}
+.addbutton {
+    width: 73px;
+    height: 34px;
+}
+my-fileupload {
+    width: 100%;
+}
 /*.grid-pad {
     height: 80%;
     padding: 10px 0;
@@ -72,7 +87,6 @@ tr
     max-width: 110px;
     text-overflow: ellipsis;
     overflow: hidden;
-    //border-right: 1px solid white;
 }
 .lyric
 {

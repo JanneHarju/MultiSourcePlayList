@@ -28,7 +28,7 @@ export class UserInfoComponent implements OnInit {
         .catch(err => {
             if (err.status === 401) {
                 this.authService.clearLoginToken();
-                this.router.navigate(['login']);
+                this.router.navigate(['/login']);
             }
         });
     }

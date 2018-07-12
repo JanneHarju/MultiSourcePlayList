@@ -191,6 +191,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         this.audioElement.volume = this.volume / this.audioScale;
                         this.IsPlaying = true;
                         break;
+                    case 4: // direct address
+                        this.player.pauseVideo();
+                        this.pauseSpotify();
+                        this.audioElement.src = this.track.Address;
+                        this.audioElement.play();
+                        this.audioElement.volume = this.volume / this.audioScale;
+                        this.IsPlaying = true;
                     default:
                         break;
                 }
@@ -229,6 +236,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         });
                         break;
                     case 3: // mp3
+                    case 4: // direct address
                         this.audioElement.volume = this.volume / this.audioScale;
                         break;
                     default:
@@ -249,6 +257,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         this.pauseSpotify();
                         break;
                     case 3: // mp3
+                    case 4: // direct address
                         this.audioElement.pause();
                         break;
                     default:
@@ -283,7 +292,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     loadedmeadata() {
 
         this.audioElement.volume = this.volume / this.audioScale;
-
+        
         this.duration = this.audioElement.duration * 1000;
     }
     onAudioEnded() {
@@ -329,7 +338,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.spotifyService.seek({position_ms: seek}).then(res => {
                 // Onnistui
             });
-        } else if (this.track.Type === 3) {
+        } else if (this.track.Type === 3 || this.track.Type === 4) {
             this.audioElement.currentTime = seek / 1000;
         }
 
@@ -341,7 +350,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     callback() {
         if (this.track.Type === 1) {
             this.setProgress(this.player.getCurrentTime() * 1000);
-        } else if (this.track.Type === 3) {
+        } else if (this.track.Type === 3 || this.track.Type === 4) {
             this.setProgress(this.audioElement.currentTime * 1000);
         }
     }
