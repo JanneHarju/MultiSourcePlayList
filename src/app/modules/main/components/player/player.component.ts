@@ -61,8 +61,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     volume = 50;
     lastmp3trackAddress: string;
     sameMp3AsLastTime: boolean;
-    @ViewChild('audio1') audioElementRef: ElementRef;
-    audioElement: HTMLAudioElement;
+    audio: HTMLAudioElement;
     constructor(
         private infoService: TrackService,
         private playerService: PlayerService,
@@ -75,7 +74,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         private st: SimpleTimer) { }
 
     ngOnInit(): void {
-        this.audioElement = (<HTMLAudioElement>this.audioElementRef.nativeElement);
+        this.setMP3Player();
         const vol = localStorage.getItem('musiple-volume');
         this.subscriptionAuthenticationComplited = this.spotifyService.getAuthenticationComplited().subscribe(auth => {
             if (auth) {
@@ -157,7 +156,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 switch (this.track.Type) {
                     case 1: // youtube
                         this.pauseSpotify();
-                        this.audioElement.pause();
+                        this.audio.pause();
                         if (this.player) {
                             if (trackUri) {
                                 this.player.loadVideoById(trackUri);
@@ -169,7 +168,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         break;
                     case 2: // spotify
                         this.player.pauseVideo();
-                        this.audioElement.pause();
+                        this.audio.pause();
                         this.spotifyService.setVolume({volume_percent: this.volume}).then(res => {
                             // Onnistui
                         });
@@ -179,24 +178,25 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
                         this.player.pauseVideo();
                         this.pauseSpotify();
+                        const oldAddress = this.audio.src;
                         const address = this.localFileAddress(this.track);
-                        if (this.audioElement.src !== address) {
-                            this.audioElement.src = address;
+                        if (oldAddress !== address) {
+                            //this.setMP3Player();
+                            this.audio.src = address;
                         } else if (this.sameMp3AsLastTime) {
                             this.progress = 0;
                             this.changeprogressTo(this.progress);
                             this.sameMp3AsLastTime = false;
                         }
-                        this.audioElement.play();
-                        this.audioElement.volume = this.volume / this.audioScale;
+                        this.audio.play();
+                        this.audio.volume = this.volume / this.audioScale;
                         this.IsPlaying = true;
                         break;
                     case 4: // direct address
                         this.player.pauseVideo();
                         this.pauseSpotify();
-                        this.audioElement.src = this.track.Address;
-                        this.audioElement.play();
-                        this.audioElement.volume = this.volume / this.audioScale;
+                        //this.setMP3Player();
+                        this.audio.src = this.track.Address;
                         this.IsPlaying = true;
                     default:
                         break;
@@ -219,6 +219,26 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.disableProgressUpdate = false;
         }
     }
+    setMP3Player() {
+        this.audio = new Audio();
+        this.audio.preload = 'auto';
+        this.audio.controls = false;
+        this.audio.onerror = () => this.error();
+        this.audio.onended = () => this.onAudioEnded();
+        this.audio.onloadedmetadata = () => this.loadedmeadata();
+        this.audio.onloadeddata = () => this.loadeddata();
+        this.audio.oncanplaythrough = () => this.startPlay();
+    }
+    startPlay() {
+        this.audio.play();
+    }
+    /*startMP3Player() {
+        if(this.audio != null) {
+            this.audio.load();
+            this.audio.play();
+            this.audio.volume = this.volume / this.audioScale;
+        }
+    }*/
     setVolume() {
 
         localStorage.setItem('musiple-volume', this.volume.toString());
@@ -237,7 +257,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         break;
                     case 3: // mp3
                     case 4: // direct address
-                        this.audioElement.volume = this.volume / this.audioScale;
+                        this.audio.volume = this.volume / this.audioScale;
                         break;
                     default:
                         break;
@@ -258,7 +278,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         break;
                     case 3: // mp3
                     case 4: // direct address
-                        this.audioElement.pause();
+                        this.audio.pause();
                         break;
                     default:
                         break;
@@ -291,9 +311,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     loadedmeadata() {
 
-        this.audioElement.volume = this.volume / this.audioScale;
+        this.audio.volume = this.volume / this.audioScale;
         
-        this.duration = this.audioElement.duration * 1000;
+        this.duration = this.audio.duration * 1000;
     }
     onAudioEnded() {
         this.playerService.chooseNextTrack();
@@ -315,7 +335,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.changeprogressTo(this.progress);
     }
     error() {
-        const audio = this.audioElement;
+        const audio = this.audio;
         console.error(audio.error.code); // 4
         // console.error(audio.error.msExtendedCode);//undefined
         // console.error(audio.error.MEDIA_ERR_ABORTED);//1
@@ -326,7 +346,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         alert('Some error occured when streaming mp3 file. Error code: ' + audio.error.code);
     }
     loadeddata() {
-        const audio = this.audioElement;
+        const audio = this.audio;
         if (audio && audio.readyState >= 2) {
             audio.play();
         }
@@ -339,7 +359,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 // Onnistui
             });
         } else if (this.track.Type === 3 || this.track.Type === 4) {
-            this.audioElement.currentTime = seek / 1000;
+            this.audio.currentTime = seek / 1000;
         }
 
         this.disableProgressUpdate = false;
@@ -351,7 +371,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         if (this.track.Type === 1) {
             this.setProgress(this.player.getCurrentTime() * 1000);
         } else if (this.track.Type === 3 || this.track.Type === 4) {
-            this.setProgress(this.audioElement.currentTime * 1000);
+            this.setProgress(this.audio.currentTime * 1000);
         }
     }
 

@@ -43,8 +43,6 @@
             (change)="onStateChange($event)"
             width="1" height="40"
         ></youtube-player>
-        <audio #audio1 (error)="error()" height="40" style="visibility: hidden" (ended)="onAudioEnded()" (loadedmetadata)="loadedmeadata()" (loadeddata)="loadeddata()" id="audio1" controls="" type="audio/mpeg" preload="auto"><!--preload="auto">-->
-        </audio>
     </div>
 </div>
 <my-modal class="mymodal" #myLyricsModal>
