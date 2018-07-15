@@ -49,9 +49,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     getUserInfo() {
         this.authService.getUserInfo().then(res => {
             const info = res.Data as UserInfo;
+
+            console.log(info);
             if (res != null && info) {
                 if (info && info.UserName) {
                     this.userName = info.UserName;
+                    localStorage.setItem('SASToken',info.SASToken);
+                    localStorage.setItem('Folder',info.Folder);
                 } else {
                     this.userName = '';
                     this.router.navigate(['/login']);

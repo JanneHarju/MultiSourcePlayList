@@ -5,8 +5,8 @@
 
 export const environment = {
   production: false,
-  backendUrl: 'http://localhost:4200'
-  // backendUrl: 'http://musiple.azurewebsites.net'
+  backendUrl: 'http://localhost:5000'
+  //backendUrl: 'http://musiple.azurewebsites.net'
 };
 /*import 'cheerio-req';
 import 'scrape-it';

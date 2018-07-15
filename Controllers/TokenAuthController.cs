@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace PlayList
 {
@@ -104,37 +105,11 @@ namespace PlayList
                 Directory.CreateDirectory(uploads);
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
                     _configuration["Production:StorageConnectionString"]);
-
-                CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
-                // Get a reference to the file share we created previously.
-                CloudFileShare share = fileClient.GetShareReference(userfileFolder);
-                share.Properties.Quota = 1;
-                await share.CreateIfNotExistsAsync();
-                CloudFileDirectory userDir = null;
+                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+                CloudBlobContainer container = blobClient.GetContainerReference(userfileFolder);
+                await container.CreateIfNotExistsAsync();
                 // Ensure that the share exists.
-                if (await share.ExistsAsync())
-                {
-                    // Get a reference to the root directory for the share.
-                    CloudFileDirectory rootDir = share.GetRootDirectoryReference();
-                    // Get a reference to the directory we created previously.
-                    userDir = rootDir.GetDirectoryReference("audio");
-                    await userDir.CreateIfNotExistsAsync();
-                    // Ensure that the directory exists.
-                    if (!await userDir.ExistsAsync())
-                    {
-                        return Json(new RequestResult
-                        {
-                            State = RequestState.Failed,
-                            Msg = "Cannot create folder to cloud."
-                        });
-                        /*totalSize = await isThereDiscSpaceInAzure(userDir);
-                        if((totalSize)/bytesToMegaBytes > 1000)
-                        {
-                            return "NO_DISC_SPACE";
-                        }*/
-                    }
-                }
-                else
+                if (!await container.ExistsAsync())
                 {
                     return Json(new RequestResult
                     {
@@ -237,7 +212,8 @@ namespace PlayList
             
             var youTubeTrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,1);
             var spotifyTrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,2);
-            var mp3TrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,3);
+            var mp3TrackCount = _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,3) +
+                                _multiSourcePlaylistRepository.GetUsersTrackCountByType(Id,5);
             var trackCount = _multiSourcePlaylistRepository.GetUsersTrackCount(Id);
             var playlistCount = _multiSourcePlaylistRepository.GetUsersPlaylistCount(Id);
             var temp = await getAzureInfo(user.FileFolder);
@@ -246,6 +222,7 @@ namespace PlayList
             var sizeInMb = sizeInBytes / 1048576;//1024*1024
             var quota = azureQuota;
             var usersMaxDirectorySize = quota * 1000;
+            var SASToken = GetSASToken(user);
             return Json(new RequestResult
             {
                 State = RequestState.Success,
@@ -261,25 +238,27 @@ namespace PlayList
                             Mp3TrackCount = mp3TrackCount,
                             PlaylistCount = playlistCount,
                             FirstName = user.Fname,
-                            LastName = user.Lname }
+                            LastName = user.Lname,
+                            Folder = user.FileFolder,
+                            SASToken = SASToken }
             });
         }
 
         private async Task<string> getAzureInfo(string filefolder)
         {
+
+            azureQuota = 10;
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
                     _configuration["Production:StorageConnectionString"]);
-
             CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
             // Get a reference to the file share we created previously.
             CloudFileShare share = fileClient.GetShareReference(filefolder);
             CloudFileDirectory userDir = null;
+            int fileCountInFileStore = 0;
+            long totalFileSizeInFileStore = 0;
             // Ensure that the share exists.
             if (await share.ExistsAsync())
             {
-                //var stats = await share.GetStatsAsync();
-                //azureUsage = stats.Usage;//Usage in Gb
-                azureQuota = share.Properties.Quota;
                 // Get a reference to the root directory for the share.
                 CloudFileDirectory rootDir = share.GetRootDirectoryReference();
                 // Get a reference to the directory we created previously.
@@ -304,7 +283,7 @@ namespace PlayList
                         Console.WriteLine(ex.Message);
                         Console.ReadKey();
                     }
-                    azureFileCount = results.Count;
+                    fileCountInFileStore = results.Count;
                     long sizeInBytes = 0;
                     results.ForEach( x=>
                     {
@@ -314,10 +293,59 @@ namespace PlayList
                             sizeInBytes += cloudFile.Properties.Length;
                         }
                     });
-                    azureUsage = sizeInBytes;
+                    totalFileSizeInFileStore = sizeInBytes;
                 }
             }
+
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference(filefolder);
+            // Ensure that the container exists.
+            if (await container.ExistsAsync())
+            {
+                var blobresults = new List<IListBlobItem>();
+                try
+                {
+                    BlobContinuationToken blobContinuationToken = null;
+                    do
+                    {
+                        BlobResultSegment resultSegment = await container.ListBlobsSegmentedAsync(null, blobContinuationToken);
+                        // Get the value of the continuation token returned by the listing call.
+                        blobresults.AddRange(resultSegment.Results);
+                        blobContinuationToken = resultSegment.ContinuationToken;
+                    } while (blobContinuationToken != null); // Loop while the continuation token is not null.
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.ReadKey();
+                }
+                azureFileCount = fileCountInFileStore + blobresults.Count;
+                long sizeInBytes = 0;
+                blobresults.ForEach( x=>
+                {
+                    if (x is CloudBlob)
+                    {
+                        var cloudBlob = (CloudBlob) x;
+                        sizeInBytes += cloudBlob.Properties.Length;
+                    }
+                });
+                azureUsage = totalFileSizeInFileStore + sizeInBytes;
+                
+            }
             return "SUCCESS";
+        }
+        private string GetSASToken(User user) {
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                _configuration["Production:StorageConnectionString"]);
+            
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference(user.FileFolder);
+            return container.GetSharedAccessSignature(new SharedAccessBlobPolicy() {
+                Permissions = SharedAccessBlobPermissions.Read,
+                SharedAccessExpiryTime = new DateTimeOffset(DateTime.UtcNow.AddDays(1)),
+                SharedAccessStartTime = new DateTimeOffset(DateTime.UtcNow)
+            });
+            
         }
     }
 }

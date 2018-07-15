@@ -129,16 +129,26 @@ namespace PlayList.Controllers
             var user = _multiSourcePlaylistRepository.GetUser(userId);
             var tracks = _multiSourcePlaylistRepository.GetUsersPlaylistTracks(id,userId);
             var mp3type = 3;
+            var mp3type2 = 5;
             foreach (var track in tracks)
             {
-                if(track.Type == mp3type)
+                if(track.Type == mp3type || track.Type == mp3type2)
                 {
                     var address = track.Address;
                     _multiSourcePlaylistRepository.DeleteTrack(track.Id);
                 
-                    if(!_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
+                    if(track.Type == mp3type && !_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
                     {
-                        if(!await CloudHelper.RemoveFileFromCloud(
+                        if(!await CloudHelper.RemoveFileFromCloudFile(
+                            _configuration["Production:StorageConnectionString"],
+                            user.FileFolder,
+                            address))
+                        {
+                            return "FAILED";
+                        }
+                    } else if(track.Type == mp3type2 && !_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type2,address,userId).Any())
+                    {
+                        if(!await CloudHelper.RemoveFileFromCloudBlob(
                             _configuration["Production:StorageConnectionString"],
                             user.FileFolder,
                             address))

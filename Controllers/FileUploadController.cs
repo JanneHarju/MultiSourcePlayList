@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using TagLib;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace PlayList.Controllers
 {
@@ -41,6 +42,7 @@ namespace PlayList.Controllers
         }
         [HttpPost("{id}")]
         [Authorize("Bearer")]
+        [RequestSizeLimit(100_000_000)]
         public async Task<string> FileUpload(long id, IFormFile[] files)
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
@@ -70,45 +72,36 @@ namespace PlayList.Controllers
             //@string.Format("{0}://{1}{2}{3}", Context.Request.Scheme, Context.Request.Host, Context.Request.Path, Context.Request.QueryString)
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
                 _configuration["Production:StorageConnectionString"]);
-
-            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
-            // Get a reference to the file share we created previously.
-            CloudFileShare share = fileClient.GetShareReference(user.FileFolder);
-            CloudFileDirectory userDir = null;
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference(user.FileFolder);
+            
             // Ensure that the share exists.
-            if (await share.ExistsAsync())
+            if (await container.ExistsAsync())
             {
-                // Get a reference to the root directory for the share.
-                CloudFileDirectory rootDir = share.GetRootDirectoryReference();
-                // Get a reference to the directory we created previously.
-                userDir = rootDir.GetDirectoryReference("audio");
-                // Ensure that the directory exists.
-                if (!await userDir.ExistsAsync())
+                int bytesToMegaBytes = 1048576;
+                var totalSize = await isThereDiscSpaceInAzure(container);
+                if((totalSize)/bytesToMegaBytes > 10000)
                 {
-                    return "User audio directory doesn't exists.";
-                    /*totalSize = await isThereDiscSpaceInAzure(userDir);
-                    if((totalSize)/bytesToMegaBytes > 1000)
-                    {
-                        return "NO_DISC_SPACE";
-                    }*/
+                    return "NO_DISC_SPACE";
                 }
-                
+            }
+            else
+            {
+                return "User container doesn't exists.";
             }
             foreach(var file in files)
             {
                 try {
                     var filename = file.FileName;
                     var fullpath = Path.Combine(uploads, filename);
-
-                    CloudFile newfile = userDir.GetFileReference(filename);
-                    
-                    if(!await newfile.ExistsAsync())
+                    CloudBlockBlob blob = container.GetBlockBlobReference(filename);
+                    if(!await blob.ExistsAsync())
                     {
                         if (file.Length > 0)
                         {
                             using(var fileStream = file.OpenReadStream())
                             {
-                                await newfile.UploadFromStreamAsync(fileStream);
+                                await blob.UploadFromStreamAsync(fileStream);
                             }
                         }
                     }
@@ -122,7 +115,7 @@ namespace PlayList.Controllers
                     Track fileTrack = new Track();
                     fileTrack.Address = file.FileName;
                     fileTrack.Playlist = playlist;
-                    fileTrack.Type = 3;
+                    fileTrack.Type = 5;
                     fileTrack.Order = lastOrder;
                     fileTrack.Name = getTrackName(fullpath);//hanki bändi ja kappale mp3 tiedoston metasta
                     _multiSourcePlaylistRepository.PostTrack(fileTrack);
@@ -136,19 +129,19 @@ namespace PlayList.Controllers
             return "File was Uploaded";
         }
 
-        private async Task<long> isThereDiscSpaceInAzure(CloudFileDirectory userDir)
+        private async Task<long> isThereDiscSpaceInAzure(CloudBlobContainer cloudBlobContainer)
         {
-            var results = new List<IListFileItem>();
-            FileContinuationToken token = null;
+            var blobresults = new List<IListBlobItem>();
             try
             {
+                BlobContinuationToken blobContinuationToken = null;
                 do
                 {
-                    FileResultSegment resultSegment = await userDir.ListFilesAndDirectoriesSegmentedAsync(token);
-                    results.AddRange(resultSegment.Results);
-                    token = resultSegment.ContinuationToken;
-                }
-                while (token != null);
+                    BlobResultSegment resultSegment = await cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+                    // Get the value of the continuation token returned by the listing call.
+                    blobresults.AddRange(resultSegment.Results);
+                    blobContinuationToken = resultSegment.ContinuationToken;
+                } while (blobContinuationToken != null); // Loop while the continuation token is not null.
             }
             catch (Exception ex)
             {
@@ -156,13 +149,13 @@ namespace PlayList.Controllers
                 Console.ReadKey();
             }
             long sizeInBytes = 0;
-            results.ForEach(async x=>
+            blobresults.ForEach(async x=>
             {
-                if (x is CloudFile)
+                if (x is CloudBlob)
                 {
-                    var cloudFile = (CloudFile) x;
-                    await cloudFile.FetchAttributesAsync();
-                    sizeInBytes += cloudFile.Properties.Length;
+                    var cloudBlob = (CloudBlob) x;
+                    await cloudBlob.FetchAttributesAsync();
+                    sizeInBytes += cloudBlob.Properties.Length;
                 }
             });
             return sizeInBytes;
@@ -183,14 +176,6 @@ namespace PlayList.Controllers
             _logger.LogCritical(title);
             trackname = artist +" - "+title;
             return trackname;
-        }
-        private bool isThereDiscSpace(string path, IFormFile file)
-        {
-            var directoryInfo = new DirectoryInfo(path);
-            var sizeInBytes = directoryInfo.EnumerateFiles().Sum(fil=> fil.Length);
-            var totalSizeInBytes = sizeInBytes + file.Length;
-            var sizeInMb = totalSizeInBytes / 1048576;
-            return sizeInMb < 1000;
         }
     }
     public class LocalFileAbstraction : TagLib.File.IFileAbstraction

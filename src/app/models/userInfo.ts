@@ -14,4 +14,6 @@ export class UserInfo {
   PlaylistCount: number;
   FirstName: string;
   LastName: string;
+  SASToken: string;
+  Folder: string;
 }

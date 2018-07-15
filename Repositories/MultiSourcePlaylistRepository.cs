@@ -87,8 +87,7 @@ namespace PlayList.Repositories
                 .Where(x=>x.Owner.Id == userId)
                 .Count();
         }
-        public 
-        long GetUsersTrackCountByType(long userId, int type)
+        public long GetUsersTrackCountByType(long userId, int type)
         {
             return _context.Tracks
                 .Include(y=>y.Playlist)

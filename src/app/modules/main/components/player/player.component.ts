@@ -57,7 +57,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     audioScale = 300;
     YTScale = 4;
-    localFilePath = `${environment.backendUrl}/api/audio/`;
     volume = 50;
     lastmp3trackAddress: string;
     sameMp3AsLastTime: boolean;
@@ -85,12 +84,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.volume = +vol;
         }
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => {
-            if (this.track && this.track.Type === 3) {
+            if (this.track && (this.track.Type === 3 || this.track.Type === 5)) {
                 this.lastmp3trackAddress = this.track.Address;
             }
 
             this.sameMp3AsLastTime = this.lastmp3trackAddress === track.Address;
-
+            
             this.track = track;
             if (this.track) {
                 this.play(this.track.Address);
@@ -175,13 +174,24 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         this.playSpotify(trackUri);
                         break;
                     case 3: // mp3
+                    case 5:
 
                         this.player.pauseVideo();
                         this.pauseSpotify();
-                        const oldAddress = this.audio.src;
-                        const address = this.localFileAddress(this.track);
-                        if (oldAddress !== address) {
+                        let oldAddress = this.audio.src;
+                        let address = this.localFileAddress(this.track);
+                        let newaddress = address;
+                        if(this.track.Type === 5) {
+                            const newparts = newaddress.split('/');
+                            const newtrackName = newparts[newparts.length -1].split('.mp3')[0];
+                            var oldparts = oldAddress.split('/');
+                            const oldtrackName = oldparts[oldparts.length -1].split('.mp3')[0];
+                            newaddress = encodeURIComponent(newtrackName);
+                            oldAddress = oldtrackName;
+                        }
+                        if (oldAddress !== newaddress) {
                             //this.setMP3Player();
+                            console.log('here');
                             this.audio.src = address;
                         } else if (this.sameMp3AsLastTime) {
                             this.progress = 0;
@@ -227,7 +237,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.audio.onended = () => this.onAudioEnded();
         this.audio.onloadedmetadata = () => this.loadedmeadata();
         this.audio.onloadeddata = () => this.loadeddata();
-        this.audio.oncanplaythrough = () => this.startPlay();
+        //this.audio.oncanplaythrough = () => this.startPlay();
     }
     startPlay() {
         this.audio.play();
@@ -256,6 +266,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         });
                         break;
                     case 3: // mp3
+                    case 5:
                     case 4: // direct address
                         this.audio.volume = this.volume / this.audioScale;
                         break;
@@ -277,6 +288,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
                         this.pauseSpotify();
                         break;
                     case 3: // mp3
+                    case 5:
                     case 4: // direct address
                         this.audio.pause();
                         break;
@@ -307,12 +319,21 @@ export class PlayerComponent implements OnInit, OnDestroy {
         }
     }
     localFileAddress(track: Track): string {
-        return this.localFilePath + track.Id;
+        const filePathForAzureFile = `${environment.backendUrl}/api/audio/`;
+        const filePathForAzureBlop = 'https://musiple.blob.core.windows.net/';
+    
+        if(track.Type === 3) {
+            return filePathForAzureFile + track.Id;
+        } else {
+            return filePathForAzureBlop +
+                localStorage.getItem('Folder') +
+                '/' +
+                track.Address + 
+                localStorage.getItem('SASToken');
+        }
     }
     loadedmeadata() {
-
         this.audio.volume = this.volume / this.audioScale;
-        
         this.duration = this.audio.duration * 1000;
     }
     onAudioEnded() {
@@ -358,7 +379,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.spotifyService.seek({position_ms: seek}).then(res => {
                 // Onnistui
             });
-        } else if (this.track.Type === 3 || this.track.Type === 4) {
+        } else if (this.track.Type === 3 || this.track.Type === 4 || this.track.Type === 5) {
             this.audio.currentTime = seek / 1000;
         }
 
@@ -370,7 +391,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     callback() {
         if (this.track.Type === 1) {
             this.setProgress(this.player.getCurrentTime() * 1000);
-        } else if (this.track.Type === 3 || this.track.Type === 4) {
+        } else if (this.track.Type === 3 || this.track.Type === 4 || this.track.Type === 5) {
             this.setProgress(this.audio.currentTime * 1000);
         }
     }

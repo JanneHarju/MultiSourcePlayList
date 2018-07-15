@@ -159,17 +159,25 @@ namespace PlayList.Controllers
             var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
             var user = _multiSourcePlaylistRepository.GetUser(userId);
             var mp3type = 3;
-            if(type == mp3type)
+            var mp3type2 = 5;
+            if(type == mp3type && !_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
             {
-                if(!_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type,address,userId).Any())
+                if(!await CloudHelper.RemoveFileFromCloudFile(
+                    _configuration["Production:StorageConnectionString"],
+                    user.FileFolder,
+                    address))
                 {
-                    if(!await CloudHelper.RemoveFileFromCloud(
-                        _configuration["Production:StorageConnectionString"],
-                        user.FileFolder,
-                        address))
-                    {
-                        return "FAILED";
-                    }
+                    return "FAILED";
+                }
+            }
+            else if(type == mp3type2 && !_multiSourcePlaylistRepository.GetTracksByTypeAndAddress(mp3type2,address,userId).Any())
+            {
+                if(!await CloudHelper.RemoveFileFromCloudBlob(
+                    _configuration["Production:StorageConnectionString"],
+                    user.FileFolder,
+                    address))
+                {
+                    return "FAILED";
                 }
             }
             return "SUCCESS";
