@@ -1,3 +1,11 @@
+<div class="checkboxes">
+    <my-checkbox [(checked)]="searchSpotify" label="Spotify"></my-checkbox>
+    <my-checkbox [(checked)]="searchYoutube" label="Youtube"></my-checkbox>
+    <my-checkbox [(checked)]="searchBandcamp" label="Bandcamp"></my-checkbox>
+    <!--<my-checkbox [(checked)]="searchMusiple" label="Musiple"></my-checkbox>-->
+</div>
+<button class="search-button btn btn-primary glyphicon glyphicon-search" (click)="search()" data-toggle="tooltip" title="Search again"></button>
+<hr>
 <h3> Spotify Search result for:  {{query}} </h3>
 <table class="tracks">
     <thead>

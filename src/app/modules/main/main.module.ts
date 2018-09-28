@@ -34,6 +34,7 @@ import { BandcampDurationPipe } from './components/shared/bandcampDurationPipe';
 
 import { SimpleTimer } from 'ng2-simple-timer';
 import '../../rxjs-extensions';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -43,6 +44,7 @@ import '../../rxjs-extensions';
     MainRoutingModule,
     YoutubePlayerModule,
     NgUploaderModule,
+    SharedModule
   ],
   declarations: [
     MainComponent,

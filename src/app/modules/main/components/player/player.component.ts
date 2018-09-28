@@ -31,7 +31,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     lyricHeader = '';
     lyricImageUrl = '';
     playStatus: SpotifyPlayStatus = new SpotifyPlayStatus();
-    subscriptionPlayStatus: Subscription;
     subscriptionPlayStateFromSDK: Subscription;
     subscriptionTrack: Subscription;
     subscriptionAuthenticationComplited: Subscription;
@@ -117,7 +116,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     ngOnDestroy(): void {
         this.subscriptionTrack.unsubscribe();
-        this.subscriptionPlayStatus.unsubscribe();
         this.subscriptionAuthenticationComplited.unsubscribe();
     }
 

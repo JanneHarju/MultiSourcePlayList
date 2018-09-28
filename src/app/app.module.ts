@@ -30,6 +30,7 @@ import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
 import { CallbackComponent } from './modules/callback/callback.component';
 import { SpotifyPlaybackSdkService } from './services/spotify-playback-sdk.service';
+import { SharedModule } from './modules/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { SpotifyPlaybackSdkService } from './services/spotify-playback-sdk.servi
     FormsModule,
     HttpModule,
     BrowserAnimationsModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production})
+    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
+    SharedModule
   ],
   providers: [
     TrackService,

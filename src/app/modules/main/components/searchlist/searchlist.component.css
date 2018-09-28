@@ -7,9 +7,6 @@ table.tracks {
 	margin: 0 0px;
 	border-collapse: collapse;
 }
-
-table tr {
-}
 table tr td {
 	font-size: 13pt;
 	border-top: 1px solid #393b40;
@@ -110,4 +107,13 @@ table tr th {
 }
 li{
 	cursor: pointer;
+}
+
+.checkboxes {
+	display: flex;
+	font-size: 12pt;
+}
+.search-button {
+	display: block;
+	width: 100px;
 }
