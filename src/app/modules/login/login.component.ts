@@ -46,10 +46,7 @@ export class LoginComponent implements OnInit {
                 this.authService.register(this.rememberMe, this.loginUser).then(
                 result => {
                     if (result.State === 1) {
-
-                        //this.router.navigate(['/main']).then(navi => {
-                            this.spotifyService.login();
-                        //});
+                        this.spotifyService.login();
                     } else {
                         alert(result.Msg);
                     }
@@ -58,9 +55,7 @@ export class LoginComponent implements OnInit {
                 this.authService.login(this.rememberMe, this.loginUser).then(
                     result => {
                         if (result.State === 1) {
-                            //this.router.navigate(['/main']).then(navi => {
-                                this.spotifyService.login();
-                            //});
+                            this.spotifyService.login();
                         } else {
                             alert(result.Msg);
                         }

@@ -37,6 +37,11 @@ export class SearchlistComponent implements OnInit, OnDestroy {
     subscriptionPlaylistsModified: Subscription;
     tempSpotifyPlaylistId = -4;
     tempYoutubePlaylistId = -5;
+    searchSpotify: boolean = true;
+    searchYoutube: boolean = true;
+    searchBandcamp: boolean = false;
+    searchMusiple: boolean = true;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -55,20 +60,8 @@ export class SearchlistComponent implements OnInit, OnDestroy {
 
         this.route.params.subscribe((params: Params) => {
 
-            setTimeout(() => this.loadingService.setLoading(true));
             this.query = params['id'];
-            this.spotifyService.search(params['id'], 'track')
-                .then((tracklist: SpotifyTrack[]) => {
-                    this.spotifyTracks = tracklist;
-                    this.selectCurrentTrack(this.playerService.track);
-                });
-            this.youtubeApiService.search(params['id'])
-                .subscribe((youtubeVideos: YoutubeVideo[]) => {
-                    this.youtubeVideos = youtubeVideos;
-                    this.selectCurrentTrack(this.playerService.track);
-                });
-
-            this.bcsearch(params['id']);
+            this.search();
         });
 
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => {
@@ -80,6 +73,43 @@ export class SearchlistComponent implements OnInit, OnDestroy {
             this.getUsersPlaylists();
         });
      }
+
+    public search() {
+        if (this.searchBandcamp || this.searchSpotify || this.searchYoutube) {
+            setTimeout(() => this.loadingService.setLoading(true));
+        }
+        if (this.searchSpotify) {
+            this.spotifyService.search(this.query, 'track')
+                .then((tracklist: SpotifyTrack[]) => {
+                    setTimeout(() => this.loadingService.setLoading(false));
+                    this.spotifyTracks = tracklist;
+                    this.selectCurrentTrack(this.playerService.track);
+                });
+        }
+        else {
+            this.spotifyTracks = [];
+        }
+        if (this.searchYoutube) {
+            this.youtubeApiService.search(this.query)
+                .subscribe((youtubeVideos: YoutubeVideo[]) => {
+                    setTimeout(() => this.loadingService.setLoading(false));
+                    this.youtubeVideos = youtubeVideos;
+                    this.selectCurrentTrack(this.playerService.track);
+                });
+        }
+        else {
+            this.youtubeVideos = [];
+        }
+        if (this.searchBandcamp) {
+            this.bcsearch(this.query);
+        }
+        else {
+            this.bandcampAlbums = [];
+            this.bandcampArtists = [];
+            this.bandcampTracks = [];
+        }
+    }
+
     ngOnDestroy(): void {
         this.subscriptionPlaylistsModified.unsubscribe();
         this.subscriptionTrack.unsubscribe();

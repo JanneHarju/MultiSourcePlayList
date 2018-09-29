@@ -18,8 +18,8 @@
             </div>
         </div>
         <div>
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input [(ngModel)]="loginUser.Password" type="password" name="password" #password="ngModel" id="inputPassword"
+            <label for="password" class="sr-only">Password</label>
+            <input [(ngModel)]="loginUser.Password" type="password" name="password" #password="ngModel" id="password"
                 class="form-control" placeholder="Password" minlength="4" required >
             <div *ngIf="password.invalid && (password.dirty || password.touched)"
                 class="alert alert-danger">
@@ -52,13 +52,7 @@
         <a *ngIf="register == false" (click)="registerState()">Register</a>
 
         <a *ngIf="register" (click)="loginState()">Login</a>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" [(ngModel)]="rememberMe" name="rememberme">
-                <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
-                 Remember me
-            </label>
-        </div>
+        <my-checkbox [(checked)]="rememberMe" label="Remember me"></my-checkbox>
         <button *ngIf="register == false" class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
         <button *ngIf="register" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
     </form>

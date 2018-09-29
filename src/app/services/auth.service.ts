@@ -89,6 +89,7 @@ export class AuthService implements CanActivate {
     }
     public clearLoginToken() {
         sessionStorage.removeItem(this.tokeyKey);
+        localStorage.removeItem(this.tokeyKey);
     }
     public getUserInfo() {
         return this.authGet(this.BaseUrl);

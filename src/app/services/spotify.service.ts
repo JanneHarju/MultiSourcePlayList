@@ -544,6 +544,8 @@ export class SpotifyService {
             () => {
             if (!this.authCompleted) {
                 return reject('Login rejected error');
+            } else {
+                return resolve();
             }
             }
         );
