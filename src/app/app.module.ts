@@ -44,7 +44,7 @@ import { SpotifyPlaybackSdkService } from './services/spotify-playback-sdk.servi
     FormsModule,
     HttpModule,
     BrowserAnimationsModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production})
+    ServiceWorkerModule// .register('/ngsw-worker.js', {enabled: environment.production})
   ],
   providers: [
     TrackService,
