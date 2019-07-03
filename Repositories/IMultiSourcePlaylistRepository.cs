@@ -15,6 +15,8 @@ namespace PlayList.Repositories
         User GetTrackOwner(long id);
         List<Track> GetTracksByTypeAndAddress(int type, string address, long owner);
         List<Track> GetAllTracks();
+        List<Track> SearchTracks(string query, long userId);
+        
         List<Track> GetUsersPlaylistTracks(long playlistId, long userId);
         List<Playlist> GetAllPlaylists();
         List<Playlist> GetUsersPlaylists(long userId);

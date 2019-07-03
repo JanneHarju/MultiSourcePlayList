@@ -26,6 +26,7 @@ import 'rxjs/add/operator/toPromise';
 export class SearchlistComponent implements OnInit, OnDestroy {
     spotifyTracks: SpotifyTrack[] = [];
     youtubeVideos: YoutubeVideo[] = [];
+    musipleTracks: Track[] = [];
     bandcampArtists: Artist[] = [];
     bandcampAlbums: Album[] = [];
     bandcampTracks: BandCampTrack[] = [];
@@ -33,6 +34,7 @@ export class SearchlistComponent implements OnInit, OnDestroy {
     query = '';
     selectedSpotifyTrack: SpotifyTrack = new SpotifyTrack();
     selectedYoutubeVideo: YoutubeVideo = new YoutubeVideo();
+    selectedMusipleMp3: Track = new Track();
     subscriptionTrack: Subscription;
     subscriptionPlaylistsModified: Subscription;
     tempSpotifyPlaylistId = -4;
@@ -40,7 +42,7 @@ export class SearchlistComponent implements OnInit, OnDestroy {
     searchSpotify: boolean = true;
     searchYoutube: boolean = true;
     searchBandcamp: boolean = false;
-    searchMusiple: boolean = true;
+    searchMusipleMp3: boolean = true;
 
     constructor(
         private route: ActivatedRoute,
@@ -75,9 +77,10 @@ export class SearchlistComponent implements OnInit, OnDestroy {
      }
 
     public search() {
-        if (this.searchBandcamp || this.searchSpotify || this.searchYoutube) {
+        if (this.searchBandcamp || this.searchSpotify || this.searchYoutube || this.searchMusipleMp3) {
             setTimeout(() => this.loadingService.setLoading(true));
         }
+
         if (this.searchSpotify) {
             this.spotifyService.search(this.query, 'track')
                 .then((tracklist: SpotifyTrack[]) => {
@@ -89,6 +92,7 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         else {
             this.spotifyTracks = [];
         }
+
         if (this.searchYoutube) {
             this.youtubeApiService.search(this.query)
                 .subscribe((youtubeVideos: YoutubeVideo[]) => {
@@ -100,6 +104,18 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         else {
             this.youtubeVideos = [];
         }
+
+        if (this.searchMusipleMp3) {
+            this.trackService.searchTracks(this.query)
+                .then( tracks => {
+                    setTimeout(() => this.loadingService.setLoading(false));
+                    this.musipleTracks = tracks;
+                    this.selectCurrentTrack(this.playerService.track);
+                });
+        } else {
+            this.musipleTracks = [];
+        }
+
         if (this.searchBandcamp) {
             this.bcsearch(this.query);
         }
@@ -150,28 +166,25 @@ export class SearchlistComponent implements OnInit, OnDestroy {
     }
     selectCurrentTrack(track: Track) {
         const temptrack = this.spotifyTracks.find(x => x.uri === track.Address);
+        const tempvideo = this.youtubeVideos.find(x => x.id.videoId === track.Address);
+        const musipletrack = this.musipleTracks.find(x => x.Address === track.Address);
         if (temptrack) {
             if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempSpotifyPlaylistId)) {
                 this.selectedSpotifyTrack = temptrack;
                 this.selectedYoutubeVideo = null;
-                // this doesn't work because of two divs which have own scrollbars.
-                // This scrolls only left one not the right one.
-                /*var element = document.getElementsByClassName("active")[0];
-                if(element)
-                    element.scrollIntoView()*/
+                this.selectedMusipleMp3 = null;
             }
-        } else {
-            const tempvideo = this.youtubeVideos.find(x => x.id.videoId === track.Address);
-            if (tempvideo) {
-                if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempYoutubePlaylistId)) {
-                    this.selectedYoutubeVideo = tempvideo;
-                    this.selectedSpotifyTrack = null;
-                    // this doesn't work because of two divs which have own scrollbars.
-                    // This scrolls only left one not the right one.
-                    /*var element = document.getElementsByClassName("active")[0];
-                    if(element)
-                        element.scrollIntoView()*/
-                }
+        } else if(tempvideo) {
+            if (this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(this.tempYoutubePlaylistId)) {
+                this.selectedYoutubeVideo = tempvideo;
+                this.selectedSpotifyTrack = null;
+                this.selectedMusipleMp3 = null;
+            }
+        } else if(musipletrack){
+            if(this.playerService.isCurrentlyPlayingTrackThisPlaylistTrack(musipletrack.Playlist.Id)) {
+                this.selectedYoutubeVideo = null;
+                this.selectedSpotifyTrack = null;
+                this.selectedMusipleMp3 = musipletrack;
             }
         }
     }
@@ -205,6 +218,18 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         this.trackService.createMany(trackList).then(ret => {
             this.loadingService.setLoading(false);
 
+        })
+        .catch(err => {
+            this.loadingService.setLoading(false);
+        });
+     }
+     addMusipleMp3TrackToPlaylist(track: Track) {
+
+        this.loadingService.setLoading(true);
+        const trackList: Track[] = [];
+        trackList.push(track);
+        this.trackService.createMany(trackList).then(ret => {
+            this.loadingService.setLoading(false);
         })
         .catch(err => {
             this.loadingService.setLoading(false);
@@ -259,6 +284,11 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         const tempTrack = trackList.find(tr => tr.Address === video.id.videoId);
         this.playerService.setTrack(tempTrack);
     }
+    onMusipleSelect(track: Track) {
+        this.selectedMusipleMp3 = track;
+        this.playerService.setTrackList(this.musipleTracks);
+        this.playerService.setTrack(track);
+    }
     addSpotifyToQueue(track: SpotifyTrack) {
         const newPlaylist: Playlist = new Playlist();
         newPlaylist.Id = this.tempSpotifyPlaylistId;
@@ -283,5 +313,13 @@ export class SearchlistComponent implements OnInit, OnDestroy {
             newTrack.Playlist = newPlaylist;
             newTrack.Order = 0;
         this.playerService.addTrackToQueue(newTrack);
+    }
+    addMusipleMp3ToQueue(track: Track) {
+        this.playerService.addTrackToQueue(track);
+    }
+    getTrackName(name: string) {
+        const nameParts = name.split(' - ');
+        nameParts.shift();
+        return nameParts.join(' - ');
     }
 }

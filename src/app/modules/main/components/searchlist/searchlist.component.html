@@ -2,7 +2,7 @@
     <my-checkbox [(checked)]="searchSpotify" label="Spotify"></my-checkbox>
     <my-checkbox [(checked)]="searchYoutube" label="Youtube"></my-checkbox>
     <my-checkbox [(checked)]="searchBandcamp" label="Bandcamp"></my-checkbox>
-    <!--<my-checkbox [(checked)]="searchMusiple" label="Musiple"></my-checkbox>-->
+    <my-checkbox [(checked)]="searchMusipleMp3" label="Musiple MP3"></my-checkbox>
 </div>
 <button class="search-button btn btn-primary glyphicon glyphicon-search" (click)="search()" data-toggle="tooltip" title="Search again"></button>
 <hr>
@@ -81,6 +81,50 @@
                         <li role="separator" class="divider"></li>
                         <li *ngFor="let playlist of playlists">
                             <a (click)="addVideoToPlaylist(playlist, video)">
+                                {{playlist.Name}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<h3> Musiple mp3 search result for:  {{query}} </h3>
+<table class="tracks">
+    <thead>
+        <th></th>
+        <th>TRACK</th>
+        <th>ARTIST</th>
+        <th>PLAYLIST</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let track of musipleTracks" class="track" [class.active]="track == selectedMusipleMp3">
+            <td class="tdPlay">
+                <a (click)="onMusipleSelect(track)" class="play-button glyphicon glyphicon-play-circle"></a>
+            </td>
+            <td class="stdTrack" (dblclick)="onMusipleSelect(track)">
+                {{getTrackName(track.Name)}}
+            </td>
+            <td class="stdArtist" (dblclick)="onMusipleSelect(track)">
+                {{track.Name.split(' - ')[0]}}
+            </td>
+            <td class="stdAlbum" (dblclick)="onMusipleSelect(track)">
+                <a [routerLink]="['/main/tracklist', track.Playlist.Id]">
+                {{track.Playlist.Name}}
+                </a>
+            </td>
+            <td class="pull-right" data-toggle="tooltip" title="Add track to playlist or to queue">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle addplaylist" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right drop" aria-labelledby="dropdownMenu1">
+                        <li><a (click)="addMusipleMp3ToQueue(track)">Add to queue</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li *ngFor="let playlist of playlists">
+                            <a (click)="addMusipleMp3TrackToPlaylist(playlist, track)">
                                 {{playlist.Name}}
                             </a>
                         </li>

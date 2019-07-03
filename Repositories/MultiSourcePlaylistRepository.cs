@@ -68,6 +68,20 @@ namespace PlayList.Repositories
                 .Include(y=>y.Playlist)
                 .ToList();
         }
+        public List<Track> SearchTracks(string query, long userId)
+        {
+            var queryParameters = query.Split(' ');
+            _logger.LogWarning(queryParameters.ToString());
+            return _context.Tracks
+                .Include( t => t.Playlist)
+                .ThenInclude( t => t.Owner)
+                .Where( t =>
+                    queryParameters.All( q => t.Name.ToLower().Contains(q.ToLower()))
+                    && (t.Type == 3 || t.Type == 5)
+                    && t.Playlist.Owner.Id == userId
+                    )
+                .ToList();
+        }
         //public List<Track> GetUsersPlaylistTracks(long playlistId, long userId)
         public List<Track> GetUsersPlaylistTracks(long playlistId, long userId)
         {

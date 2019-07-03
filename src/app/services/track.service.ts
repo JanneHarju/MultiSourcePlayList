@@ -39,6 +39,16 @@ export class TrackService {
                 .then((response: Response) => response.json() as Track[])
                 .catch(this.handleError);
     }
+    searchTracks(query: string): Promise<Track[]> {
+
+        const headers = this.authService.initAuthHeaders();
+        const options = new RequestOptions({ headers: headers });
+        const url = `${this.tracksUrl}/searchtrack/${query}`;
+        return this.http.get(url, options)
+                .toPromise()
+                .then((response: Response) => response.json() as Track[])
+                .catch(this.handleError);
+    }
     getTrack(id: number): Promise<Track> {
 
         const headers = this.authService.initAuthHeaders();

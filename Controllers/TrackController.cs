@@ -55,6 +55,14 @@ namespace PlayList.Controllers
             
             return _multiSourcePlaylistRepository.GetTrack(id);
         }
+        [HttpGet("searchtrack/{query}")]
+        [Authorize("Bearer")]
+        public List<Track> SearchTrack(string query)
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId =  Convert.ToInt64(claimsIdentity.Claims.FirstOrDefault(claim => claim.Type == "Id").Value);
+            return _multiSourcePlaylistRepository.SearchTracks(query, userId);
+        }
         [HttpGet("{id}/{playlist}")]
         [Authorize("Bearer")]
         public List<Track> GetById(int id, string playlist)
