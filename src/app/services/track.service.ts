@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-
 import { Track } from '../models/track';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
@@ -19,7 +18,7 @@ export class TrackService {
     return this.http
       .get<Track[]>(this.tracksUrl, options)
       .toPromise()
-      .then(response => response)
+      .then((response) => response)
       .catch(this.handleError);
   }
   getPlaylistTracks(id: number): Promise<Track[]> {
@@ -35,7 +34,7 @@ export class TrackService {
     return this.http
       .get<Track[]>(url, options)
       .toPromise()
-      .then(response => response)
+      .then((response) => response)
       .catch(this.handleError);
   }
   searchTracks(query: string): Promise<Track[]> {
@@ -45,7 +44,7 @@ export class TrackService {
     return this.http
       .get<Track[]>(url, options)
       .toPromise()
-      .then(response => response)
+      .then((response) => response)
       .catch(this.handleError);
   }
   getTrack(id: number): Promise<Track> {
@@ -55,7 +54,7 @@ export class TrackService {
     return this.http
       .get<Track>(url, options)
       .toPromise()
-      .then(response => response)
+      .then((response) => response)
       .catch(this.handleError);
   }
   private handleError(error: any): Promise<any> {

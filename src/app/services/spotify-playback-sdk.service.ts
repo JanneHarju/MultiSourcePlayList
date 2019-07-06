@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { SpotifyService } from './spotify.service';
-import { BehaviorSubject ,  Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SimpleTimer } from 'ng2-simple-timer';
 /// <reference path="../node_modules/@types/spotify-web-playback-sdk/index.d.ts"/>
 
 declare global {
   interface window {
-      onSpotifyWebPlaybackSDKReady: () => void;
-      spotifyReady: Promise<void>
+    onSpotifyWebPlaybackSDKReady: () => void;
+    spotifyReady: Promise<void>;
   }
 }
 
@@ -21,48 +21,43 @@ export class SpotifyPlaybackSdkService {
   private subjectTrackEnded = new BehaviorSubject<boolean>(false);
 
   playStatusTimerId: string;
-  constructor(
-    private spotifyService: SpotifyService,
-    private st: SimpleTimer) {
-  }
+  constructor(private spotifyService: SpotifyService, private st: SimpleTimer) {}
   addSpotifyPlaybackSdk() {
     const script = document.createElement('script');
     script.src = 'https://sdk.scdn.co/spotify-player.js';
     script.type = 'text/javascript';
-    script.addEventListener('load', e => {
+    script.addEventListener('load', (e) => {
       console.log(e);
     });
     document.head.appendChild(script);
     window.onSpotifyWebPlaybackSDKReady = () => {
-      console.log("The Web Playback SDK is ready. We have access to Spotify.Player");
+      console.log('The Web Playback SDK is ready. We have access to Spotify.Player');
       // console.log(window.Spotify.Player);
       this.player = new Spotify.Player({
-        name: "Musiple",
+        name: 'Musiple',
         volume: +localStorage.getItem('musiple-volume') / 100,
-        getOAuthToken: callback => { callback(localStorage.getItem('spotify-access-token')); }
+        getOAuthToken: (callback) => {
+          callback(localStorage.getItem('spotify-access-token'));
+        }
       });
-      this.player.connect().then( res => {
+      this.player.connect().then((res) => {
         console.log(res);
       });
       // Ready
-      this.player.on('ready', data => {
+      this.player.on('ready', (data) => {
         console.log('Ready with Device ID', data.device_id);
         this.deviceId = data.device_id;
         this.spotifyService.deviceId = this.deviceId;
       });
 
-      this.player.addListener(
-        'player_state_changed',
-        state =>
-        {
-          console.log(state);
-          if(this.state && !this.state.paused && state.paused && state.position === 0) {
-            console.log('Track ended');
-            this.setTrackEnd(true);
-          }
-          this.state = state;
+      this.player.addListener('player_state_changed', (state) => {
+        console.log(state);
+        if (this.state && !this.state.paused && state.paused && state.position === 0) {
+          console.log('Track ended');
+          this.setTrackEnd(true);
         }
-      );
+        this.state = state;
+      });
     };
   }
 
@@ -71,24 +66,24 @@ export class SpotifyPlaybackSdkService {
     this.subjectPlayState.next(state);
   }
   getPlayStatus(): Observable<Spotify.PlaybackState> {
-      return this.subjectPlayState.asObservable();
+    return this.subjectPlayState.asObservable();
   }
   setTrackEnd(trackEnd: boolean) {
-      this.subjectTrackEnded.next(trackEnd);
+    this.subjectTrackEnded.next(trackEnd);
   }
   getTrackEnd(): Observable<boolean> {
-      return this.subjectTrackEnded.asObservable();
+    return this.subjectTrackEnded.asObservable();
   }
   startTimer() {
     this.st.delTimer('spotifyPlayback');
     this.st.newTimer('spotifyPlayback', 1);
-    this.playStatusTimerId = this.st.subscribe('spotifyPlayback', e => this.callback());
+    this.playStatusTimerId = this.st.subscribe('spotifyPlayback', (e) => this.callback());
   }
   removeTimer() {
     this.st.delTimer('spotifyPlayback');
   }
   callback() {
-    this.player.getCurrentState().then(state => {
+    this.player.getCurrentState().then((state) => {
       this.setPlayState(state);
     });
   }
