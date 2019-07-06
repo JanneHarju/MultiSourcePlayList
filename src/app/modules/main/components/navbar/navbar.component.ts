@@ -91,8 +91,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
         const body = document.documentElement;
         if (body.requestFullscreen) {
             body.requestFullscreen();
-        } else if (body.webkitRequestFullscreen) {
-            body.webkitRequestFullscreen();
         }
     }
 }

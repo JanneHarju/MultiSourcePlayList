@@ -49,6 +49,7 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
     "@types/youtube": "^0.0.29",
+    "acorn": "^6.0.5",
     "codelyzer": "^5.0.1",
     "concurrently": "^3.5.1",
     "http-server": "^0.11.1",

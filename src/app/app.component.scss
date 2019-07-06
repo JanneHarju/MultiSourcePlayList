@@ -44,7 +44,7 @@
 }
 
 /*mozilla scrolbalken*/
-@-moz-document {
+@document {
   scrollbar {
     -moz-appearance: none !important;
     background: rgb(0, 255, 0) !important;

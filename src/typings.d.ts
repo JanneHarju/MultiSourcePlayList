@@ -3,5 +3,5 @@ declare var module: NodeModule;
 interface NodeModule {
   id: string;
 }
-import { } from 'wicg-mediasession';
-import { } from 'spotify-web-playback-sdk';
+import '@types/spotify-web-playback-sdk';
+import '@types/wicg-mediasession';
