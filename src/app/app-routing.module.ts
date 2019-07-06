@@ -9,7 +9,7 @@ const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login',  component: LoginComponent },
     { path: 'callback',  component: CallbackComponent },
-    { path: 'main',  loadChildren: './modules/main/main.module#MainModule', canActivate: [ AuthService] }
+    { path: 'main',  loadChildren: () => import('./modules/main/main.module').then(m => m.MainModule), canActivate: [ AuthService] }
 ];
 
 @NgModule({

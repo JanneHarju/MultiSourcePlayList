@@ -20,7 +20,6 @@
     "@angular/compiler": "^5.2.0",
     "@angular/core": "^5.2.0",
     "@angular/forms": "^5.2.0",
-    "@angular/http": "^5.2.0",
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
@@ -38,16 +37,18 @@
     "ngx-uploader": "4.2.2",
     "ngx-youtube-player": "0.1.0",
     "rxjs": "^5.5.6",
-    "zone.js": "^0.8.19"
+    "tslib": "^1.9.0",
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "~0.801.0",
     "@angular/compiler-cli": "^5.2.0",
     "@angular/language-service": "^5.2.0",
     "@types/jasmine": "~2.8.3",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
     "@types/youtube": "^0.0.29",
-    "codelyzer": "^4.0.1",
+    "codelyzer": "^5.0.1",
     "concurrently": "^3.5.1",
     "http-server": "^0.11.1",
     "jasmine-core": "~2.8.0",
