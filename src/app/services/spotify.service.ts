@@ -318,7 +318,7 @@ export class SpotifyService {
   ) {
     this.tempPlaylist = [];
     options = options || {};
-    this.http.get<any>(
+    return this.http.get<any>(
       `${this.config.apiBase}/users/` + ownerId + '/playlists/' + playlistId + '/tracks',
       {
         params: this.makeHttpParams(options),
@@ -334,7 +334,7 @@ export class SpotifyService {
     this.tempPlaylist = [];
     options = options || {};
 
-    this.http.get<any>(
+    return this.http.get<any>(
       `${this.config.apiBase}/artists/` + artistId,
       {
         params: this.makeHttpParams(options),
@@ -351,7 +351,7 @@ export class SpotifyService {
     options = options || {};
     options.album_type = 'album';
     options.limit = 50;
-    this.http.get<any>(
+    return this.http.get<any>(
       `${this.config.apiBase}/artists/` + artistId + '/albums',
       {
         params: this.makeHttpParams(options),
@@ -366,7 +366,7 @@ export class SpotifyService {
   getArtistsTopTracks(artistId: string, options?: SpotifyOptions) {
     this.tempPlaylist = [];
     options = options || {};
-    this.http.get<any>(
+    return this.http.get<any>(
       `${this.config.apiBase}/artists/` + artistId + '/top-tracks',
       {
         params: this.makeHttpParams(options),
@@ -382,7 +382,7 @@ export class SpotifyService {
     this.tempPlaylist = [];
     options = options || {};
 
-    this.http.get<any>(
+    return this.http.get<any>(
       `${this.config.apiBase}/albums/` + albumId + '/tracks',
       {
         params: this.makeHttpParams(options),
@@ -398,7 +398,7 @@ export class SpotifyService {
     this.tempPlaylist = [];
     options = options || {};
 
-    this.http.get<any>(
+    return this.http.get<any>(
       `${this.config.apiBase}/albums/` + albumId,
       {
         params: this.makeHttpParams(options),
@@ -418,7 +418,7 @@ export class SpotifyService {
     this.tempPlaylist = [];
     options = options || {};
     options.limit = 1;
-    this.http.get<any>(
+    return this.http.get<any>(
       `${this.config.apiBase}/users/` + ownerId + '/playlists/' + playlistId,
       {
         params: this.makeHttpParams(options),
@@ -434,7 +434,7 @@ export class SpotifyService {
   getCurrentUser(options?: SpotifyOptions) {
     options = options || {};
 
-    this.http.get<any>(
+    return this.http.get<any>(
       `${this.config.apiBase}/me`,
       {
         params: this.makeHttpParams(options),
@@ -456,7 +456,7 @@ export class SpotifyService {
     )}`;
 
     return this.http
-      .get<any>(address, { headers: headers })
+      .get<any>( address, { headers: headers })
       .toPromise()
       .then((res) => {
         const body = res;

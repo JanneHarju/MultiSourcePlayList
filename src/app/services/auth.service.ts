@@ -70,7 +70,7 @@ export class AuthService implements CanActivate {
     public authGet(url: string) {
         const headers = this.initAuthHeaders();
         const options = { headers: headers };
-        return this.http.get(url, options)
+        return this.http.get<any>(url, options)
             .toPromise().then(
                 response => response)
             .catch(this.handleError);
@@ -112,8 +112,8 @@ export class AuthService implements CanActivate {
         if (token == null) {
             throw new Error('No token');
         }
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-        headers.append('Authorization', 'Bearer ' + token);
+        let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        headers = headers.append('Authorization', 'Bearer ' + token);
         return headers;
     }
 
