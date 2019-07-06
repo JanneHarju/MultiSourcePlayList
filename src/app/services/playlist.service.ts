@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 import { Playlist } from '../models/playlist';
 import { Subject } from 'rxjs/Subject';
@@ -7,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/toPromise';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class PlaylistService {
@@ -14,7 +14,7 @@ export class PlaylistService {
 
     private playlistsModified = new Subject<boolean>();
     constructor(
-        private http: Http,
+        private http: HttpClient,
         private authService: AuthService,
         private router: Router) { }
     setPlaylistsModified(modified: boolean) {
@@ -26,29 +26,29 @@ export class PlaylistService {
     getPlaylists(): Promise<Playlist[]> {
 
         const headers = this.authService.initAuthHeaders();
-        const options = new RequestOptions({ headers: headers });
-        return this.http.get(this.PlaylistsUrl, options)
+        const options = { headers: headers };
+        return this.http.get<Playlist[]>(this.PlaylistsUrl, options)
                 .toPromise()
-                .then((response: Response) => response.json() as Playlist[])
+                .then(response => response )
                 .catch(this.handleError);
     }
     getUsersPlaylists(): Promise<Playlist[]> {
 
         const headers = this.authService.initAuthHeaders();
-        const options = new RequestOptions({ headers: headers });
+        const options = { headers: headers };
         const url = this.PlaylistsUrl + '/GetUsersPlaylists';
-        return this.http.get(url, options)
+        return this.http.get<Playlist[]>(url, options)
                 .toPromise()
-                .then((response: Response) => response.json() as Playlist[])
+                .then(response => response)
                 .catch(this.handleError);
     }
     getPlaylist(id: number): Promise<Playlist> {
         const url = `${this.PlaylistsUrl}/${id}`;
         const headers = this.authService.initAuthHeaders();
-        const options = new RequestOptions({ headers: headers });
-        return this.http.get(url, options)
+        const options = { headers: headers };
+        return this.http.get<Playlist>(url, options)
             .toPromise()
-            .then((response: Response) => response.json() as Playlist)
+            .then(response => response)
             .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {

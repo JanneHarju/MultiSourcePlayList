@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -33,19 +33,15 @@ import { SpotifyPlaybackSdkService } from './services/spotify-playback-sdk.servi
 import { SharedModule } from './modules/shared/shared.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    CallbackComponent,
-  ],
+  declarations: [AppComponent, LoginComponent, CallbackComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     DndModule.forRoot(),
     FormsModule,
-    HttpModule,
+    HttpClientModule,
     BrowserAnimationsModule,
-    ServiceWorkerModule,//.register('/ngsw-worker.js', {enabled: environment.production})
+    ServiceWorkerModule, // .register('/ngsw-worker.js', {enabled: environment.production})
     SharedModule
   ],
   providers: [
@@ -57,20 +53,22 @@ import { SharedModule } from './modules/shared/shared.module';
     BandcampService,
     SpotifyService,
     {
-        provide: 'SpotifyConfig',
-        useValue: {
-            clientId: '5ab10cb4fa9045fca2b92fcd0a97545c',
-            redirectPopupUri: `${window.location.origin}/callback.html`,
-            redirectUri: `${window.location.origin}/callback`,
-            scope: ['user-read-private',
-            'user-modify-playback-state',
-            'user-read-playback-state',
-            "streaming",
-            "user-read-birthdate",
-            "user-read-email"],
-            // If you already have an authToken
-            authToken: localStorage.getItem('spotify-access-token')
-        }
+      provide: 'SpotifyConfig',
+      useValue: {
+        clientId: '5ab10cb4fa9045fca2b92fcd0a97545c',
+        redirectPopupUri: `${window.location.origin}/callback.html`,
+        redirectUri: `${window.location.origin}/callback`,
+        scope: [
+          'user-read-private',
+          'user-modify-playback-state',
+          'user-read-playback-state',
+          'streaming',
+          'user-read-birthdate',
+          'user-read-email'
+        ],
+        // If you already have an authToken
+        authToken: localStorage.getItem('spotify-access-token')
+      }
     },
     YoutubeAPIService,
     MusixMatchAPIService,
@@ -79,4 +77,4 @@ import { SharedModule } from './modules/shared/shared.module';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

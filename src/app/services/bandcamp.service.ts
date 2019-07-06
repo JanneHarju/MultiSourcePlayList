@@ -1,5 +1,5 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http, Response, Request } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { HttpRequestOptions} from './spotify.service';
 import { SearchResult } from '../json_schema/SearchResult';
@@ -25,16 +25,15 @@ export class BandcampService {
     baseUri = `${environment.backendUrl}/api/bandcamp`;
     constructor(
         private authService: AuthService,
-        private http: Http) { }
+        private http: HttpClient) { }
 
     bandCampSearch(options: BandcampOptions) {
 
-        return this.api({
-            method: 'get',
-            url: ``,
-            search: options,
+        return this.http.get<any>(this.baseUri,
+          {
+            params: this.makeHttpParams(options),
             headers: this.authService.initAuthHeaders()
-        })
+          })
         .toPromise()
         .then(res => {
             return htmlParser.parseSearchResults(res.text()) as SearchResult[];
@@ -44,11 +43,12 @@ export class BandcampService {
     bandCampAlbumInfo(url: string) {
         const decodedUrl = atob(url);
         const fullUrl = `/albuminfo/${url}`;
-        return this.api({
-            method: 'get',
-            url: fullUrl,
+        return this.http.get<any>(
+          `${this.baseUri}${fullUrl}`,
+          {
             headers: this.authService.initAuthHeaders()
-        })
+          }
+        )
         .toPromise()
         .then(res => {
             return htmlParser.parseAlbumInfo(res.text(), decodedUrl) as AlbumInfo;
@@ -59,11 +59,12 @@ export class BandcampService {
     bandCampAlbumUrls(url: string) {
         const decodedUrl = atob(url);
         const fullUrl = `/albumurls/${url}`;
-        return this.api({
-            method: 'get',
-            url: fullUrl,
+        return this.http.get<any>(
+          `${this.baseUri}${fullUrl}`,
+          {
             headers: this.authService.initAuthHeaders()
-        })
+          }
+        )
         .toPromise()
         .then(res => {
             return htmlParser.parseAlbumUrls(res.text(), decodedUrl) as string[];
@@ -80,17 +81,13 @@ export class BandcampService {
         }
         return parts.join('&');
     }
-    private api(requestOptions: HttpRequestOptions) {
-        return this.http.request(new Request({
-        url: this.baseUri + requestOptions.url,
-        method: requestOptions.method || 'get',
-        search: this.toQueryString(requestOptions.search),
-        body: JSON.stringify(requestOptions.body),
-        headers: requestOptions.headers
-        }));
-    }
     private handlePromiseError(error: any): Promise<any> {
         console.error('An error occurred', error); // for demo purposes only
         return Promise.reject(error.message || error);
+    }
+    private makeHttpParams(options: any): HttpParams {
+      let params = new HttpParams();
+      Object.keys(options).forEach(e => (params = params.set(e, options[e])));
+      return params;
     }
 }

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import { Router, CanActivate } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 
@@ -7,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { User } from '../models/user';
 import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/toPromise';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class AuthService implements CanActivate {
@@ -14,7 +14,7 @@ export class AuthService implements CanActivate {
     private BaseUrl = `${environment.backendUrl}/api/tokenauth`;  // URL to web api
     rememberme = false;
     private subjectAuthenticationComplited = new Subject<boolean>();
-    constructor(private http: Http, private router: Router) { }
+    constructor(private http: HttpClient, private router: Router) { }
 
     public canActivate() {
         if (this.checkLogin()) {
@@ -25,12 +25,12 @@ export class AuthService implements CanActivate {
         }
     }
     public login(rememberme: boolean, user: User) {
-        const header = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: header, withCredentials: true });
+        const header = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const options = { headers: header, withCredentials: true };
         this.rememberme = rememberme;
-        return this.http.put(`${this.BaseUrl}/Login/` + rememberme, user, options).toPromise().then(
+        return this.http.put<any>(`${this.BaseUrl}/Login/` + rememberme, user, options).toPromise().then(
             res => {
-                const result = res.json();
+                const result = res;
                 if (result.State === 1 && result.Data && result.Data.accessToken.Value) {
                     if (this.rememberme) {
                         localStorage.setItem(this.tokeyKey, result.Data.accessToken.Value);
@@ -46,13 +46,13 @@ export class AuthService implements CanActivate {
     }
 
     public register(rememberme: boolean, user: User) {
-        const header = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: header, withCredentials: true });
+        const header = new HttpHeaders({ 'Content-Type': 'application/json' });
+        const options = { headers: header, withCredentials: true };
         this.rememberme = rememberme;
 
-        return this.http.post(`${this.BaseUrl}/Register/` + rememberme, user, options).toPromise().then(
+        return this.http.post<any>(`${this.BaseUrl}/Register/` + rememberme, user, options).toPromise().then(
             res => {
-                const result = res.json();
+                const result = res;
                 if (result.State === 1 && result.Data && result.Data.accessToken) {
                     if (this.rememberme) {
                         localStorage.setItem(this.tokeyKey, result.Data.accessToken);
@@ -69,10 +69,10 @@ export class AuthService implements CanActivate {
 
     public authGet(url: string) {
         const headers = this.initAuthHeaders();
-        const options = new RequestOptions({ headers: headers });
+        const options = { headers: headers };
         return this.http.get(url, options)
             .toPromise().then(
-                response => response.json())
+                response => response)
             .catch(this.handleError);
     }
 
@@ -99,7 +99,7 @@ export class AuthService implements CanActivate {
         const headers = this.initAuthHeaders();
         return this.http.post(url, body, { headers: headers })
             .toPromise()
-            .then(response => response.json())
+            .then(response => response)
             .catch(this.handleError);
     }
 
@@ -107,12 +107,12 @@ export class AuthService implements CanActivate {
            return sessionStorage.getItem(this.tokeyKey);
     }
 
-    public initAuthHeaders(): Headers {
+    public initAuthHeaders(): HttpHeaders {
         const token = this.getLocalToken();
         if (token == null) {
             throw new Error('No token');
         }
-        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         headers.append('Authorization', 'Bearer ' + token);
         return headers;
     }

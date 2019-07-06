@@ -1,6 +1,6 @@
 
 <div class="use-flex">
-    <my-fileupload (loadComplited)="loadComplited($event)" [currentPlaylist]="currrentPlaylist" ></my-fileupload>
+    <my-fileupload (loadComplited)="loadComplited($event)" [currentPlaylist]="currentPlaylist" ></my-fileupload>
     <button class="addbutton btn btn-primary glyphicon glyphicon-plus" (click)="clearNewTrack();addNewTrackModal.show()" data-toggle="tooltip" title="Add new track"></button>
 </div>
 <table class="tracks list-group" dnd-sortable-container (dragend)="orderedTrack()" [sortableData]="tracklist">
@@ -10,12 +10,12 @@
         <th></th>
     </thead>
     <tbody>
-        <tr *ngFor="let track of tracklist; let i = index" 
-                [class.activetrack]="track == currentTrack" 
+        <tr *ngFor="let track of tracklist; let i = index"
+                [class.activetrack]="track == currentTrack"
                 class="tablerow list-group-item" dnd-sortable [sortableIndex]="i"
-                (click)="$event.dropdown || $event.addTrackToPlaylistclicked || $event.addTrackToQueueclicked || onSelect(track)" 
+                (click)="$event.dropdown || $event.addTrackToPlaylistclicked || $event.addTrackToQueueclicked || onSelect(track)"
                 [id]="getTrackElementName(track.Id)">
-            
+
             <td class="logo" >
                 <div class="logos" >
                     <img *ngIf="track.Type == 1" src="assets/YouTube-social-squircle_red_128px.png" data-toggle="tooltip" title="Track from YouTube" width="30" align="left">

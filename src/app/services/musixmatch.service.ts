@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Request } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { MusixMatchLyric } from '../models/musixmatchlyric';
 import { HttpRequestOptions} from './spotify.service';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 export interface MusixMatchOptions {
     apikey?: string;
@@ -19,7 +19,7 @@ export interface MusixMatchOptions {
 export class MusixMatchAPIService {
     baseUri = 'https://api.musixmatch.com/ws/1.1/';
     key = '4580db683fb8c0d7073ec8fc7ce2c474';
-    constructor(private http: Http) { }
+    constructor(private http: HttpClient) { }
     search(q: string) {
         const artist = this.getArtistFromQuery(q);
         const track = this.getTrackFromQuery(q);
@@ -30,11 +30,13 @@ export class MusixMatchAPIService {
         options.apikey = this.key;
         options.q_artist = artist;
         options.q_track = track;
-        return this.api({
-        method: 'get',
-        url: `matcher.lyrics.get`,
-        search: options
-    }).map(res => {
+        return this.http.get<any>(
+          `${this.baseUri}matcher.lyrics.get`,
+          {
+            params: this.makeHttpParams(options)
+          }
+        )
+      .map(res => {
         const body = res.text();
         const callback = 'callback(';
         const callbackEnd = ');';
@@ -54,7 +56,11 @@ export class MusixMatchAPIService {
         }
         return parts.join('&');
     }
-
+    private makeHttpParams(options: any): HttpParams {
+      let params = new HttpParams();
+      Object.keys(options).forEach(e => (params = params.set(e, options[e])));
+      return params;
+    }
     /*private getHeaders(isJson?: boolean): any {
         return new Headers(this.auth(isJson));
     }*/
@@ -71,19 +77,9 @@ export class MusixMatchAPIService {
         return itemList;
     }*/
 
-    private handleError(error: Response) {
+    private handleError(error: any) {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
-    }
-
-    private api(requestOptions: HttpRequestOptions) {
-        return this.http.request(new Request({
-        url: this.baseUri + requestOptions.url,
-        method: requestOptions.method || 'get',
-        search: this.toQueryString(requestOptions.search),
-        body: JSON.stringify(requestOptions.body)// ,
-        // headers: requestOptions.headers
-        }));
     }
     getArtistFromQuery(q: string): string {
         const parts = q.split(' - ');
