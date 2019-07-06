@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Playlist } from '../models/playlist';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/toPromise';
+import { Subject ,  Observable } from 'rxjs';
+
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';

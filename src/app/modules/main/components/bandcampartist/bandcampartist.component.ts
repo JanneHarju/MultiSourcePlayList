@@ -4,7 +4,7 @@ import { AuthService } from '../../../../services/auth.service';
 import { LoadingService } from '../../../../services/loading.service';
 import { BandcampService } from '../../../..//services/bandcamp.service';
 import { AlbumInfo } from '../../../../json_schema/BandCampAlbumInfo';
-import 'rxjs/add/operator/toPromise';
+
 
 @Component({
     selector: 'my-bandcampartist',

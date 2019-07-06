@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Track } from '../models/track';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable ,  BehaviorSubject ,  Subscription } from 'rxjs';
 import { TrackService } from '../services/track.service';
 import { SpotifyService } from '../services/spotify.service';
-import { Subscription } from 'rxjs/Subscription';
 import { SpotifyPlaybackSdkService } from './spotify-playback-sdk.service';
 
 @Injectable()

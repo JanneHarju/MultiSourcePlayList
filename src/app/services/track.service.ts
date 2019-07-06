@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/toPromise';
+
 
 import { Track } from '../models/track';
 import { AuthService } from './auth.service';

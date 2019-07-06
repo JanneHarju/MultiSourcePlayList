@@ -1,3 +1,5 @@
+
+import {switchMap} from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { SpotifyService, SpotifyOptions } from '../../../../services/spotify.service';
@@ -16,8 +18,8 @@ import { SpotifyTracklist } from '../../../../models/spotifytracklist';
 import { TrackService } from '../../../../services/track.service';
 import { LoadingService } from '../../../../services/loading.service';
 import { PlayerService } from '../../../../services/player.service';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/toPromise';
+import { Subscription } from 'rxjs';
+
 
 @Component({
     selector: 'my-spotifyartist',
@@ -62,8 +64,8 @@ export class SpotifyArtistComponent implements OnInit, OnDestroy {
         const limit = 50;
         this.spotifyTracks  = [];
 
-        this.route.params
-            .switchMap((params: Params) => {
+        this.route.params.pipe(
+            switchMap((params: Params) => {
                 this.artistLoaded = false;
                 this.albumsLoaded = false;
                 this.toptracksLoaded = false;
@@ -72,7 +74,7 @@ export class SpotifyArtistComponent implements OnInit, OnDestroy {
                 {
                     limit: limit
                 });
-            })
+            }))
             .subscribe((artist: SpotifyArtist) => {
                 this.spotifyArtist = artist;
                 this.artistLoaded = true;
@@ -80,11 +82,11 @@ export class SpotifyArtistComponent implements OnInit, OnDestroy {
             }, error => {
                 setTimeout(() => this.loadingService.setLoading(false));
             });
-        this.route.params
-            .switchMap((params: Params) => this.spotifyService.getArtistsAlbum(params['id'],
+        this.route.params.pipe(
+            switchMap((params: Params) => this.spotifyService.getArtistsAlbum(params['id'],
                 {
                     limit: limit
-                }))
+                })))
             .subscribe((albums: SpotifyAlbum[]) => {
                 const templist: SpotifyAlbum[] = [];
                 albums.forEach(album => {
@@ -98,11 +100,11 @@ export class SpotifyArtistComponent implements OnInit, OnDestroy {
             }, error => {
                 setTimeout(() => this.loadingService.setLoading(false));
             });
-        this.route.params
-            .switchMap((params: Params) => this.spotifyService.getArtistsTopTracks(params['id'],
+        this.route.params.pipe(
+            switchMap((params: Params) => this.spotifyService.getArtistsTopTracks(params['id'],
                 {
                     country: 'FI'
-                }))
+                })))
             .subscribe((tracks: SpotifyTrack[]) => {
                 this.spotifyTracks = tracks;
                 this.toptracksLoaded = true;

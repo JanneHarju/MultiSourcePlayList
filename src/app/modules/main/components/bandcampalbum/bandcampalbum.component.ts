@@ -4,8 +4,7 @@ import { AuthService } from '../../../../services/auth.service';
 import { BandcampService } from '../../../..//services/bandcamp.service';
 import { AlbumInfo } from '../../../../json_schema/BandCampAlbumInfo';
 import { LoadingService } from '../../../../services/loading.service';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/toPromise';
+
 
 @Component({
     selector: 'my-bandcampalbum',

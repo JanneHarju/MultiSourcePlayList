@@ -12,10 +12,9 @@ import { TrackService } from '../../../../services/track.service';
 import { PlayerService } from '../../../../services/player.service';
 import { BandcampService, BandcampOptions } from '../../../..//services/bandcamp.service';
 import { LoadingService } from '../../../../services/loading.service';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { SearchResult, Artist, Album, BandCampTrack, Fan, Label } from '../../../../json_schema/SearchResult';
-import 'rxjs/add/operator/toPromise';
+import { Subscription } from 'rxjs/Subscription';
+
 
 @Component({
     selector: 'my-searchlist',

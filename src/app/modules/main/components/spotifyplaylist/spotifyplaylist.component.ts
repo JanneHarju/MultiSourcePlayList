@@ -1,3 +1,5 @@
+
+import {switchMap} from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { SpotifyService, SpotifyOptions } from '../../../../services/spotify.service';
@@ -14,8 +16,8 @@ import { SpotifyTracklist } from '../../../../models/spotifytracklist';
 import { TrackService } from '../../../../services/track.service';
 import { PlayerService } from '../../../../services/player.service';
 import { LoadingService } from '../../../../services/loading.service';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/toPromise';
+import { Subscription } from 'rxjs';
+
 
 @Component({
     selector: 'my-spotifyplaylist',
@@ -55,14 +57,14 @@ export class SpotifyPlaylistComponent implements OnInit, OnDestroy {
         const limit = 100;
         this.spotifyTracks  = [];
 
-        this.route.params
-            .switchMap((params: Params) => {
+        this.route.params.pipe(
+            switchMap((params: Params) => {
                 setTimeout(() => this.loadingService.setLoading(true));
                 return this.spotifyService.getPlaylistTracks(params['id'], params['id2'],
                 {
                     limit: limit
                 });
-            })
+            }))
             .subscribe((tracklist: SpotifyTracklist) => {
                 this.spotifyTracks  = [];
 
@@ -77,12 +79,12 @@ export class SpotifyPlaylistComponent implements OnInit, OnDestroy {
                 }
                 while (total > limit + offset) {
                     ++this.numberOfParts;
-                    this.route.params
-                    .switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'], params['id2'],
+                    this.route.params.pipe(
+                    switchMap((params: Params) => this.spotifyService.getPlaylistTracks(params['id'], params['id2'],
                         {
                             limit: limit,
                             offset: offset + limit
-                        }))
+                        })))
                     .subscribe((innerResult: SpotifyTracklist) => {
                         ++this.numberOfLoadedParts;
                         this.spotifyTracks = this.spotifyTracks.concat(innerResult.items.filter(tra => !tra.is_local && tra.track));
@@ -101,8 +103,8 @@ export class SpotifyPlaylistComponent implements OnInit, OnDestroy {
             }, error => {
                 this.loadingService.setLoading(false);
             });
-        this.route.params
-            .switchMap((params: Params) => this.spotifyService.getPlaylistInfo(params['id'], params['id2']))
+        this.route.params.pipe(
+            switchMap((params: Params) => this.spotifyService.getPlaylistInfo(params['id'], params['id2'])))
             .subscribe((playlistInfo: SpotifyPlaylistInfo) => {
                 this.playlistInfo = playlistInfo;
             });

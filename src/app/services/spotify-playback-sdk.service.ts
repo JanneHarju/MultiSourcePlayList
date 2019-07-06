@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SpotifyService } from './spotify.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { SimpleTimer } from 'ng2-simple-timer';
 /// <reference path="../node_modules/@types/spotify-web-playback-sdk/index.d.ts"/>
 
@@ -51,10 +50,10 @@ export class SpotifyPlaybackSdkService {
         this.deviceId = data.device_id;
         this.spotifyService.deviceId = this.deviceId;
       });
-      
+
       this.player.addListener(
         'player_state_changed',
-        state => 
+        state =>
         {
           console.log(state);
           if(this.state && !this.state.paused && state.paused && state.position === 0) {

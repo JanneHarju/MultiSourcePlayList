@@ -6,7 +6,7 @@ import { trigger,
     animate } from '@angular/animations';
 import { SpotifyService } from '../../../../services/spotify.service';
 import { LoadingService } from '../../../../services/loading.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 // AoT compilation doesn't support 'require'.
 
 @Component({

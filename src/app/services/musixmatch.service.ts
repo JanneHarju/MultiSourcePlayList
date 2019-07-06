@@ -1,10 +1,13 @@
+
+import {throwError as observableThrowError } from 'rxjs';
+
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { MusixMatchLyric } from '../models/musixmatchlyric';
 import { HttpRequestOptions} from './spotify.service';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
+
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 export interface MusixMatchOptions {
     apikey?: string;
@@ -35,8 +38,8 @@ export class MusixMatchAPIService {
           {
             params: this.makeHttpParams(options)
           }
-        )
-      .map(res => {
+        ).pipe(
+      map(res => {
         const body = res.text();
         const callback = 'callback(';
         const callbackEnd = ');';
@@ -44,7 +47,7 @@ export class MusixMatchAPIService {
         const part2 =  part1.split(callbackEnd)[0];
         // return part2;
         return JSON.parse(part2).message.body.lyrics as MusixMatchLyric;
-    }); // .message.body.lyrics as MusixMatchLyric);
+    })); // .message.body.lyrics as MusixMatchLyric);
     }
 
     private toQueryString(obj: Object): string {
@@ -79,7 +82,7 @@ export class MusixMatchAPIService {
 
     private handleError(error: any) {
         console.error(error);
-        return Observable.throw(error.json().error || 'Server error');
+        return observableThrowError(error.json().error || 'Server error');
     }
     getArtistFromQuery(q: string): string {
         const parts = q.split(' - ');

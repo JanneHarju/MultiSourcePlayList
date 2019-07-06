@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { SpotifyService } from '../../services/spotify.service';
 import { User } from '../../models/user';

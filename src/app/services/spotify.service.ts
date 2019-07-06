@@ -1,5 +1,6 @@
+
+import {throwError as observableThrowError,  Observable ,  BehaviorSubject } from 'rxjs';
 import { Injectable, Inject, ApplicationRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { SpotifyUser } from '../models/spotifyUser';
 import { SpotifyTrack } from '../models/spotifytrack';
 import { SpotifyPlaylistTrack } from '../models/spotifyplaylisttrack';
@@ -11,11 +12,10 @@ import { SpotifyAlbum } from '../models/spotifyalbum';
 import { SpotifyArtist } from '../models/spotifyartist';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { SimpleTimer } from 'ng2-simple-timer';
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
+
+
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
 export interface SpotifyConfig {
@@ -689,7 +689,7 @@ export class SpotifyService {
 
   private handleError(error: any) {
     console.error(error);
-    return Observable.throw(error.error || 'Server error');
+    return observableThrowError(error.error || 'Server error');
   }
   private handlePromiseError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only

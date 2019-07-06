@@ -1,9 +1,10 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { YoutubeVideo } from '../models/youtubeVideo';
 import { HttpRequestOptions } from './spotify.service';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
+
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 export interface YoutubeOptions {
@@ -31,8 +32,8 @@ export class YoutubeAPIService {
     return this.http
       .get<any>(`${this.baseUri}/search`, {
         params: this.makeHttpParams(options)
-      })
-      .map(res => res.items as YoutubeVideo[]);
+      }).pipe(
+      map(res => res.items as YoutubeVideo[]));
   }
 
   private makeHttpParams(options: any): HttpParams {

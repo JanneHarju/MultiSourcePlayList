@@ -1,13 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { HttpRequestOptions} from './spotify.service';
 import { SearchResult } from '../json_schema/SearchResult';
 import { AlbumInfo } from '../json_schema/BandCampAlbumInfo';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
+
 /*import * as bandcamp from '../../../node_modules/bandcamp-scraper/lib/index';
 import * as htmlParser from '../../../node_modules/bandcamp-scraper/lib/htmlParser.js';
 import * as utils from '../../../node_modules/bandcamp-scraper/lib/utils.js';*/

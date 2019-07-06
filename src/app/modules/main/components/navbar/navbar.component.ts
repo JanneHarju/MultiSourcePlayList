@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SpotifyService } from '../../../../services/spotify.service';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { SpotifyUser } from '../../../../models/spotifyUser';
 import { UserInfo } from '../../../../models/userInfo';
 import { SpotifyPlaybackSdkService } from '../../../../services/spotify-playback-sdk.service';

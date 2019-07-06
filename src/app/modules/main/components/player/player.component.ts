@@ -6,7 +6,7 @@ import { PlayerService } from '../../../../services/player.service';
 import { SpotifyService } from '../../../../services/spotify.service';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { SpotifyPlayStatus } from '../../../../models/spotifyPlayStatus';
 import { MusixMatchAPIService } from '../../../../services/musixmatch.service';

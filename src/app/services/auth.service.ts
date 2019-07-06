@@ -1,11 +1,10 @@
+
+import {throwError as observableThrowError,  Subject ,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-
-import { Observable } from 'rxjs/Observable';
 import { User } from '../models/user';
 import { environment } from '../../environments/environment';
-import 'rxjs/add/operator/toPromise';
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
@@ -122,6 +121,6 @@ export class AuthService implements CanActivate {
         if (error.status === 401) {
             this.clearLoginToken();
         }
-        return Observable.throw(error);
+        return observableThrowError(error);
     }
 }

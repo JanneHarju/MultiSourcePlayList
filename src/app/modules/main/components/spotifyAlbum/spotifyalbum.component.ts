@@ -16,7 +16,8 @@ import { TrackService } from '../../../../services/track.service';
 import { PlayerService } from '../../../../services/player.service';
 import { LoadingService } from '../../../../services/loading.service';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/toPromise';
+import { switchMap } from 'rxjs/operators';
+
 
 @Component({
     selector: 'my-spotifyalbum',
@@ -57,14 +58,14 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
         const limit = 50;
         this.spotifyTracks  = [];
 
-        this.route.params
-            .switchMap((params: Params) => {
+        this.route.params.pipe(
+            switchMap((params: Params) => {
                 setTimeout(() => this.loadingService.setLoading(true));
                 return this.spotifyService.getAlbum(params['id'],
                 {
                     limit: limit
                 });
-            })
+            }))
             .subscribe((album: SpotifyAlbum) => {
                 this.spotifyTracks  = [];
 

@@ -1,3 +1,5 @@
+
+import {switchMap} from 'rxjs/operators';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TrackService } from '../../../../services/track.service';
@@ -11,7 +13,7 @@ import { Playlist } from '../../../../models/playlist';
 import { MusixMatchLyric } from '../../../../models/musixmatchlyric';
 import { SimpleTimer } from 'ng2-simple-timer';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'my-tracklist',
@@ -49,10 +51,10 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         this.getPlaylistTracks();
 
-        this.route.params
-            .switchMap((params: Params) => {
+        this.route.params.pipe(
+            switchMap((params: Params) => {
                 return this.playlistService.getPlaylist(+params['id']);
-            })
+            }))
             .subscribe((playlist: Playlist) => {
                 this.currentPlaylist = playlist;
             });
@@ -66,11 +68,11 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
         });
      }
      getPlaylistTracks() {
-        this.route.params
-            .switchMap((params: Params) => {
+        this.route.params.pipe(
+            switchMap((params: Params) => {
                 setTimeout(() => this.loadingService.setLoading(true));
                 return this.trackService.getPlaylistTracks(+params['id']);
-            })
+            }))
             .subscribe((tracklist: Track[]) => {
                 this.tracklist = tracklist;
                 if (this.tracklist.length > 0) {
@@ -101,9 +103,9 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
             });
      }
      getUsersPlaylistsasync() {
-         this.route.params
-            .switchMap(() =>
-                this.playlistService.getUsersPlaylists())
+         this.route.params.pipe(
+            switchMap(() =>
+                this.playlistService.getUsersPlaylists()))
                 .subscribe((playlists: Playlist[]) => {
                     this.playlists = playlists;
                     this.playlists = this.playlists.filter(h => h.Id !== this.currentPlaylist.Id);

@@ -6,7 +6,7 @@ import { Playlist } from '../../../../models/playlist';
 import { SpotifyPlaylist } from '../../../../models/spotifyplaylist';
 import { AuthService } from '../../../../services/auth.service';
 import { LoadingService } from '../../../../services/loading.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'my-playlist',
