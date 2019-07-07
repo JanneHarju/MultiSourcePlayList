@@ -3,13 +3,7 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
-    "types": [],
-    "paths": {
-      "http": ["../node_modules/follow-redirects/http.js"],
-      "https": ["../node_modules/follow-redirects/http.js"],
-      "stream": ["../src/empty.js"],
-      "zlib": ["../node_modules/mz/zlib.js"]
-    }
+    "types": []
   },
   "exclude": [
     "test.ts",
