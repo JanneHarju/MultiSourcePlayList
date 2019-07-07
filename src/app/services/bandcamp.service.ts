@@ -12,7 +12,7 @@ import * as utils from '../../../node_modules/bandcamp-scraper/lib/utils.js';*/
 /*let bandcamp = require('../../../node_modules/bandcamp-scraper/lib/index'),
     htmlParser  = require('../../../node_modules/bandcamp-scraper/lib/htmlParser.js'),
     utils       = require('../../../node_modules/bandcamp-scraper/lib/utils.js');*/
-// import * as htmlParser from '../../../node_modules/bandcamp-scraper/lib/htmlParser.js';
+import * as htmlParser from '../../../node_modules/bandcamp-scraper/lib/htmlParser.js';
 
 export interface BandcampOptions {
   page: number;
@@ -31,7 +31,7 @@ export class BandcampService {
       })
       .toPromise()
       .then((res) => {
-        return {} as SearchResult[];
+        return htmlParser.parseSearchResults(res.text()) as SearchResult[];
       })
       .catch(this.handlePromiseError);
   }
@@ -44,7 +44,7 @@ export class BandcampService {
       })
       .toPromise()
       .then((res) => {
-        return {} as AlbumInfo;
+        return htmlParser.parseAlbumInfo(res.text(), decodedUrl) as AlbumInfo;
       })
       .catch(this.handlePromiseError);
   }
@@ -58,7 +58,7 @@ export class BandcampService {
       })
       .toPromise()
       .then((res) => {
-        return {} as string[];
+        return htmlParser.parseAlbumUrls(res.text(), decodedUrl) as string[];
       })
       .catch(this.handlePromiseError);
   }
