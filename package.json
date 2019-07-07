@@ -5,7 +5,7 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently \"ng serve --proxy-config proxy.conf.json\" \"dotnet watch run --launch-profile Production\" ",
+    "start": "concurrently \"ng serve musiple --proxy-config proxy.conf.json\" \"dotnet watch run --launch-profile Production\" ",
     "ng": "ng",
     "build": "ng build --prod",
     "test": "ng test",
