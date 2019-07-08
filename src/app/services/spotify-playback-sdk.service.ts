@@ -19,7 +19,6 @@ export class SpotifyPlaybackSdkService {
 
   private subjectPlayState = new BehaviorSubject<Spotify.PlaybackState>(null);
   private subjectTrackEnded = new BehaviorSubject<boolean>(false);
-
   playStatusTimerId: string;
   constructor(private spotifyService: SpotifyService, private st: SimpleTimer) {}
   addSpotifyPlaybackSdk() {
@@ -52,7 +51,12 @@ export class SpotifyPlaybackSdkService {
 
       this.player.addListener('player_state_changed', (state) => {
         console.log(state);
-        if (this.state && !this.state.paused && state.paused && state.position === 0) {
+        if (
+          this.state
+          && state.track_window.previous_tracks.find(x => x.id === state.track_window.current_track.id)
+          && !this.state.paused
+          && state.paused
+          ) {
           console.log('Track ended');
           this.setTrackEnd(true);
         }
