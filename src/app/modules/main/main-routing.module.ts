@@ -9,7 +9,7 @@ import { SpotifyAlbumComponent } from './components/spotifyAlbum/spotifyalbum.co
 import { SpotifyArtistComponent } from './components/spotifyartist/spotifyartist.component';
 import { BandcampAlbumComponent } from './components/bandcampalbum/bandcampalbum.component';
 import { BandcampArtistComponent } from './components/bandcampartist/bandcampartist.component';
-import { UserInfoComponent } from './components/userinfo/userInfo.component';
+import { UserInfoComponent } from './components/userInfo/userInfo.component';
 import { QueueComponent } from './components/queue/queue.component';
 
 const routes: Routes = [

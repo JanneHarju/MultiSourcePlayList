@@ -178,7 +178,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.loadingService.setLoading(false);
             });
     }
-    loadComplited() {
+    loadComplited(e: any) {
         this.ngOnInit();
     }
     addTrackToPlaylist(playlist: Playlist, track: Track) {

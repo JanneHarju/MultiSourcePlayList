@@ -22,7 +22,7 @@ import { BandcampAlbumComponent } from './components/bandcampalbum/bandcampalbum
 import { BandcampArtistComponent } from './components/bandcampartist/bandcampartist.component';
 import { FileUploadComponent } from './components/fileupload/fileupload.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { UserInfoComponent } from './components/userinfo/userInfo.component';
+import { UserInfoComponent } from './components/userInfo/userInfo.component';
 import { QueueComponent } from './components/queue/queue.component';
 import { MainComponent} from './components/main/main.component';
 import { ModalComponent} from './components/modal/modal.component';
@@ -71,6 +71,6 @@ import { SharedModule } from '../shared/shared.module';
   ],
   providers: [
     SimpleTimer
-  ],
+  ]
 })
 export class MainModule { }
