@@ -219,7 +219,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
       this.st.delTimer('1sec');
       this.st.newTimer('1sec', 1);
-      this.timerId = this.st.subscribe('1sec', (e) => this.callback());
+      this.timerId = this.st.subscribe('1sec', () => this.callback());
 
       this.disableProgressUpdate = false;
     }

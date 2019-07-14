@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ApplicationRef, } from '@angular/core';
 
 @Component({
   selector: 'my-root',
@@ -6,5 +6,11 @@ import { Component, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
   title = 'Multisource playlist';
+  constructor(private applicationRef: ApplicationRef) {
+    this.applicationRef.isStable.subscribe(x => {
+      console.log('isStable', x);
+    });
+  }
 }

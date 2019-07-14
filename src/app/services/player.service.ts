@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Track } from '../models/track';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { TrackService } from '../services/track.service';
-import { SpotifyService } from '../services/spotify.service';
 import { SpotifyPlaybackSdkService } from './spotify-playback-sdk.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PlayerService {
   private subject = new BehaviorSubject<Track>(new Track());
   track: Track = new Track();
@@ -16,11 +16,7 @@ export class PlayerService {
   public shuffle: boolean;
   subscriptionTrackEnd: Subscription;
   subscriptionTrackEndFromSDK: Subscription;
-  constructor(
-    private trackService: TrackService,
-    private spotifyService: SpotifyService,
-    private spotifyPlaybackService: SpotifyPlaybackSdkService
-  ) {
+  constructor(private spotifyPlaybackService: SpotifyPlaybackSdkService) {
     this.subscriptionTrackEndFromSDK = this.spotifyPlaybackService.getTrackEnd().subscribe((trackEnd) => {
       if (trackEnd) {
         this.chooseNextTrack();
@@ -56,7 +52,6 @@ export class PlayerService {
         this.lastOrder = this.track.Order;
       }
       this.setTrack(this.queueTracklist.shift());
-      // this.setQueue(this.queueTracklist);
     } else {
       if (!this.shuffle) {
         const order = this.lastOrder === -1 ? this.track.Order : this.lastOrder;
@@ -89,6 +84,5 @@ export class PlayerService {
   }
   addTrackToQueue(track: Track) {
     this.queueTracklist.push(track);
-    // this.setQueue(this.queueTracklist);
   }
 }

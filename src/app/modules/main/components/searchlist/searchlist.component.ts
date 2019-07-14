@@ -77,13 +77,13 @@ export class SearchlistComponent implements OnInit, OnDestroy {
 
     public search() {
         if (this.searchBandcamp || this.searchSpotify || this.searchYoutube || this.searchMusipleMp3) {
-            setTimeout(() => this.loadingService.setLoading(true));
+            this.loadingService.setLoading(true);
         }
 
         if (this.searchSpotify) {
             this.spotifyService.search(this.query, 'track')
                 .then((tracklist: SpotifyTrack[]) => {
-                    setTimeout(() => this.loadingService.setLoading(false));
+                    this.loadingService.setLoading(false);
                     this.spotifyTracks = tracklist;
                     this.selectCurrentTrack(this.playerService.track);
                 });
@@ -95,7 +95,7 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         if (this.searchYoutube) {
             this.youtubeApiService.search(this.query)
                 .subscribe((youtubeVideos: YoutubeVideo[]) => {
-                    setTimeout(() => this.loadingService.setLoading(false));
+                    this.loadingService.setLoading(false);
                     this.youtubeVideos = youtubeVideos;
                     this.selectCurrentTrack(this.playerService.track);
                 });
@@ -107,7 +107,7 @@ export class SearchlistComponent implements OnInit, OnDestroy {
         if (this.searchMusipleMp3) {
             this.trackService.searchTracks(this.query)
                 .then( tracks => {
-                    setTimeout(() => this.loadingService.setLoading(false));
+                    this.loadingService.setLoading(false);
                     this.musipleTracks = tracks;
                     this.selectCurrentTrack(this.playerService.track);
                 });
@@ -153,11 +153,11 @@ export class SearchlistComponent implements OnInit, OnDestroy {
             this.bandcampAlbums = ret.filter(x => x.type === 'album') as Album[];
             this.bandcampArtists = ret.filter(x => x.type === 'artist') as Artist[];
             this.bandcampTracks = ret.filter(x => x.type === 'track') as BandCampTrack[];
-            setTimeout(() => this.loadingService.setLoading(false));
+            this.loadingService.setLoading(false);
         })
         .catch(err => {
             console.error(err);
-            setTimeout(() => this.loadingService.setLoading(false));
+            this.loadingService.setLoading(false);
         });
     }
     urlToBase64(url: string) {

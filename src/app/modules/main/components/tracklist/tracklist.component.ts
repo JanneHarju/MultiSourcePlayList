@@ -70,7 +70,7 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
      getPlaylistTracks() {
         this.route.params.pipe(
             switchMap((params: Params) => {
-                setTimeout(() => this.loadingService.setLoading(true));
+                this.loadingService.setLoading(true);
                 return this.trackService.getPlaylistTracks(+params['id']);
             }))
             .subscribe((tracklist: Track[]) => {
@@ -82,9 +82,9 @@ export class TracklistComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.playerService.setCurrentTrackOrder();
                     }
                 }
-                setTimeout(() => this.loadingService.setLoading(false));
+                this.loadingService.setLoading(false);
             }, () => {
-                setTimeout(() => this.loadingService.setLoading(false));// poista settimeout ja lisää tuonne sisälle se changeDetection
+                this.loadingService.setLoading(false);
             });
      }
      getUsersPlaylists() {

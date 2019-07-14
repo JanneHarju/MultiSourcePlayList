@@ -59,7 +59,7 @@ export class SpotifyPlaylistComponent implements OnInit, OnDestroy {
 
         this.route.params.pipe(
             switchMap((params: Params) => {
-                setTimeout(() => this.loadingService.setLoading(true));
+                this.loadingService.setLoading(true);
                 return this.spotifyService.getPlaylistTracks(params['id'], params['id2'],
                 {
                     limit: limit
@@ -75,7 +75,7 @@ export class SpotifyPlaylistComponent implements OnInit, OnDestroy {
                 this.numberOfParts = 0;
                 this.numberOfLoadedParts = 0;
                 if (total < limit + offset) {
-                    setTimeout(() => this.loadingService.setLoading(false));
+                    this.loadingService.setLoading(false);
                 }
                 while (total > limit + offset) {
                     ++this.numberOfParts;

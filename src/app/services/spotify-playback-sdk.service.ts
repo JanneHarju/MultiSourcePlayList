@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { SpotifyService } from './spotify.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SimpleTimer } from 'ng2-simple-timer';
@@ -11,7 +11,9 @@ declare global {
   }
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SpotifyPlaybackSdkService {
   private player: Spotify.SpotifyPlayer;
   private deviceId: string;
@@ -20,7 +22,7 @@ export class SpotifyPlaybackSdkService {
   private subjectPlayState = new BehaviorSubject<Spotify.PlaybackState>(null);
   private subjectTrackEnded = new BehaviorSubject<boolean>(false);
   playStatusTimerId: string;
-  constructor(private spotifyService: SpotifyService, private st: SimpleTimer) {}
+  constructor(private spotifyService: SpotifyService, private st: SimpleTimer, private zone: NgZone) {}
   addSpotifyPlaybackSdk() {
     const script = document.createElement('script');
     script.src = 'https://sdk.scdn.co/spotify-player.js';
@@ -58,7 +60,7 @@ export class SpotifyPlaybackSdkService {
           state.paused
         ) {
           console.log('Track ended');
-          this.setTrackEnd(true);
+          this.zone.run(x => this.setTrackEnd(true));
         }
         this.state = state;
       });
@@ -81,14 +83,14 @@ export class SpotifyPlaybackSdkService {
   startTimer() {
     this.st.delTimer('spotifyPlayback');
     this.st.newTimer('spotifyPlayback', 1);
-    this.playStatusTimerId = this.st.subscribe('spotifyPlayback', (e) => this.callback());
+    this.playStatusTimerId = this.st.subscribe('spotifyPlayback', () => this.callback());
   }
   removeTimer() {
     this.st.delTimer('spotifyPlayback');
   }
   callback() {
     this.player.getCurrentState().then((state) => {
-      this.setPlayState(state);
+      this.zone.run(x => this.setPlayState(state));
     });
   }
 }

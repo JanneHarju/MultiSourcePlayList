@@ -7,7 +7,9 @@ import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PlaylistService {
   private PlaylistsUrl = `${environment.backendUrl}/api/playlists`; // URL to web api
 

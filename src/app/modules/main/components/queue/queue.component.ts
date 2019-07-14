@@ -12,11 +12,10 @@ export class QueueComponent implements OnInit {
     tracklist: Track[] = [];
     constructor(
         private playerService: PlayerService) {
-        this.tracklist = this.playerService.getQueueTracks();
     }
 
     ngOnInit() {
-
+      this.tracklist = this.playerService.getQueueTracks();
     }
 
     delete(track: Track) {

@@ -5,10 +5,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MainRoutingModule } from './main-routing.module';
 
-import { YoutubePlayerModule } from 'ngx-youtube-player';
+import { NgxYoutubePlayerModule } from 'ngx-youtube-player';
 import { DndModule } from 'ng2-dnd';
 
-import { NgUploaderModule } from 'ngx-uploader';
+import { NgxUploaderModule } from 'ngx-uploader';
 
 import { PlayerComponent } from './components/player/player.component';
 import { PlaylistComponent } from './components/playlist/playlist.component';
@@ -42,8 +42,8 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     FormsModule,
     MainRoutingModule,
-    YoutubePlayerModule,
-    NgUploaderModule,
+    NgxYoutubePlayerModule,
+    NgxUploaderModule,
     SharedModule
   ],
   declarations: [

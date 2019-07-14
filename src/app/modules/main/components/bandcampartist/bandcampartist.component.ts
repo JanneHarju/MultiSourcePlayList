@@ -31,7 +31,7 @@ export class BandcampArtistComponent implements OnInit {
 
     ngOnInit() {
         this.route.params.subscribe((params: Params) => {
-            setTimeout(() => this.loadingService.setLoading(true));
+            this.loadingService.setLoading(true);
             this.artistUrl = params['id'];
             this.artistLink = atob(this.artistUrl);
             this.imageUrl = atob(params['id2']);
@@ -41,7 +41,7 @@ export class BandcampArtistComponent implements OnInit {
                     this.albumUrls = res.filter(x => x.includes('/album/'));
                     this.albumCount = this.albumUrls.length;
                     if (this.albumCount === 0) {
-                        setTimeout(() => this.loadingService.setLoading(false));
+                        this.loadingService.setLoading(false);
                         return;
                     }
                     this.albumUrls.forEach(x => {
@@ -49,7 +49,7 @@ export class BandcampArtistComponent implements OnInit {
                             .then( (y: AlbumInfo) => {
                                 this.bandCampAlbumInfos.push(y);
                                 if (this.bandCampAlbumInfos.length >= this.albumCount) {
-                                    setTimeout(() => this.loadingService.setLoading(false));
+                                    this.loadingService.setLoading(false);
                                 }
                             });
                     });

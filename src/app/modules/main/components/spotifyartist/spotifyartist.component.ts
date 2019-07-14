@@ -69,7 +69,7 @@ export class SpotifyArtistComponent implements OnInit, OnDestroy {
                 this.artistLoaded = false;
                 this.albumsLoaded = false;
                 this.toptracksLoaded = false;
-                setTimeout(() => this.loadingService.setLoading(true));
+                this.loadingService.setLoading(true);
                 return this.spotifyService.getArtist(params['id'],
                 {
                     limit: limit
@@ -80,7 +80,7 @@ export class SpotifyArtistComponent implements OnInit, OnDestroy {
                 this.artistLoaded = true;
                 this.setLoadingOffIfAllLoaded();
             }, error => {
-                setTimeout(() => this.loadingService.setLoading(false));
+                this.loadingService.setLoading(false);
             });
         this.route.params.pipe(
             switchMap((params: Params) => this.spotifyService.getArtistsAlbum(params['id'],
@@ -98,7 +98,7 @@ export class SpotifyArtistComponent implements OnInit, OnDestroy {
                 this.albumsLoaded = true;
                 this.setLoadingOffIfAllLoaded();
             }, error => {
-                setTimeout(() => this.loadingService.setLoading(false));
+                this.loadingService.setLoading(false);
             });
         this.route.params.pipe(
             switchMap((params: Params) => this.spotifyService.getArtistsTopTracks(params['id'],
@@ -110,7 +110,7 @@ export class SpotifyArtistComponent implements OnInit, OnDestroy {
                 this.toptracksLoaded = true;
                 this.setLoadingOffIfAllLoaded();
             }, error => {
-                setTimeout(() => this.loadingService.setLoading(false));
+                this.loadingService.setLoading(false);
             });
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => {
             this.selectCurrentTrack(track);
@@ -142,7 +142,7 @@ export class SpotifyArtistComponent implements OnInit, OnDestroy {
         if (this.artistLoaded &&
             this.albumsLoaded &&
             this.toptracksLoaded) {
-            setTimeout(() => this.loadingService.setLoading(false));
+            this.loadingService.setLoading(false);
         }
      }
      selectCurrentTrack(track: Track) {

@@ -28,13 +28,13 @@ export class BandcampAlbumComponent implements OnInit {
     ngOnInit() {
 
         this.route.params.subscribe((params: Params) => {
-            setTimeout(() => this.loadingService.setLoading(true));
+            this.loadingService.setLoading(true);
             this.albumUrl = params['id'];
             this.bandcampService.bandCampAlbumInfo(this.albumUrl)
                 .then( (res: AlbumInfo) => {
                     this.albumInfo = res;
                     this.trackCount = this.albumInfo.tracks.length;
-                    setTimeout(() => this.loadingService.setLoading(false));
+                    this.loadingService.setLoading(false);
                 });
         });
     }

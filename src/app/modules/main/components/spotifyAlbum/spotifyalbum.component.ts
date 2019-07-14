@@ -60,7 +60,7 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
 
         this.route.params.pipe(
             switchMap((params: Params) => {
-                setTimeout(() => this.loadingService.setLoading(true));
+                this.loadingService.setLoading(true);
                 return this.spotifyService.getAlbum(params['id'],
                 {
                     limit: limit
@@ -75,9 +75,9 @@ export class SpotifyAlbumComponent implements OnInit, OnDestroy {
 
                 album.tracks.items.forEach(track => this.albumDuration = this.albumDuration + track.duration_ms);
                 this.trackCount = album.tracks.items.length;
-                setTimeout(() => this.loadingService.setLoading(false));
+                this.loadingService.setLoading(false);
             }, error => {
-                setTimeout(() => this.loadingService.setLoading(false));
+                this.loadingService.setLoading(false);
             });
         this.subscriptionTrack = this.playerService.getTrack().subscribe(track => {
             this.selectCurrentTrack(track);

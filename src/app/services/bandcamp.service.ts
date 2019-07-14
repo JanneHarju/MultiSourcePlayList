@@ -18,7 +18,9 @@ export interface BandcampOptions {
   page: number;
   q: string;
 }
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class BandcampService {
   baseUri = `${environment.backendUrl}/api/bandcamp`;
   constructor(private authService: AuthService, private http: HttpClient) {}

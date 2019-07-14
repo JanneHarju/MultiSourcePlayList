@@ -13,7 +13,9 @@ export interface YoutubeOptions {
   maxResults?: number;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class YoutubeAPIService {
   baseUri = 'https://www.googleapis.com/youtube/v3';
   key = 'AIzaSyCBJf1-O0F4J37lTx7Avlfk5hTWYBydWQE';
